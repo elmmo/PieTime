@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   #Allows tick marks for clock face to appear
   dotted_border: ^1.0.5
+  #Almarai Google font
+  google_fonts: ^0.4.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

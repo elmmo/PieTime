@@ -3,6 +3,7 @@
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,6 +17,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        textTheme: GoogleFonts.almaraiTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
       home: Scaffold(
           // Hamburger menu on the Appbar to the left
           drawer: Drawer(
@@ -43,7 +49,12 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           appBar: AppBar(
-            title: Text("PieTime"),
+            title: Text(
+              'PieTime',
+              style: GoogleFonts.almarai(
+                textStyle: TextStyle(letterSpacing: 1.2, fontWeight: FontWeight.w700,),
+              ),
+            ),
             backgroundColor: Colors.grey[900],
             actions: <Widget>[
               Padding(
