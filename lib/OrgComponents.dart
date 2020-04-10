@@ -1,8 +1,8 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
-// Hamburger menu on the Appbar to the left
 class OrgComponents {
+  // Hamburger menu on the Appbar to the left
   static Widget generateSideDrawer() {
     return Drawer(
       child: ListView(
@@ -77,8 +77,10 @@ class OrgComponents {
           // Red timer circle
           child: Container(
             height: 250,
-            decoration:
-                BoxDecoration(color: Colors.red[400], shape: BoxShape.circle),
+            decoration: BoxDecoration(
+                color: Colors.red[400], 
+                shape: BoxShape.circle
+            ),
           ),
         ),
       ),

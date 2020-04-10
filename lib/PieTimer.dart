@@ -7,12 +7,11 @@ class PieTimer extends StatefulWidget {
     duration = new Duration(hours: hrs, minutes: min, seconds: sec); 
 
   @override
-  State createState() => new PieTimerState(); 
+  State createState() => new _PieTimerState(); 
 }
 
-class PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
+class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   AnimationController _controller; 
-  int enteredTimeSec = 0; 
 
   // called once when the object is inserted into the tree
   @override

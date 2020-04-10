@@ -4,7 +4,6 @@ import 'OrgComponents.dart';
 
 void main() => runApp(new PieTimerApp());
 
-
 // entry for the rest of the app 
 class PieTimerApp extends StatefulWidget {
   @override
