@@ -10,8 +10,7 @@ class PieTimer extends StatefulWidget {
   State createState() => new PieTimerState(); 
 }
 
-class PieTimerState extends State<PieTimer>
-  with TickerProviderStateMixin {
+class PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   AnimationController _controller; 
   int enteredTimeSec = 0; 
 
