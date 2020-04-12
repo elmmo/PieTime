@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'OrgComponents.dart';
+import 'PieTimer.dart';
 
 void main() => runApp(new PieTimerApp());
 
@@ -23,13 +24,15 @@ class _PieTimerState extends State<PieTimerApp> {
           Theme.of(context).textTheme,
         ),
       ),
-      home: Scaffold(
-          drawer: OrgComponents.generateSideDrawer(),
-          appBar: OrgComponents.generateAppBar(),
-          // Contains everything below the Appbar
-          backgroundColor: Colors.grey[800],
-          body: OrgComponents.generateAppBody(), 
-        ),
+      home: PieTimer(0, 0, 10)
+      
+        //     Scaffold(
+        //   drawer: OrgComponents.generateSideDrawer(),
+        //   appBar: OrgComponents.generateAppBar(),
+        //   // Contains everything below the Appbar
+        //   backgroundColor: Colors.grey[800],
+        //   body: OrgComponents.generateAppBody(), 
+        // ),
     );
   }
 }
