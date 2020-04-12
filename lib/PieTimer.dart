@@ -30,7 +30,12 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
         vsync:
             this, // the ticker controller uses to schedule animations - SingleTickerProviderStateMixin
         duration: widget.duration // time for the animation to happen
-        );
+        )
+    ..addStatusListener((animationStatus) {
+      if (animationStatus == AnimationStatus.dismissed) {
+        _switchStatus(PieTimerStatus.none); 
+      }
+    });
   }
 
   String get timerString {
@@ -39,25 +44,33 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   }
 
   // detects status of animation and returns the timer status 
-  void _switchStatus() {
-    print("Status at call was:");
-    print(_status); 
-    switch (_status) {
-      case PieTimerStatus.none:
-      case PieTimerStatus.paused: {
-        _status = PieTimerStatus.playing;
-        //print(_status);
-        _controller.reverse(from: (_controller.value == 0.0) ? 1.0 : _controller.value);
+  // if optional param supplied, switch to that state with no change in animation 
+  // optional param only meant to be used for none state 
+  void _switchStatus([PieTimerStatus requestStatus]) {
+    if (requestStatus == null) {
+      //print("Status at call was:");
+      //print(_status); 
+      switch (_status) {
+        case PieTimerStatus.none: 
+        case PieTimerStatus.paused: {
+          _status = PieTimerStatus.playing;
+          //print(_status);
+          _controller.reverse(from: (_controller.value == 0.0) ? 1.0 : _controller.value);
+        }
+        break; 
+        case PieTimerStatus.playing: {
+          //print("playing");
+          _status = PieTimerStatus.paused;
+          _controller.stop(); 
+          ///print(_status);
+        } 
+        break; 
       }
-      break; 
-      case PieTimerStatus.playing: {
-        //print("playing");
-        _status = PieTimerStatus.paused;
-        _controller.stop(); 
-        ///print(_status);
-      } 
-      break; 
+    } else { 
+      _status = requestStatus; 
     }
+    print("Current State:");
+    print(_status); 
   }
 
   @override
