@@ -31,13 +31,14 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
             this, // the ticker controller uses to schedule animations - SingleTickerProviderStateMixin
         duration: widget.duration // time for the animation to happen
         )
-    ..addStatusListener((animationStatus) {
+    ..addStatusListener((animationStatus) {  // listens for changes to the animation to update the timer status
       if (animationStatus == AnimationStatus.dismissed) {
         _switchStatus(PieTimerStatus.none); 
       }
     });
   }
 
+  // returns the time remaining on the clock 
   String get timerString {
     Duration dur = _controller.duration * _controller.value;
     return '${dur.inMinutes}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
@@ -47,30 +48,28 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   // if optional param supplied, switch to that state with no change in animation 
   // optional param only meant to be used for none state 
   void _switchStatus([PieTimerStatus requestStatus]) {
+    PieTimerStatus switchTo;
     if (requestStatus == null) {
-      //print("Status at call was:");
-      //print(_status); 
       switch (_status) {
         case PieTimerStatus.none: 
         case PieTimerStatus.paused: {
-          _status = PieTimerStatus.playing;
-          //print(_status);
+          switchTo = PieTimerStatus.playing; 
           _controller.reverse(from: (_controller.value == 0.0) ? 1.0 : _controller.value);
         }
         break; 
         case PieTimerStatus.playing: {
-          //print("playing");
-          _status = PieTimerStatus.paused;
+          switchTo = PieTimerStatus.paused; 
           _controller.stop(); 
-          ///print(_status);
         } 
         break; 
       }
     } else { 
-      _status = requestStatus; 
+      switchTo = requestStatus; 
     }
-    print("Current State:");
-    print(_status); 
+    // sets the state of status to whatever was determined previously 
+    setState(() {
+      _status = switchTo; 
+    }); 
   }
 
   @override
@@ -115,21 +114,18 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                                                         color: Colors.white),
                                                   ),
                                                 ])),
-                                        AnimatedBuilder(
-                                            animation: _controller,
-                                            builder: (context, child) {
-                                              return FloatingActionButton
-                                                  .extended(
-                                                      onPressed: _switchStatus,
-                                                      icon: Icon(_controller.isAnimating ? Icons.pause : Icons.play_arrow),
-                                                      label: Text(_controller
-                                                              .isAnimating
-                                                          ? "Pause"
-                                                          : "Play"));
-                                            }),
+                                        generateToggleButton(),
                                       ]))))
                         ]))
               ]);
             }));
+  }
+
+  Widget generateToggleButton() {
+    return FloatingActionButton.extended(
+      onPressed: _switchStatus,
+      icon: Icon(_status == PieTimerStatus.playing ? Icons.pause : Icons.play_arrow),
+      label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play")
+    );
   }
 }
