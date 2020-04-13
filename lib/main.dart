@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'OrgComponents.dart';
-import 'PieTimer.dart';
 
 void main() => runApp(new PieTimerApp());
 
@@ -24,7 +23,7 @@ class PieTimerApp extends StatelessWidget {
         drawer: OrgComponents.generateSideDrawer(),
         appBar: OrgComponents.generateAppBar(),
         // Contains everything below the Appbar
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Colors.grey[800],
         body: OrgComponents.generateAppBody(Theme.of(context)), 
       ),
     );
