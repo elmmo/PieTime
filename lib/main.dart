@@ -6,16 +6,7 @@ import 'PieTimer.dart';
 void main() => runApp(new PieTimerApp());
 
 // entry for the rest of the app 
-class PieTimerApp extends StatefulWidget {
-  @override
-  _PieTimerState createState() => _PieTimerState();
-}
-
-class _PieTimerState extends State<PieTimerApp> {
-  double padValue = 0;
-
-  // builds the main container widget 
-  @override
+class PieTimerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Pie Timer",
@@ -24,7 +15,7 @@ class _PieTimerState extends State<PieTimerApp> {
           Theme.of(context).textTheme,
         ),
       ),
-      home: PieTimer(0, 0, 10)
+      home: PieTimer(0, 0, 10)  // params are how you set time -- need to provide user way to get that
       
         //     Scaffold(
         //   drawer: OrgComponents.generateSideDrawer(),
