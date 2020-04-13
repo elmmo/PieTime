@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 import 'CustomTimerPainter.dart';
 
 enum PieTimerStatus { none, playing, paused }
@@ -30,6 +32,8 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
       ..addStatusListener((animationStatus) {
         // listens for changes to the animation to update the timer status
         if (animationStatus == AnimationStatus.dismissed) {
+          _vibrateAlert(5);
+          _showDialog();
           _switchStatus(PieTimerStatus.none);
         }
       });
@@ -135,5 +139,31 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                   child: Stack(children: widgArr)
         )))])
     )]);
+  }
+
+  // show alert for the end of the timer 
+  void _showDialog() { 
+    showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: new Text("Timer Complete"),
+          content: new Text("The timer is finished."),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text("Close"),
+              onPressed: () {
+                Navigator.of(context).pop(); 
+        })]);
+    });
+  }
+
+  // run the vibration for the alert 
+  void _vibrateAlert(int vibrationRepetition) {
+    // run the vibration
+    for (var i = 0; i < vibrationRepetition; i++) {
+      HapticFeedback.mediumImpact(); 
+      sleep( const Duration(milliseconds: 300) );
+    }
   }
 }
