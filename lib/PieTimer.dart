@@ -79,7 +79,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
             animation: _controller,
             builder: (context, child) => 

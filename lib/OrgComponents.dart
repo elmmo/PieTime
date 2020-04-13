@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'PieTimer.dart';
 
 class OrgComponents {
   // Hamburger menu on the Appbar to the left
@@ -55,7 +56,7 @@ class OrgComponents {
   }
 
   // everything below the app bar on the main page 
-  static Widget generateAppBody() {
+  static Widget generateAppBody(ThemeData theme) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 80.0),
       // Dotted border for each hour tick mark
@@ -75,13 +76,7 @@ class OrgComponents {
           borderType: BorderType.Circle,
           padding: EdgeInsets.all(6),
           // Red timer circle
-          child: Container(
-            height: 250,
-            decoration: BoxDecoration(
-                color: Colors.red[400], 
-                shape: BoxShape.circle
-            ),
-          ),
+          child: PieTimer(0,0,10)
         ),
       ),
     );

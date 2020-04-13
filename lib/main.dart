@@ -11,19 +11,22 @@ class PieTimerApp extends StatelessWidget {
     return MaterialApp(
       title: "Pie Timer",
       theme: ThemeData(
+        brightness: Brightness.dark,
+        primaryColorDark: Colors.white,
+        accentColor: Colors.red,
+        backgroundColor: Colors.grey[800],
+        secondaryHeaderColor: Colors.grey[900],
         textTheme: GoogleFonts.almaraiTextTheme(
-          Theme.of(context).textTheme,
+          Theme.of(context).textTheme
         ),
       ),
-      home: PieTimer(0, 0, 10)  // params are how you set time -- need to provide user way to get that
-      
-        //     Scaffold(
-        //   drawer: OrgComponents.generateSideDrawer(),
-        //   appBar: OrgComponents.generateAppBar(),
-        //   // Contains everything below the Appbar
-        //   backgroundColor: Colors.grey[800],
-        //   body: OrgComponents.generateAppBody(), 
-        // ),
+      home: Scaffold(
+        drawer: OrgComponents.generateSideDrawer(),
+        appBar: OrgComponents.generateAppBar(),
+        // Contains everything below the Appbar
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: OrgComponents.generateAppBody(Theme.of(context)), 
+      ),
     );
   }
 }
