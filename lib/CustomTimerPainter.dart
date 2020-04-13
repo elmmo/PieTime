@@ -15,7 +15,6 @@ class CustomTimerPainter extends CustomPainter {
   @override 
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = backgroundColor
       ..strokeWidth = 5.0
       ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.stroke; 
