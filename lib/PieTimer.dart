@@ -82,13 +82,13 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
             animation: _controller,
-            builder: (context, child) => 
+           builder: (context, child) => 
               positionWidgets([
                 generatePie(),
                 generateTimerText(),
                 generateToggleButton()])
-    ));
-  }
+    ));  
+    }
 
   // creates the floating action button that triggers the timer
   Widget generateToggleButton() {
@@ -104,66 +104,70 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     return Positioned.fill(
       child: CustomPaint(
           painter:
-              CustomTimerPainter(animation: _controller, color: Colors.black)),
+              CustomTimerPainter(
+                animation: _controller, color: Colors.red[300])),
     );
   }
 
-  // creates and positions the text in the middle of the pie 
+  // creates and positions the text in the middle of the pie
   Widget generateTimerText() {
     return Align(
-      alignment: FractionalOffset.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            timerString,
-            style: TextStyle(fontSize: 112.0, color: Colors.white),
-          )]
-      ));
+        alignment: FractionalOffset.center,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                timerString,
+                style: TextStyle(fontSize: 70.0, color: Colors.white),
+              )]
+            ));
   }
 
-  // positions the widgets passed to it in the first param 
+  // positions the widgets passed to it in the first param
   Widget positionWidgets(List<Widget> widgArr) {
     return Stack(children: <Widget>[
       Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column( 
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Align(
-                alignment: FractionalOffset.center,
-                child: AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Stack(children: widgArr)
-        )))])
-    )]);
+          padding: EdgeInsets.all(8.0),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                    child: Align(
+                        alignment: FractionalOffset.center,
+                        child: AspectRatio(
+                            aspectRatio: 1.0, 
+                            child: Stack(children: widgArr))))
+              ]))
+    ]);
   }
 
-  // show alert for the end of the timer 
-  void _showDialog() { 
+  // show alert for the end of the timer
+  void _showDialog() {
     showDialog(
-      context: context, 
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("Timer Complete"),
-          content: new Text("The timer is finished."),
-          actions: <Widget>[
-            new FlatButton(
-              child: new Text("Close"),
-              onPressed: () {
-                Navigator.of(context).pop(); 
-        })]);
-    });
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: new Text("Timer Complete"),
+              content: new Text("The timer is finished."),
+              backgroundColor: Colors.grey[50],
+              actions: <Widget>[
+                new FlatButton(
+                    child: new Text("Ok"),
+                    color: Colors.cyan[800],
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    })
+              ]);
+        });
   }
 
-  // run the vibration for the alert 
+  // run the vibration for the alert
   void _vibrateAlert(int vibrationRepetition) {
     // run the vibration
     for (var i = 0; i < vibrationRepetition; i++) {
-      HapticFeedback.mediumImpact(); 
-      sleep( const Duration(milliseconds: 300) );
+      HapticFeedback.mediumImpact();
+      sleep(const Duration(milliseconds: 300));
     }
   }
 }

@@ -58,12 +58,13 @@ class OrgComponents {
   // everything below the app bar on the main page 
   static Widget generateAppBody(ThemeData theme) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 80.0),
+      // margin: EdgeInsets.symmetric(vertical: 180.0),
+      margin: EdgeInsets.symmetric(vertical: 180.0),
       // Dotted border for each hour tick mark
       child: DottedBorder(
         color: Colors.white,
-        radius: Radius.circular(12),
-        dashPattern: [2, 67.7],
+        radius: Radius.circular(10),
+        dashPattern: [2, 110],
         strokeWidth: 20,
         borderType: BorderType.Circle,
 
@@ -71,7 +72,7 @@ class OrgComponents {
         child: DottedBorder(
           color: Colors.white,
           radius: Radius.circular(12),
-          dashPattern: [2, 11.755],
+          dashPattern: [2.1, 20],
           strokeWidth: 8,
           borderType: BorderType.Circle,
           padding: EdgeInsets.all(6),
