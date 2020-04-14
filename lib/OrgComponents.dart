@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'PieTimer.dart';
+import 'BottomDrawer.dart';
 
 class OrgComponents {
   // Hamburger menu on the Appbar to the left
@@ -57,28 +58,33 @@ class OrgComponents {
 
   // everything below the app bar on the main page 
   static Widget generateAppBody(ThemeData theme) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 80.0),
-      // Dotted border for each hour tick mark
-      child: DottedBorder(
-        color: Colors.white,
-        radius: Radius.circular(12),
-        dashPattern: [2, 67.7],
-        strokeWidth: 20,
-        borderType: BorderType.Circle,
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.symmetric(vertical: 80.0),
+          // Dotted border for each hour tick mark
+          child: DottedBorder(
+            color: Colors.white,
+            radius: Radius.circular(12),
+            dashPattern: [2, 67.7],
+            strokeWidth: 20,
+            borderType: BorderType.Circle,
 
-        // Dotted border for each hour minute mark
-        child: DottedBorder(
-          color: Colors.white,
-          radius: Radius.circular(12),
-          dashPattern: [2, 11.755],
-          strokeWidth: 8,
-          borderType: BorderType.Circle,
-          padding: EdgeInsets.all(6),
-          // Red timer circle
-          child: PieTimer(0,0,10)
+            // Dotted border for each hour minute mark
+            child: DottedBorder(
+              color: Colors.white,
+              radius: Radius.circular(12),
+              dashPattern: [2, 11.755],
+              strokeWidth: 8,
+              borderType: BorderType.Circle,
+              padding: EdgeInsets.all(6),
+              // Red timer circle
+              child: PieTimer(0,0,10)
+            ),
+          ),
         ),
-      ),
+        BottomDrawer()
+      ],
     );
   }
 }
