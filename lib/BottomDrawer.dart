@@ -29,7 +29,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
   static String _completed = "completed";
   static String _new = "new";
   // This item is the card for creating a new task
-  List<Map<String, dynamic>> items = [
+  List<Map<String, dynamic>> tasks = [
     {
       _title : "New Task",
       _time : null,
@@ -55,11 +55,11 @@ class _BottomDrawerState extends State<BottomDrawer> {
     setState(() {
       // create new item or update info of existing item
       if (isCreation) {
-        items.insert(0, newItem);
+        tasks.insert(0, newItem);
         numNew++;
       } else {
-        int index = items.indexWhere((e) => e[_title] == oldItem[_title] && e[_time] == oldItem[_time] && e[_completed] == oldItem[_completed] && e[_new] == oldItem[_new]);
-        items[index] = newItem;
+        int index = tasks.indexWhere((e) => e[_title] == oldItem[_title] && e[_time] == oldItem[_time] && e[_completed] == oldItem[_completed] && e[_new] == oldItem[_new]);
+        tasks[index] = newItem;
       }
       taskDuration += newItem[_time];
     });
@@ -67,7 +67,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   toggleCompleted(int index) {
     setState(() {
-      items[index][_completed] = !items[index][_completed];
+      tasks[index][_completed] = !tasks[index][_completed];
     });
   }
 
@@ -112,12 +112,12 @@ class _BottomDrawerState extends State<BottomDrawer> {
                     horizontal: MediaQuery.of(context).size.width * 0.1,
                     vertical: 16
                   ),
-                  itemCount: items.length,
+                  itemCount: tasks.length,
                   itemBuilder: (context, index) {
-                    String title = items[index][_title];
-                    Duration time = items[index][_time];
-                    bool isCompleted = items[index][_completed];
-                    bool isNew = items[index][_new];
+                    String title = tasks[index][_title];
+                    Duration time = tasks[index][_time];
+                    bool isCompleted = tasks[index][_completed];
+                    bool isNew = tasks[index][_new];
 
                     return Card(
                       color: Color.fromRGBO(80, 80, 80, 1),
@@ -172,7 +172,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                       return ItemModal(
                                         totalDuration: widget.totalDuration,
                                         taskDuration: taskDuration,
-                                        color: colors[(index-items.length-numNew) % colors.length],
+                                        color: colors[(index-tasks.length-numNew) % colors.length],
                                         onPressed: updateItem,
                                         isCompleted: isCompleted
                                       );
