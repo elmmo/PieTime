@@ -24,19 +24,19 @@ class _BottomDrawerState extends State<BottomDrawer> {
   List<Map<String, dynamic>> items = [
     {
       _title : "Mobile Apps Mockings",
-      _time : Duration(minutes: 15),
+      _time : Duration(hours: 1, minutes: 20, seconds: 30),
       _completed : false,
       _new : false,
     },
     {
       _title : "Graphic Design Sketch",
-      _time : Duration(minutes: 15),
+      _time : Duration(hours: 5),
       _completed : false,
       _new : false,
     },
     {
       _title : "Core 250 RR",
-      _time : Duration(minutes: 10),
+      _time : Duration(seconds: 50),
       _completed : false,
       _new : false,
     },
@@ -178,14 +178,24 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                   showDialog(
                                     context: context,
                                     builder: (context) {
-                                      return ItemModal(color: colors[(index-items.length-numNew) % colors.length], onPressed: updateItem, isCompleted: isCompleted);
+                                      return ItemModal(
+                                        color: colors[(index-items.length-numNew) % colors.length],
+                                        onPressed: updateItem,
+                                        isCompleted: isCompleted
+                                      );
                                     }
                                   );
                                 } else {
                                   showDialog(
                                     context: context,
                                     builder: (context) {
-                                      return ItemModal(color: colors[(index-numNew) % colors.length], onPressed: updateItem, oldTitle: title, oldTime: time, isCompleted: isCompleted);
+                                      return ItemModal(
+                                        color: colors[(index-numNew) % colors.length],
+                                        onPressed: updateItem,
+                                        oldTitle: title,
+                                        oldTime: time,
+                                        isCompleted: isCompleted
+                                      );
                                     }
                                   );
                                 }
@@ -228,15 +238,36 @@ class ItemModal extends StatelessWidget {
 
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
-  final durationController = TextEditingController();
+  final hoursController = TextEditingController();
+  final minutesController = TextEditingController();
+  final secondsController = TextEditingController();
 
-  // Returns the number of minutes from a Duration of hours and minutes
-  String parseDuration(Duration time) {
+  // Returns the number of hours from a Duration of hours and minutes
+  String parseHours(Duration time) {
     String timeStr = time.toString();
     int colonPos = timeStr.indexOf(":");
     int hours = int.parse(timeStr.substring(0, colonPos));
+    // int minutes = int.parse(timeStr.substring(colonPos+1, colonPos+3));
+    return hours.toString();
+  }
+
+  // Returns the number of minutes from a Duration of hours and minutes
+  String parseMinutes(Duration time) {
+    String timeStr = time.toString();
+    int colonPos = timeStr.indexOf(":");
+    // int hours = int.parse(timeStr.substring(0, colonPos));
     int minutes = int.parse(timeStr.substring(colonPos+1, colonPos+3));
-    return (minutes + hours*60).toString();
+    return minutes.toString();
+  }
+
+  // Returns the number of seconds from a Duration of hours and minutes
+  String parseSeconds(Duration time) {
+    String timeStr = time.toString();
+    int colonPos = timeStr.indexOf(":");
+    // int hours = int.parse(timeStr.substring(0, colonPos));
+    // int minutes = int.parse(timeStr.substring(colonPos+1, colonPos+3));
+    int seconds = int.parse(timeStr.substring(colonPos+4, colonPos+6));
+    return seconds.toString();
   }
 
   @override
@@ -244,7 +275,9 @@ class ItemModal extends StatelessWidget {
     bool isCreation = oldTitle == "" || oldTime == Duration(minutes: -1);
     if (!isCreation) {
       titleController.text = oldTitle;
-      durationController.text = parseDuration(oldTime);
+      hoursController.text = parseHours(oldTime);
+      minutesController.text = parseMinutes(oldTime);
+      secondsController.text = parseSeconds(oldTime);
     }
     return AlertDialog(
       backgroundColor: Color.fromRGBO(80, 80, 80, 1),
@@ -271,6 +304,14 @@ class ItemModal extends StatelessWidget {
                 validator: (value) {
                   if (value.isEmpty) {
                     return "Item title can't be empty";
+                  } else if (hoursController.text.isEmpty && minutesController.text.isEmpty && secondsController.text.isEmpty) {
+                    return "Duration can't be empty";
+                  } else if ((hoursController.text.isNotEmpty && int.tryParse(hoursController.text) == null)
+                            || (minutesController.text.isNotEmpty && int.tryParse(minutesController.text) == null)
+                            || (secondsController.text.isNotEmpty && int.tryParse(secondsController.text) == null)) {
+                    return "Duration must be a number";
+                  } else if (hoursController.text == "0" && minutesController.text == "0" && secondsController.text == "0") {
+                    return "Duration can't be zero";
                   }
                   return null;
                 },
@@ -282,27 +323,70 @@ class ItemModal extends StatelessWidget {
             ),
 
             // duration text box
-            Container(
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
-              ),
-              child: TextFormField(
-                controller: durationController,
-                maxLength: 3, // max number of characters for time - max 999min
-                buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
-                textInputAction: TextInputAction.done,
-                style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
-                validator: (value) {
-                  if (int.tryParse(value) == null) {
-                    return "Duration must be a number";
-                  }
-                  return null;
-                },
-                decoration: InputDecoration.collapsed(
-                  hintText: "Duration in minutes",
-                  hintStyle: TextStyle(color: Color.fromRGBO(182, 182, 182, 0.7), fontSize: 16)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
+                    ),
+                    child: TextFormField(
+                      controller: hoursController,
+                      maxLength: 2, // max number of characters for time - max 99hr
+                      buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+                      decoration: InputDecoration.collapsed(
+                        hintText: "0"
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text("hr", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
+                    ),
+                    child: TextFormField(
+                      controller: minutesController,
+                      maxLength: 3, // max number of characters for time - max 1hr 33min
+                      buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+                      decoration: InputDecoration.collapsed(
+                        hintText: "0"
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Text("min", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
+                ),
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
+                    ),
+                    child: TextFormField(
+                      controller: secondsController,
+                      maxLength: 3, // max number of characters for time - max 1min 33s
+                      buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
+                      textInputAction: TextInputAction.done,
+                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+                      decoration: InputDecoration.collapsed(
+                        hintText: "0"
+                      ),
+                    ),
+                  ),
+                ),
+                Text("s", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
+              ],
             ),
             Container(height: 8, width: 0),
 
@@ -318,9 +402,31 @@ class ItemModal extends StatelessWidget {
                 if (formKey.currentState.validate()) {
                   // if there's not an old title or time, we're creating a new item
                   if (oldTitle == "" || oldTime == Duration(minutes: -1)) {
-                    onPressed(true, titleController.text, Duration(minutes: int.parse(durationController.text)), oldTitle, oldTime, isCompleted);
+                    onPressed(
+                      true,
+                      titleController.text,
+                      Duration(
+                        hours: hoursController.text == "" ? 0 : int.parse(hoursController.text),
+                        minutes: minutesController.text == "" ? 0 : int.parse(minutesController.text),
+                        seconds: secondsController.text == "" ? 0 : int.parse(secondsController.text)
+                      ),
+                      oldTitle,
+                      oldTime,
+                      isCompleted
+                    );
                   } else {
-                    onPressed(false, titleController.text, Duration(minutes: int.parse(durationController.text)), oldTitle, oldTime, isCompleted);
+                    onPressed(
+                      false,
+                      titleController.text,
+                      Duration(
+                        hours: hoursController.text == "" ? 0 : int.parse(hoursController.text),
+                        minutes: minutesController.text == "" ? 0 : int.parse(minutesController.text),
+                        seconds: minutesController.text == "" ? 0 : int.parse(secondsController.text)
+                      ),
+                      oldTitle,
+                      oldTime,
+                      isCompleted
+                    );
                   }
                   Navigator.pop(context);
                 }
