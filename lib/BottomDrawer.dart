@@ -65,6 +65,21 @@ class _BottomDrawerState extends State<BottomDrawer> {
     });
   }
 
+  deleteItem(String title, Duration time, bool isCompleted) {
+    Map<String, dynamic> itemToDelete = {
+      _title : title,
+      _time : time,
+      _completed : isCompleted,
+      _new : false
+    };
+    setState(() {
+      int index = tasks.indexWhere((e) => e[_title] == itemToDelete[_title] && e[_time] == itemToDelete[_time] && e[_completed] == itemToDelete[_completed] && e[_new] == itemToDelete[_new]);
+      tasks.removeAt(index);
+      numNew--;
+      taskDuration -= itemToDelete[_time];
+    });
+  }
+
   toggleCompleted(int index) {
     setState(() {
       tasks[index][_completed] = !tasks[index][_completed];
@@ -173,7 +188,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                         totalDuration: widget.totalDuration,
                                         taskDuration: taskDuration,
                                         color: colors[(index-tasks.length-numNew) % colors.length],
-                                        onPressed: updateItem,
+                                        onUpdate: updateItem,
+                                        onDelete: deleteItem,
                                         isCompleted: isCompleted
                                       );
                                     }
@@ -186,7 +202,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                         totalDuration: widget.totalDuration,
                                         taskDuration: taskDuration,
                                         color: colors[(index-numNew) % colors.length],
-                                        onPressed: updateItem,
+                                        onUpdate: updateItem,
+                                        onDelete: deleteItem,
                                         oldTitle: title,
                                         oldTime: time,
                                         isCompleted: isCompleted
@@ -221,7 +238,8 @@ class ItemModal extends StatelessWidget {
     @required this.totalDuration,
     @required this.taskDuration,
     @required this.color,
-    @required this.onPressed(bool isCreation, String newTitle, Duration newTime, String oldTitle, Duration oldTime, bool isCompleted),
+    @required this.onUpdate(bool isCreation, String newTitle, Duration newTime, String oldTitle, Duration oldTime, bool isCompleted),
+    @required this.onDelete(String title, Duration time, bool isCompleted),
     this.oldTitle = "",
     this.oldTime = const Duration(minutes: -1),
     this.isCompleted = false
@@ -230,7 +248,8 @@ class ItemModal extends StatelessWidget {
   final Duration totalDuration;
   final Duration taskDuration;
   final Color color;
-  final Function onPressed;
+  final Function onUpdate;
+  final Function onDelete;
   final String oldTitle;
   final Duration oldTime;
   final bool isCompleted;
@@ -403,47 +422,74 @@ class ItemModal extends StatelessWidget {
             ),
             Container(height: 8, width: 0),
 
-            // action button
-            RaisedButton(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
-              color: color, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
-              child: Text(
-                oldTitle == "" || oldTime == Duration(minutes: -1) ? "Create" : "update",
-                style: TextStyle(color: Colors.black, fontSize: 16)
-              ),
-              onPressed: () {
-                if (formKey.currentState.validate()) {
-                  // if there's not an old title or time, we're creating a new item
-                  if (oldTitle == "" || oldTime == Duration(minutes: -1)) {
-                    onPressed(
-                      true,
+            Row(
+              mainAxisAlignment: !isCreation ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
+              children: <Widget>[
+                // Delete button if not creating a new task
+                !isCreation ? RaisedButton(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Color.fromRGBO(209, 26, 42, 1))),
+                  color: Color.fromRGBO(80, 80, 80, 1),
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(color: Color.fromRGBO(209, 26, 42, 1), fontSize: 16),
+                  ),
+                  onPressed: () {
+                    onDelete(
                       titleController.text,
                       Duration(
                         hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
                         minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
                         seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
                       ),
-                      oldTitle,
-                      oldTime,
                       isCompleted
                     );
-                  } else {
-                    onPressed(
-                      false,
-                      titleController.text,
-                      Duration(
-                        hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
-                        minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
-                        seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
-                      ),
-                      oldTitle,
-                      oldTime,
-                      isCompleted
-                    );
-                  }
-                  Navigator.pop(context);
-                }
-              },
+                    Navigator.pop(context);
+                  },
+                ) : Container(),
+
+                // Action button
+                RaisedButton(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
+                  color: color, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
+                  child: Text(
+                    isCreation ? "Create" : "Update",
+                    style: TextStyle(color: Colors.black, fontSize: 16)
+                  ),
+                  onPressed: () {
+                    if (formKey.currentState.validate()) {
+                      // if there's not an old title or time, we're creating a new item
+                      if (isCreation) {
+                        onUpdate(
+                          true,
+                          titleController.text,
+                          Duration(
+                            hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
+                            minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
+                            seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
+                          ),
+                          oldTitle,
+                          oldTime,
+                          isCompleted
+                        );
+                      } else {
+                        onUpdate(
+                          false,
+                          titleController.text,
+                          Duration(
+                            hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
+                            minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
+                            seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
+                          ),
+                          oldTitle,
+                          oldTime,
+                          isCompleted
+                        );
+                      }
+                      Navigator.pop(context);
+                    }
+                  },
+                ),
+              ],
             )
           ],
         )
