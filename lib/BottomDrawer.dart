@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BottomDrawer extends StatefulWidget {
+
+  final Duration totalDuration;
+
+  BottomDrawer(int hrs, int min, int sec)
+    : totalDuration = Duration(hours: hrs, minutes: min, seconds: sec);
+
   @override
   _BottomDrawerState createState() => _BottomDrawerState();
 }
@@ -16,30 +22,14 @@ class _BottomDrawerState extends State<BottomDrawer> {
   // green color for the "new item" card
   Color newColor = Color.fromRGBO(57, 161, 135, 1);
 
+  Duration taskDuration = Duration.zero;
+
   static String _title = "title";
   static String _time = "time";
   static String _completed = "completed";
   static String _new = "new";
-  // the first three are just test data, but the fourth item needs to stay
+  // This item is the card for creating a new task
   List<Map<String, dynamic>> items = [
-    {
-      _title : "Mobile Apps Mockings",
-      _time : Duration(hours: 1, minutes: 20, seconds: 30),
-      _completed : false,
-      _new : false,
-    },
-    {
-      _title : "Graphic Design Sketch",
-      _time : Duration(hours: 5),
-      _completed : false,
-      _new : false,
-    },
-    {
-      _title : "Core 250 RR",
-      _time : Duration(seconds: 50),
-      _completed : false,
-      _new : false,
-    },
     {
       _title : "New Task",
       _time : null,
@@ -71,6 +61,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
         int index = items.indexWhere((e) => e[_title] == oldItem[_title] && e[_time] == oldItem[_time] && e[_completed] == oldItem[_completed] && e[_new] == oldItem[_new]);
         items[index] = newItem;
       }
+      taskDuration += newItem[_time];
     });
   }
 
@@ -179,6 +170,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                     context: context,
                                     builder: (context) {
                                       return ItemModal(
+                                        totalDuration: widget.totalDuration,
+                                        taskDuration: taskDuration,
                                         color: colors[(index-items.length-numNew) % colors.length],
                                         onPressed: updateItem,
                                         isCompleted: isCompleted
@@ -190,6 +183,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                     context: context,
                                     builder: (context) {
                                       return ItemModal(
+                                        totalDuration: widget.totalDuration,
+                                        taskDuration: taskDuration,
                                         color: colors[(index-numNew) % colors.length],
                                         onPressed: updateItem,
                                         oldTitle: title,
@@ -223,6 +218,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
 class ItemModal extends StatelessWidget {
   ItemModal({
     Key key,
+    @required this.totalDuration,
+    @required this.taskDuration,
     @required this.color,
     @required this.onPressed(bool isCreation, String newTitle, Duration newTime, String oldTitle, Duration oldTime, bool isCompleted),
     this.oldTitle = "",
@@ -230,6 +227,8 @@ class ItemModal extends StatelessWidget {
     this.isCompleted = false
   }) : super(key: key);
 
+  final Duration totalDuration;
+  final Duration taskDuration;
   final Color color;
   final Function onPressed;
   final String oldTitle;
@@ -302,16 +301,30 @@ class ItemModal extends StatelessWidget {
                 textInputAction: TextInputAction.done,
                 style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
                 validator: (value) {
+                  String hrs = hoursController.text;
+                  String min = minutesController.text;
+                  String sec = secondsController.text;
+                  bool hrsIsEmpty = hrs.isEmpty;
+                  bool minIsEmpty = min.isEmpty;
+                  bool secIsEmpty = sec.isEmpty;
+                  bool hrsIsInt = int.tryParse(hrs) == null;
+                  bool minIsInt = int.tryParse(min) == null;
+                  bool secIsInt = int.tryParse(sec) == null;
+                  int hrsInt = !hrsIsEmpty ? int.parse(hrs) : 0;
+                  int minInt = !minIsEmpty ? int.parse(min) : 0;
+                  int secInt = !secIsEmpty ? int.parse(sec) : 0;
+                  Duration proposedDuration = Duration(hours: hrsInt, minutes: minInt, seconds: secInt);
+
                   if (value.isEmpty) {
                     return "Item title can't be empty";
-                  } else if (hoursController.text.isEmpty && minutesController.text.isEmpty && secondsController.text.isEmpty) {
+                  } else if (hrsIsEmpty && minIsEmpty && secIsEmpty) {
                     return "Duration can't be empty";
-                  } else if ((hoursController.text.isNotEmpty && int.tryParse(hoursController.text) == null)
-                            || (minutesController.text.isNotEmpty && int.tryParse(minutesController.text) == null)
-                            || (secondsController.text.isNotEmpty && int.tryParse(secondsController.text) == null)) {
+                  } else if ((!hrsIsEmpty && hrsIsInt) || (!minIsEmpty && minIsInt) || (!secIsEmpty && secIsInt)) {
                     return "Duration must be a number";
-                  } else if (hoursController.text == "0" && minutesController.text == "0" && secondsController.text == "0") {
+                  } else if (hrs == "0" && min == "0" && sec == "0") {
                     return "Duration can't be zero";
+                  } else if ((taskDuration + proposedDuration) > totalDuration) {
+                    return "Total timer duration exceeded";
                   }
                   return null;
                 },
@@ -406,9 +419,9 @@ class ItemModal extends StatelessWidget {
                       true,
                       titleController.text,
                       Duration(
-                        hours: hoursController.text == "" ? 0 : int.parse(hoursController.text),
-                        minutes: minutesController.text == "" ? 0 : int.parse(minutesController.text),
-                        seconds: secondsController.text == "" ? 0 : int.parse(secondsController.text)
+                        hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
+                        minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
+                        seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
                       ),
                       oldTitle,
                       oldTime,
@@ -419,9 +432,9 @@ class ItemModal extends StatelessWidget {
                       false,
                       titleController.text,
                       Duration(
-                        hours: hoursController.text == "" ? 0 : int.parse(hoursController.text),
-                        minutes: minutesController.text == "" ? 0 : int.parse(minutesController.text),
-                        seconds: minutesController.text == "" ? 0 : int.parse(secondsController.text)
+                        hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
+                        minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
+                        seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
                       ),
                       oldTitle,
                       oldTime,

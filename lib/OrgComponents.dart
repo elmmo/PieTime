@@ -83,7 +83,7 @@ class OrgComponents {
             ),
           ),
         ),
-        BottomDrawer()
+        BottomDrawer(0,0,10)
       ],
     );
   }
