@@ -1,5 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'PieTimer.dart';
 import 'BottomDrawer.dart';
 
@@ -56,31 +57,53 @@ class OrgComponents {
     );
   }
 
-  // everything below the app bar on the main page 
+  // everything below the app bar on the main page
   static Widget generateAppBody(ThemeData theme) {
+    Map<String, double> dataMap = new Map();
+    dataMap.putIfAbsent("Mobile Apps Mockings", () => 15);
+    dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
+    dataMap.putIfAbsent("Core 250 RR", () => 10);
+
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.symmetric(vertical: 80.0),
+          margin: EdgeInsets.only(bottom: 120.0, top:40),
           // Dotted border for each hour tick mark
           child: DottedBorder(
             color: Colors.white,
-            radius: Radius.circular(12),
-            dashPattern: [2, 67.7],
+            radius: Radius.circular(10),
+            dashPattern: [2, 110],
             strokeWidth: 20,
             borderType: BorderType.Circle,
 
             // Dotted border for each hour minute mark
             child: DottedBorder(
-              color: Colors.white,
-              radius: Radius.circular(12),
-              dashPattern: [2, 11.755],
-              strokeWidth: 8,
-              borderType: BorderType.Circle,
-              padding: EdgeInsets.all(6),
-              // Red timer circle
-              child: PieTimer(0,0,10)
-            ),
+                color: Colors.white,
+                radius: Radius.circular(12),
+                dashPattern: [2.1, 20],
+                strokeWidth: 8,
+                borderType: BorderType.Circle,
+                padding: EdgeInsets.all(6),
+                // Red timer circle
+                child: Stack(
+                  children: <Widget>[
+                    // Positioned(
+                    PieChart(
+                      dataMap: dataMap,
+                      showLegends: false,
+                      // showChartValueLabel: true,
+                      animationDuration: Duration(milliseconds: 0),
+                      initialAngle: 4.7, //If timer moves clockwise
+                      showChartValuesInPercentage: false,
+                      chartValueStyle: defaultChartValueStyle.copyWith(
+                        color: Colors.blueGrey[900].withOpacity(0.9),
+                        fontSize: 20,
+                      ),
+                    ),
+                    PieTimer(0, 0, 10),
+                    // ),
+                  ],
+                )),
           ),
         ),
         BottomDrawer(0,0,10)
