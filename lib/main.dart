@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'OrgComponents.dart';
+import 'timer_face/SetTime.dart';
 
 void main() => runApp(new PieTimerApp());
 
@@ -20,12 +21,19 @@ class PieTimerApp extends StatelessWidget {
         ),
       ),
       home: Scaffold(
-        drawer: OrgComponents.generateSideDrawer(),
-        appBar: OrgComponents.generateAppBar(),
-        // Contains everything below the Appbar
-        backgroundColor: Colors.grey[800],
-        body: OrgComponents.generateAppBody(Theme.of(context)), 
-      ),
+        appBar: OrgComponents.generateAppBar(), 
+        drawer: OrgComponents.generateSideDrawer(), 
+        body: SetTime()
+      )
+      
+      
+      // Scaffold(
+      //   drawer: OrgComponents.generateSideDrawer(),
+      //   appBar: OrgComponents.generateAppBar(),
+      //   // Contains everything below the Appbar
+      //   backgroundColor: Colors.grey[800],
+      //   body: OrgComponents.generateAppBody(Theme.of(context)), 
+      // ),
     );
   }
 }
