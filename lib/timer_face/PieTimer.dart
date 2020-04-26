@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
-<<<<<<< HEAD:lib/timer_face/PieTimer.dart
 import 'Util.dart';
-=======
 import 'package:vibration/vibration.dart';
->>>>>>> c1ee0d57f47b74168ecc248bbc89f4077d079c3a:lib/PieTimer.dart
 
 enum PieTimerStatus { none, playing, paused }
 
