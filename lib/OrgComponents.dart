@@ -51,11 +51,6 @@ class OrgComponents {
           // Plus icon on the Appbar to the right
           child: IconButton(
             icon: Icon(Icons.add),
-            tooltip: 'Start new timer',
-            onPressed: () {
-              // later: go to page to set timer 
-              print("Hello World");
-            }
           )
         ),
       ],
@@ -88,7 +83,7 @@ class OrgComponents {
                 fontSize: 20,
               ),
             ),
-            PieTimer(0, 0, 10),
+            PieTimer(),
           ],
         )),
         BottomDrawer(0,0,10)
