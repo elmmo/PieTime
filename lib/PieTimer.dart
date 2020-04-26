@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
+import 'package:vibration/vibration.dart';
 
 enum PieTimerStatus { none, playing, paused }
 
@@ -166,8 +167,9 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   void _vibrateAlert(int vibrationRepetition) {
     // run the vibration
     for (var i = 0; i < vibrationRepetition; i++) {
-      HapticFeedback.mediumImpact();
-      sleep(const Duration(milliseconds: 300));
+      // HapticFeedback.mediumImpact();
+      Vibration.vibrate(duration: 150, amplitude: 250);
+      sleep(const Duration(milliseconds: 200));
     }
   }
 }

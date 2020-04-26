@@ -100,7 +100,7 @@ class OrgComponents {
                         fontSize: 20,
                       ),
                     ),
-                    PieTimer(0, 0, 10),
+                    PieTimer(0, 0, 5),
                     // ),
                   ],
                 )),
