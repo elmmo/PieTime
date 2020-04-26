@@ -1,17 +1,17 @@
+import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
+<<<<<<< HEAD:lib/timer_face/PieTimer.dart
+import 'Util.dart';
+=======
 import 'package:vibration/vibration.dart';
+>>>>>>> c1ee0d57f47b74168ecc248bbc89f4077d079c3a:lib/PieTimer.dart
 
 enum PieTimerStatus { none, playing, paused }
 
 class PieTimer extends StatefulWidget {
-  final Duration duration;
-
-  PieTimer(int hrs, int min, int sec)
-      : duration = new Duration(hours: hrs, minutes: min, seconds: sec);
-
   @override
   State createState() => new _PieTimerState();
 }
@@ -19,6 +19,7 @@ class PieTimer extends StatefulWidget {
 class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   AnimationController _controller;
   PieTimerStatus _status; // timer status separate from the animation
+  Duration _duration; 
 
   // called once when the object is inserted into the tree
   @override
@@ -28,13 +29,13 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     _controller = AnimationController(
         vsync:
             this, // the ticker controller uses to schedule animations - SingleTickerProviderStateMixin
-        duration: widget.duration // time for the animation to happen
-        )
+        duration: new Duration(hours: 0, minutes: 0, seconds: 0) // time for the animation to happen
+      )
       ..addStatusListener((animationStatus) {
         // listens for changes to the animation to update the timer status
         if (animationStatus == AnimationStatus.dismissed) {
           _vibrateAlert(5);
-          _showDialog();
+          getDialog(context, "Timer Complete", "The timer is finished."); 
           _switchStatus(PieTimerStatus.none);
         }
       });
@@ -86,10 +87,50 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
            builder: (context, child) => 
               positionWidgets([
                 generatePie(),
-                generateTimerText(),
+                generateTimerText(timerString),
                 generateToggleButton()])
-    ));  
+        ),
+        floatingActionButton: Builder(
+          builder: (BuildContext context) => new FloatingActionButton(
+                onPressed: () async {
+                  Duration duration = await showSetTimeDialog();
+                  Scaffold.of(context).showSnackBar(new SnackBar(
+                      content: new Text("Chose duration: $duration")));
+                  setState(() {
+                    _duration = duration; 
+                    _controller.duration = _duration; 
+                  });
+                },
+                tooltip: 'Popup Duration Picker',
+                child: new Icon(Icons.add),
+            ))
+      );  
     }
+
+ // set time for instantiating PieTimer 
+  Future showSetTimeDialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext builderContext) {
+        return AlertDialog(
+            title: new Text("Set New Timer"),
+            content: DurationPicker(
+              duration: new Duration(seconds:10),
+              onChange: (val) {
+                this.setState(() => _duration = val);
+              },
+              snapToMins: 5.0,
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                  child: new Text("Confirm"),
+                  color: Colors.cyan[800],
+                  onPressed: () {
+                    Navigator.pop(builderContext, _duration);
+                  })
+            ]);
+      });
+  }
 
   // creates the floating action button that triggers the timer
   Widget generateToggleButton() {
@@ -111,7 +152,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   }
 
   // creates and positions the text in the middle of the pie
-  Widget generateTimerText() {
+  Widget generateTimerText(text) {
     return Align(
         alignment: FractionalOffset.center,
         child: Column(
@@ -119,7 +160,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                timerString,
+                text,
                 style: TextStyle(fontSize: 70.0, color: Colors.white),
               )]
             ));
@@ -141,26 +182,6 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                             child: Stack(children: widgArr))))
               ]))
     ]);
-  }
-
-  // show alert for the end of the timer
-  void _showDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-              title: new Text("Timer Complete"),
-              content: new Text("The timer is finished."),
-              backgroundColor: Colors.grey[50],
-              actions: <Widget>[
-                new FlatButton(
-                    child: new Text("Ok"),
-                    color: Colors.cyan[800],
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    })
-              ]);
-        });
   }
 
   // run the vibration for the alert

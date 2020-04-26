@@ -29,6 +29,4 @@ class CustomTimerPainter extends CustomPainter {
     return animation.value != old.animation.value;
   }
 
-
-
 }

@@ -1,8 +1,8 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'PieTimer.dart';
+import 'timer_face/PieTimer.dart';
 import 'BottomDrawer.dart';
+import 'timer_face/Util.dart';
 
 class OrgComponents {
   // Hamburger menu on the Appbar to the left
@@ -36,22 +36,22 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar() {
+  static Widget generateAppBar([appBarBottom]) {
     return AppBar(
       title: Text(
         'PieTime',
         // apply the text themes from ui branch
-        // style: arr.apply(),
+        // style: arr.apply()
       ),
+      bottom: appBarBottom,
       backgroundColor: Colors.grey[900],
       actions: <Widget>[
         Padding(
           padding: EdgeInsets.only(right: 20.0),
           // Plus icon on the Appbar to the right
-          child: Icon(
-            Icons.add,
-            size: 26.0,
-          ),
+          child: IconButton(
+            icon: Icon(Icons.add),
+          )
         ),
       ],
     );
@@ -60,7 +60,7 @@ class OrgComponents {
   // everything below the app bar on the main page
   static Widget generateAppBody(ThemeData theme) {
     Map<String, double> dataMap = new Map();
-    dataMap.putIfAbsent("Mobile Apps Mockings", () => 15);
+    dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
     dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
     dataMap.putIfAbsent("Core 250 RR", () => 10);
 
@@ -69,6 +69,25 @@ class OrgComponents {
         Container(
           margin: EdgeInsets.only(bottom: 120.0, top:40),
           // Dotted border for each hour tick mark
+<<<<<<< HEAD
+          child: drawDottedBorder([
+            // timer circle 
+            PieChart(
+              dataMap: dataMap,
+              showLegends: false,
+              // showChartValueLabel: true,
+              animationDuration: Duration(milliseconds: 0),
+              initialAngle: 4.7, //If timer moves clockwise
+              showChartValuesInPercentage: false,
+              chartValueStyle: defaultChartValueStyle.copyWith(
+                color: Colors.blueGrey[900].withOpacity(0.9),
+                fontSize: 20,
+              ),
+            ),
+            PieTimer(),
+          ],
+        )),
+=======
           child: DottedBorder(
             color: Colors.white,
             radius: Radius.circular(10),
@@ -106,6 +125,7 @@ class OrgComponents {
                 )),
           ),
         ),
+>>>>>>> c1ee0d57f47b74168ecc248bbc89f4077d079c3a
         BottomDrawer(0,0,10)
       ],
     );
