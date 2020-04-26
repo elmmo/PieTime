@@ -24,26 +24,6 @@ void getDialog(context, titleText, bodyText) {
       });
 }
 
-// draw circle to mimic the look of the timer without timer functionality 
-void drawCircle(context, titleText, bodyText) {
-  showDialog(
-      context: context,
-      builder: (BuildContext builderContext) {
-        return AlertDialog(
-            title: new Text(titleText),
-            content: new Text(bodyText),
-            backgroundColor: Colors.grey[50],
-            actions: <Widget>[
-              new FlatButton(
-                  child: new Text("Ok"),
-                  color: Colors.cyan[800],
-                  onPressed: () {
-                    Navigator.of(builderContext).pop();
-                  })
-            ]);
-      });
-}
-
 Widget drawDottedBorder(List<Widget> widgetsInBorder) {
   return DottedBorder(
     color: Colors.white,

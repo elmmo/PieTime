@@ -36,13 +36,14 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar() {
+  static Widget generateAppBar([appBarBottom]) {
     return AppBar(
       title: Text(
         'PieTime',
         // apply the text themes from ui branch
-        // style: arr.apply(),
+        // style: arr.apply()
       ),
+      bottom: appBarBottom,
       backgroundColor: Colors.grey[900],
       actions: <Widget>[
         Padding(
@@ -52,6 +53,7 @@ class OrgComponents {
             icon: Icon(Icons.add),
             tooltip: 'Start new timer',
             onPressed: () {
+              // later: go to page to set timer 
               print("Hello World");
             }
           )

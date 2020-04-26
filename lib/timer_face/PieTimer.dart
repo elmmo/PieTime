@@ -86,7 +86,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
            builder: (context, child) => 
               positionWidgets([
                 generatePie(),
-                generateTimerText(),
+                generateTimerText(timerString),
                 generateToggleButton()])
     ));  
     }
@@ -111,7 +111,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   }
 
   // creates and positions the text in the middle of the pie
-  Widget generateTimerText() {
+  Widget generateTimerText(text) {
     return Align(
         alignment: FractionalOffset.center,
         child: Column(
@@ -119,7 +119,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(
-                timerString,
+                text,
                 style: TextStyle(fontSize: 70.0, color: Colors.white),
               )]
             ));

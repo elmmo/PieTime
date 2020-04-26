@@ -20,13 +20,27 @@ class PieTimerApp extends StatelessWidget {
           Theme.of(context).textTheme
         ),
       ),
-      home: Scaffold(
-        appBar: OrgComponents.generateAppBar(), 
-        drawer: OrgComponents.generateSideDrawer(), 
-        body: SetTime()
+      home: DefaultTabController(
+        length: 3,  
+        child: Scaffold(
+          appBar: OrgComponents.generateAppBar(
+            TabBar(tabs: <Widget>[
+              Tab(text: "Hours"),
+              Tab(text: "Minutes"),
+              Tab(text: "Seconds")
+            ],)
+          ), 
+          drawer: OrgComponents.generateSideDrawer(), 
+          body: TabBarView(children: <Widget>[
+            SetTime(),
+            Text("World"),
+            Text(":D")
+          ],)
+        )
       )
       
       
+      // home page code 
       // Scaffold(
       //   drawer: OrgComponents.generateSideDrawer(),
       //   appBar: OrgComponents.generateAppBar(),
