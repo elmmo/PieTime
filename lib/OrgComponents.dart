@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'SettingsModal.dart';
 import 'timer_face/PieTimer.dart';
 import 'BottomDrawer.dart';
 import 'timer_face/Util.dart';
@@ -36,7 +37,7 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar([appBarBottom]) {
+  static Widget generateAppBar(BuildContext context, [appBarBottom]) {
     return AppBar(
       title: Text(
         'PieTime',
@@ -46,6 +47,18 @@ class OrgComponents {
       bottom: appBarBottom,
       backgroundColor: Colors.grey[900],
       actions: <Widget>[
+        // Gear icon on the Appbar to the right
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            return showDialog(
+              context: context,
+              builder: (context) {
+                return SettingsModal();
+              }
+            );
+          },
+        ),
         Padding(
           padding: EdgeInsets.only(right: 20.0),
           // Plus icon on the Appbar to the right
