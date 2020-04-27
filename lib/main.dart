@@ -19,13 +19,21 @@ class PieTimerApp extends StatelessWidget {
           Theme.of(context).textTheme
         ),
       ),
-      home: Scaffold(
-        drawer: OrgComponents.generateSideDrawer(),
-        appBar: OrgComponents.generateAppBar(),
-        // Contains everything below the Appbar
-        backgroundColor: Colors.grey[800],
-        body: OrgComponents.generateAppBody(Theme.of(context)), 
-      ),
+      home: Home(),
+    );
+  }
+}
+
+// This is pulled out in order to allow the settings modal to be shown from the AppBar
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: OrgComponents.generateSideDrawer(),
+      appBar: OrgComponents.generateAppBar(context),
+      // Contains everything below the Appbar
+      backgroundColor: Colors.grey[800],
+      body: OrgComponents.generateAppBody(Theme.of(context)), 
     );
   }
 }
