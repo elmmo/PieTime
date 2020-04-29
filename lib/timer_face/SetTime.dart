@@ -23,6 +23,7 @@ class _SetTimeState extends State<SetTime> {
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // the set time picker 
             DurationPicker(
                 duration: _duration,
                 onChange: (val) {
@@ -30,6 +31,7 @@ class _SetTimeState extends State<SetTime> {
                 },
                 snapToMins: 1.0,
               ),
+            // the accept and cancel buttons 
             ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -37,7 +39,7 @@ class _SetTimeState extends State<SetTime> {
                   child: Text("Cancel"),
                   onPressed: () {
                     // navigate back to main screen 
-                    print("Canceled");
+                    Navigator.pop(context); 
                   }
                 ),
                 RaisedButton(
