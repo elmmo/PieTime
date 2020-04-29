@@ -17,7 +17,7 @@ class _SetTimeState extends State<SetTime> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: OrgComponents.generateAppBar(),
+      appBar: OrgComponents.generateAppBar(context),
       drawer: OrgComponents.generateSideDrawer(),
       body: new Center(
         child: new Column(

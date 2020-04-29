@@ -36,7 +36,7 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar() {
+  static Widget generateAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         'PieTime',
@@ -50,6 +50,9 @@ class OrgComponents {
           // Plus icon on the Appbar to the right
           child: IconButton(
             icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, '/setTime');
+            }
           )
         ),
       ],

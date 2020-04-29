@@ -43,16 +43,10 @@ class _PieTimerAppState extends State<PieTimerApp> {
       home: Builder(
         builder: (context) => Scaffold(
           drawer: OrgComponents.generateSideDrawer(),
-          appBar: OrgComponents.generateAppBar(),
+          appBar: OrgComponents.generateAppBar(context),
           // Contains everything below the Appbar
           backgroundColor: Colors.grey[800],
           body: OrgComponents.generateAppBody(Theme.of(context), _timerDuration, _timer), 
-          floatingActionButton: FloatingActionButton(
-            heroTag: null, 
-            onPressed: () {
-              Navigator.pushNamed(context, '/setTime');
-            }
-          ),
         ),
       )
     );

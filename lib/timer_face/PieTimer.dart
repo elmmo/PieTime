@@ -41,7 +41,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // returns the time remaining on the clock
   String get timerString {
-    Duration dur = _controller.duration * _controller.value;
+    Duration dur = (_controller.value == 0) ? _controller.duration : _controller.duration*_controller.value; 
     return '${(dur.inMinutes).toString().padLeft(2, '0')}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
