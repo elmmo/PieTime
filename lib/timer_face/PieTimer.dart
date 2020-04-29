@@ -6,6 +6,8 @@ import 'Util.dart';
 
 enum PieTimerStatus { none, playing, paused }
 
+enum PieTimerComponent { pie, timerText, toggleButton }
+
 class PieTimer extends StatefulWidget {
   final Duration duration; 
 
@@ -18,6 +20,7 @@ class PieTimer extends StatefulWidget {
 class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   AnimationController _controller;
   PieTimerStatus _status; // timer status separate from the animation
+  Map<PieTimerComponent, Widget> _buildStack; 
 
   // called once when the object is inserted into the tree
   @override
@@ -37,6 +40,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
           _switchStatus(PieTimerStatus.none);
         }
       });
+      _buildStack = new Map(); 
   }
 
   // returns the time remaining on the clock
@@ -78,41 +82,48 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    generatePie(); 
+    generateToggleButton();
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
-          animation: getUpdatedController(),
+          animation: getUpdate(),
           builder: (context, child) => 
-            positionWidgets([
-              generatePie(),
-              generateTimerText(timerString),
-              generateToggleButton()])
+            // buildStack pushes all static values to be positioned and separately adds 
+            // elements that need to be rebuilt every time the animation controller changes 
+            positionWidgets(_buildStack.values.toList() + [generateTimerText(timerString)])
         )
     );
     }
 
   // creates the floating action button that triggers the timer
-  Widget generateToggleButton() {
-    return FloatingActionButton.extended(
+  void generateToggleButton() {
+    print(_controller.duration);
+    if (_controller.duration > Duration(milliseconds: 0)) {
+      FloatingActionButton button = FloatingActionButton.extended(
         onPressed: _switchStatus,
         icon: Icon(
             _status == PieTimerStatus.playing ? Icons.pause : Icons.play_arrow),
         label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play"));
+      _buildStack[PieTimerComponent.toggleButton] = button;
+    }
   }
 
   // creates the main circle graphic
   Widget generatePie() {
-    return Positioned.fill(
+    Widget pie = Positioned.fill(
       child: CustomPaint(
           painter:
               CustomTimerPainter(
                 animation: _controller, color: Colors.red[300])),
     );
+    _buildStack[PieTimerComponent.pie] = pie; 
+    return pie; 
   }
 
   // creates and positions the text in the middle of the pie
   Widget generateTimerText(text) {
-    return Align(
+    Widget timerText = Align(
         alignment: FractionalOffset.center,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -123,6 +134,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                 style: TextStyle(fontSize: 70.0, color: Colors.white),
               )]
             ));
+    return timerText;
   }
 
   // positions the widgets passed to it in the first param
@@ -152,9 +164,11 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     }
   }
 
-  AnimationController getUpdatedController() {
+  // update after setTime 
+  AnimationController getUpdate() {
     setState(() {
       _controller.duration = this.widget.duration; 
+      generateToggleButton(); 
     });
     return _controller; 
   }

@@ -14,8 +14,11 @@ class SetTime extends StatefulWidget {
 
 class _SetTimeState extends State<SetTime> {
   Duration _duration = Duration(hours: 0, minutes: 0);
+  DateTime _endTime = new DateTime.now(); 
+
   @override
   Widget build(BuildContext context) {
+
     return new Scaffold(
       appBar: OrgComponents.generateAppBar(context),
       drawer: OrgComponents.generateSideDrawer(),
@@ -23,13 +26,16 @@ class _SetTimeState extends State<SetTime> {
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            // the set time picker 
             DurationPicker(
                 duration: _duration,
                 onChange: (val) {
                   this.setState(() => _duration = val);
+                  setEndTime(); 
                 },
                 snapToMins: 1.0,
               ),
+            // the accept and cancel buttons 
             ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -37,7 +43,7 @@ class _SetTimeState extends State<SetTime> {
                   child: Text("Cancel"),
                   onPressed: () {
                     // navigate back to main screen 
-                    print("Canceled");
+                    Navigator.pop(context); 
                   }
                 ),
                 RaisedButton(
@@ -46,12 +52,42 @@ class _SetTimeState extends State<SetTime> {
                     this.widget.callback(_duration, this.widget.originalContext); 
                   } : null, 
                 ),
+              ],
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 70, 0, 10),
+                  child: Text(getEndTimeString(), style: TextStyle(color: Colors.white, fontSize: 20))
+                )
               ]
-            )
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void setEndTime() {
+    if (_duration != new Duration(minutes: 0)) {
+      _endTime = DateTime.now().add(_duration);
+    }
+  }
+
+  String getEndTimeString() {
+    String timeMarker; 
+    String result = "End Time: "; 
+    if (_endTime.hour > 12) {
+      timeMarker = "PM";
+      result += (_endTime.hour-12).toString(); 
+    } else { 
+      timeMarker = "AM";
+      result += _endTime.hour.toString(); 
+    }
+    result += ":" + _endTime.minute.toString() + timeMarker; 
+    return result; 
   }
 
   // checks if there is any time on the clock 
