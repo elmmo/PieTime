@@ -1,12 +1,12 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'PieTimer.dart';
 import 'BottomDrawer.dart';
 
 class OrgComponents {
   // Hamburger menu on the Appbar to the left
-  static Widget generateSideDrawer() {
+  static Widget generateSideDrawer(ThemeData theme) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -15,10 +15,9 @@ class OrgComponents {
           DrawerHeader(
             child: Text(
               'Drawer Header',
-              style: TextStyle(color: Colors.white),
             ),
             decoration: BoxDecoration(
-              color: Colors.grey[800],
+              color: theme.primaryColor,
             ),
           ),
           // items within menu
@@ -36,20 +35,19 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar() {
+  static Widget generateAppBar(ThemeData theme) {
     return AppBar(
       title: Text(
         'PieTime',
-        // apply the text themes from ui branch
-        // style: arr.apply(),
       ),
-      backgroundColor: Colors.grey[900],
+      // backgroundColor: theme.primaryColorDark,
+      // backgroundColor: theme.accentColor,
       actions: <Widget>[
         Padding(
           padding: EdgeInsets.only(right: 20.0),
           // Plus icon on the Appbar to the right
           child: Icon(
-            Icons.add,
+            Icons.refresh,
             size: 26.0,
           ),
         ),
@@ -67,7 +65,7 @@ class OrgComponents {
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(bottom: 120.0, top:40),
+          margin: EdgeInsets.only(bottom: 120.0, top: 40),
           // Dotted border for each hour tick mark
           child: DottedBorder(
             color: Colors.white,
@@ -99,6 +97,7 @@ class OrgComponents {
                         color: Colors.blueGrey[900].withOpacity(0.9),
                         fontSize: 20,
                       ),
+                      // colorList: //Takes list of colors
                     ),
                     PieTimer(0, 0, 5),
                     // ),
@@ -106,7 +105,7 @@ class OrgComponents {
                 )),
           ),
         ),
-        BottomDrawer(0,0,10)
+        BottomDrawer(0,0,5)
       ],
     );
   }

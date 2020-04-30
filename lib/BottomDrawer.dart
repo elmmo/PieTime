@@ -15,9 +15,12 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   // we probably need more colors
   List<Color> colors = [
-    Color.fromRGBO(173, 79, 79, 1),
-    Color.fromRGBO(47, 128, 139, 1),
-    Color.fromRGBO(98, 86, 132, 1),
+    Color.fromRGBO(209, 74, 74, 1),
+    Color.fromRGBO(100, 76, 151, 1),
+    Color.fromRGBO(38, 107, 181, 1),
+    Color.fromRGBO(31, 169, 169, 1),
+    Color.fromRGBO(198, 111, 81, 1),
+    Color.fromRGBO(162, 82, 111, 1),
   ];
   // green color for the "new item" card
   Color newColor = Color.fromRGBO(57, 161, 135, 1);
@@ -105,14 +108,13 @@ class _BottomDrawerState extends State<BottomDrawer> {
                 height: 24,
                 width: 64,
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(51, 51, 51, 1),
+                  color: Theme.of(context).splashColor,
                   borderRadius: BorderRadius.vertical(top: Radius.circular(20))
                 ),
                 child: Container(
                   child: Icon(
                     Icons.drag_handle,
                     size: 32,
-                    color: Color.fromRGBO(121, 121, 121, 1)
                   ),
                 ),
               ),
@@ -121,7 +123,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
               Container(
                 height: (MediaQuery.of(context).size.height * 0.5) - 64,
                 width: MediaQuery.of(context).size.width,
-                color: Color.fromRGBO(51, 51, 51, 1),
+                color: Theme.of(context).splashColor,
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.1,
@@ -135,7 +137,6 @@ class _BottomDrawerState extends State<BottomDrawer> {
                     bool isNew = tasks[index][_new];
 
                     return Card(
-                      color: Color.fromRGBO(80, 80, 80, 1),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
@@ -169,7 +170,6 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                 ),
                               title: Text(
                                 title,
-                                style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 12)
                               ),
 
                               // right icon, "new item" card doesn't have one
@@ -298,10 +298,8 @@ class ItemModal extends StatelessWidget {
       secondsController.text = parseSeconds(oldTime);
     }
     return AlertDialog(
-      backgroundColor: Color.fromRGBO(80, 80, 80, 1),
       title: Text(
         isCreation ? "New Item" : oldTitle,
-        style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 24)
       ),
       content: Form(
         key: formKey,
@@ -311,14 +309,12 @@ class ItemModal extends StatelessWidget {
             // item title text box
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
               ),
               child: TextFormField(
                 controller: titleController,
                 maxLength: 50, // max number of characters for item title
                 buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
                 textInputAction: TextInputAction.done,
-                style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
                 validator: (value) {
                   String hrs = hoursController.text;
                   String min = minutesController.text;
@@ -349,7 +345,6 @@ class ItemModal extends StatelessWidget {
                 },
                 decoration: InputDecoration.collapsed(
                   hintText: "Item title",
-                  hintStyle: TextStyle(color: Color.fromRGBO(182, 182, 182, 0.7), fontSize: 16)
                 ),
               ),
             ),
@@ -361,14 +356,13 @@ class ItemModal extends StatelessWidget {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
                     ),
                     child: TextFormField(
                       controller: hoursController,
                       maxLength: 2, // max number of characters for time - max 99hr
                       buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
                       textInputAction: TextInputAction.done,
-                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+                      // style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
                       decoration: InputDecoration.collapsed(
                         hintText: "0"
                       ),
@@ -377,19 +371,16 @@ class ItemModal extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Text("hr", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
                 ),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
                     ),
                     child: TextFormField(
                       controller: minutesController,
                       maxLength: 3, // max number of characters for time - max 1hr 33min
                       buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
                       textInputAction: TextInputAction.done,
-                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
                       decoration: InputDecoration.collapsed(
                         hintText: "0"
                       ),
@@ -398,26 +389,22 @@ class ItemModal extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 16),
-                  child: Text("min", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
                 ),
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
                     ),
                     child: TextFormField(
                       controller: secondsController,
                       maxLength: 3, // max number of characters for time - max 1min 33s
                       buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
                       textInputAction: TextInputAction.done,
-                      style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
                       decoration: InputDecoration.collapsed(
                         hintText: "0"
                       ),
                     ),
                   ),
                 ),
-                Text("s", style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16)),
               ],
             ),
             Container(height: 8, width: 0),
@@ -428,10 +415,10 @@ class ItemModal extends StatelessWidget {
                 // Delete button if not creating a new task
                 !isCreation ? RaisedButton(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Color.fromRGBO(209, 26, 42, 1))),
-                  color: Color.fromRGBO(80, 80, 80, 1),
+                  color: Theme.of(context).errorColor,
                   child: Text(
                     "Delete",
-                    style: TextStyle(color: Color.fromRGBO(209, 26, 42, 1), fontSize: 16),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                   onPressed: () {
                     onDelete(
@@ -453,7 +440,7 @@ class ItemModal extends StatelessWidget {
                   color: color, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
                   child: Text(
                     isCreation ? "Create" : "Update",
-                    style: TextStyle(color: Colors.black, fontSize: 16)
+                    style: TextStyle(color: Colors.white, fontSize: 16)
                   ),
                   onPressed: () {
                     if (formKey.currentState.validate()) {

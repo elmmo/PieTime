@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pie_time/theme.dart';
 // import 'package:flutter/services.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
@@ -83,30 +84,27 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
         backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
             animation: _controller,
-           builder: (context, child) => 
-              positionWidgets([
-                generatePie(),
-                generateTimerText(),
-                generateToggleButton()])
-    ));  
-    }
+            builder: (context, child) => positionWidgets(
+                [generatePie(), generateTimerText(), generateToggleButton()])));
+  }
 
   // creates the floating action button that triggers the timer
   Widget generateToggleButton() {
     return FloatingActionButton.extended(
+        // backgroundColor: Theme.of(context).buttonColor,
+        backgroundColor: CustomTheme.of(context).focusColor,
         onPressed: _switchStatus,
         icon: Icon(
             _status == PieTimerStatus.playing ? Icons.pause : Icons.play_arrow),
-        label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play"));
+        label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play",));
   }
 
   // creates the main circle graphic
   Widget generatePie() {
     return Positioned.fill(
       child: CustomPaint(
-          painter:
-              CustomTimerPainter(
-                animation: _controller, color: Colors.red[300])),
+          painter: CustomTimerPainter(
+              animation: _controller, color: Colors.red[300])),
     );
   }
 
@@ -121,8 +119,8 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
               Text(
                 timerString,
                 style: TextStyle(fontSize: 70.0, color: Colors.white),
-              )]
-            ));
+              )
+            ]));
   }
 
   // positions the widgets passed to it in the first param
@@ -137,8 +135,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                     child: Align(
                         alignment: FractionalOffset.center,
                         child: AspectRatio(
-                            aspectRatio: 1.0, 
-                            child: Stack(children: widgArr))))
+                            aspectRatio: 1.0, child: Stack(children: widgArr))))
               ]))
     ]);
   }
@@ -151,11 +148,11 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
           return AlertDialog(
               title: new Text("Timer Complete"),
               content: new Text("The timer is finished."),
-              backgroundColor: Colors.grey[50],
+              backgroundColor: Theme.of(context).dialogBackgroundColor,
               actions: <Widget>[
                 new FlatButton(
                     child: new Text("Ok"),
-                    color: Colors.cyan[800],
+                    color: Theme.of(context).buttonColor,
                     onPressed: () {
                       Navigator.of(context).pop();
                     })
@@ -167,7 +164,6 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   void _vibrateAlert(int vibrationRepetition) {
     // run the vibration
     for (var i = 0; i < vibrationRepetition; i++) {
-      // HapticFeedback.mediumImpact();
       Vibration.vibrate(duration: 150, amplitude: 250);
       sleep(const Duration(milliseconds: 200));
     }
