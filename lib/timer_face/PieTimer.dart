@@ -110,7 +110,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   }
 
   // creates the main circle graphic
-  Widget generatePie() {
+  void generatePie() {
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter:
@@ -118,7 +118,6 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                 animation: _controller, color: Colors.red[300])),
     );
     _buildStack[PieTimerComponent.pie] = pie; 
-    return pie; 
   }
 
   // creates and positions the text in the middle of the pie

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'timer_face/PieTimer.dart';
-import 'BottomDrawer.dart';
+import 'tasks/BottomDrawer.dart';
 import 'timer_face/Util.dart';
 
 class OrgComponents {
@@ -88,7 +88,7 @@ class OrgComponents {
             timer, 
           ],
         )),
-        BottomDrawer(0,0,10)
+        BottomDrawer(duration)
       ],
     );
   }
