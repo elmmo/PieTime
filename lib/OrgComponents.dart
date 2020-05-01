@@ -65,47 +65,30 @@ class OrgComponents {
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(bottom: 120.0, top: 40),
-          // Dotted border for each hour tick mark
-          child: DottedBorder(
-            color: Colors.white,
-            radius: Radius.circular(10),
-            dashPattern: [2, 110],
-            strokeWidth: 20,
-            borderType: BorderType.Circle,
-
-            // Dotted border for each hour minute mark
-            child: DottedBorder(
-                color: Colors.white,
-                radius: Radius.circular(12),
-                dashPattern: [2.1, 20],
-                strokeWidth: 8,
-                borderType: BorderType.Circle,
-                padding: EdgeInsets.all(6),
-                // Red timer circle
-                child: Stack(
-                  children: <Widget>[
-                    // Positioned(
-                    PieChart(
-                      dataMap: dataMap,
-                      showLegends: false,
-                      // showChartValueLabel: true,
-                      animationDuration: Duration(milliseconds: 0),
-                      initialAngle: 4.7, //If timer moves clockwise
-                      showChartValuesInPercentage: false,
-                      chartValueStyle: defaultChartValueStyle.copyWith(
-                        color: Colors.blueGrey[900].withOpacity(0.9),
-                        fontSize: 20,
-                      ),
-                      // colorList: //Takes list of colors
-                    ),
-                    PieTimer(0, 0, 5),
-                    // ),
-                  ],
-                )),
-          ),
+          margin: EdgeInsets.only(bottom: 120.0, top: 40, right: 10, left: 10),
+          child: Image.asset('assets/hourMinMarks.png'),
         ),
-        BottomDrawer(0,0,5)
+        Container(
+            margin: EdgeInsets.only(bottom: 135.0, right: 40, left: 40),
+            child: Stack(
+              children: <Widget>[
+                PieChart(
+                  dataMap: dataMap,
+                  showLegends: false,
+                  // showChartValueLabel: true,
+                  animationDuration: Duration(milliseconds: 0),
+                  initialAngle: 4.7, //If timer moves clockwise
+                  showChartValuesInPercentage: false,
+                  chartValueStyle: defaultChartValueStyle.copyWith(
+                    color: Colors.blueGrey[900].withOpacity(0.9),
+                    fontSize: 20,
+                    // colorList: //Takes list of colors
+                  ),
+                ),
+                PieTimer(0, 0, 5),
+              ],
+            )),
+        BottomDrawer(0, 0, 5)
       ],
     );
   }
