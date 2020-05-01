@@ -1,7 +1,5 @@
-import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';  
-import 'PieTimer.dart';
   
 // a general dialog system
 // context is the build context (depends on where you're placing the alert)

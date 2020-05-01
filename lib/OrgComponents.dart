@@ -37,14 +37,13 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar(BuildContext context, [appBarBottom]) {
+  static Widget generateAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         'PieTime',
         // apply the text themes from ui branch
         // style: arr.apply()
       ),
-      bottom: appBarBottom,
       backgroundColor: Colors.grey[900],
       actions: <Widget>[
         // Gear icon on the Appbar to the right
@@ -64,6 +63,9 @@ class OrgComponents {
           // Plus icon on the Appbar to the right
           child: IconButton(
             icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.pushNamed(context, '/setTime');
+            }
           )
         ),
       ],
@@ -71,7 +73,7 @@ class OrgComponents {
   }
 
   // everything below the app bar on the main page
-  static Widget generateAppBody(ThemeData theme) {
+  static Widget generateAppBody(ThemeData theme, Duration duration, PieTimer timer) {
     Map<String, double> dataMap = new Map();
     dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
     dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
@@ -96,7 +98,7 @@ class OrgComponents {
                 fontSize: 20,
               ),
             ),
-            PieTimer(),
+            timer, 
           ],
         )),
         BottomDrawer(0,0,10)
