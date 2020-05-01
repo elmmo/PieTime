@@ -33,7 +33,7 @@ class PieTimerApp extends StatelessWidget {
                   'Drawer Header',
                 ),
                 decoration: BoxDecoration(
-                  color: CustomTheme.of(context).accentColor,
+                  color: CustomTheme.of(context).primaryColor,
                 ),
               ),
               ListTile(
