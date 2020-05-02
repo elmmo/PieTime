@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class BottomDrawer extends StatefulWidget {
 
@@ -28,6 +30,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
   static String _time = "time";
   static String _completed = "completed";
   static String _new = "new";
+  static String _preset = "preset";
   // This item is the card for creating a new task
   List<Map<String, dynamic>> tasks = [
     {
@@ -35,7 +38,15 @@ class _BottomDrawerState extends State<BottomDrawer> {
       _time : null,
       _completed : false,
       _new : true,
+      _preset : false
     },
+    {
+      _title : "Save as Preset",
+      _time : null,
+      _completed : false,
+      _new : false,
+      _preset : true
+    }
   ];
 
   int numNew = 0;
@@ -44,13 +55,15 @@ class _BottomDrawerState extends State<BottomDrawer> {
       _title : oldTitle,
       _time : oldTime,
       _completed : isCompleted,
-      _new : false
+      _new : false,
+      _preset : false
     };
     Map<String, dynamic> newItem = {
       _title : newTitle,
       _time : newTime,
       _completed : isCompleted,
-      _new : false
+      _new : false,
+      _preset : false
     };
     setState(() {
       // create new item or update info of existing item
@@ -70,7 +83,8 @@ class _BottomDrawerState extends State<BottomDrawer> {
       _title : title,
       _time : time,
       _completed : isCompleted,
-      _new : false
+      _new : false,
+      _preset : false
     };
     setState(() {
       int index = tasks.indexWhere((e) => e[_title] == itemToDelete[_title] && e[_time] == itemToDelete[_time] && e[_completed] == itemToDelete[_completed] && e[_new] == itemToDelete[_new]);
@@ -133,6 +147,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                     Duration time = tasks[index][_time];
                     bool isCompleted = tasks[index][_completed];
                     bool isNew = tasks[index][_new];
+                    bool isPreset = tasks[index][_preset];
 
                     return Card(
                       color: Color.fromRGBO(80, 80, 80, 1),
@@ -144,14 +159,14 @@ class _BottomDrawerState extends State<BottomDrawer> {
                             width: 4,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: isNew ? newColor : colors[(index-numNew) % colors.length],
+                              color: isNew || isPreset ? newColor : colors[(index-numNew) % colors.length],
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(4), bottomLeft: Radius.circular(4)),
                             ),
                           ),
                           Expanded(
                             child: ListTile(
                               dense: true,
-                              leading: isNew // left icon, if it's the "new item" card it has a different icon than the others
+                              leading: isNew || isPreset // left icon, if it's the "new item" card it has a different icon than the others
                               ? Icon(
                                   Icons.add_circle,
                                   size: 24,
@@ -174,11 +189,11 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
                               // right icon, "new item" card doesn't have one
                               trailing: Icon(
-                                isNew ? null : Icons.more_horiz,
+                                isNew || isPreset ? null : Icons.more_horiz,
                                 size: 32,
                                 color: isNew ? newColor : Color.fromRGBO(136, 136, 136, 1)
                               ),
-                              onTap: () {
+                              onTap: () async {
                                 // Same modal is shown with slight tweaks based on whether the tapped card is the "new item" card or not
                                 if (isNew) {
                                   showDialog(
@@ -192,6 +207,13 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                         onDelete: deleteItem,
                                         isCompleted: isCompleted
                                       );
+                                    }
+                                  );
+                                } else if (isPreset) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return PresetModal(tasks: tasks);
                                     }
                                   );
                                 } else {
@@ -494,6 +516,71 @@ class ItemModal extends StatelessWidget {
           ],
         )
       ),
+    );
+  }
+}
+
+
+class PresetModal extends StatelessWidget {
+  PresetModal({Key key, @required this.tasks}) : super(key: key);
+
+  final List<Map<String, dynamic>> tasks;
+
+  final titleController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Form(
+        key: formKey,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
+          ),
+          child: TextFormField(
+            controller: titleController,
+            maxLength: 50, // max number of characters for item title
+            buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
+            textInputAction: TextInputAction.done,
+            style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+            validator: (value) {
+              if (value.isEmpty) {
+                return "Preset title can't be empty";
+              } else {
+                return null;
+              }
+            },
+            decoration: InputDecoration.collapsed(
+              hintText: "Preset name",
+              hintStyle: TextStyle(color: Color.fromRGBO(182, 182, 182, 0.7), fontSize: 16)
+            ),
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        RaisedButton(
+          child: Text("Save"),
+          onPressed: () async {
+            if (formKey.currentState.validate()) {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              List<String> presets = prefs.getStringList("presets");
+              if (presets == null) {
+                presets = [];
+              }
+              List<Map<String, dynamic>> thisPreset = tasks.sublist(0, tasks.length-2);
+              Map<String, dynamic> presetWithName = {
+                "name" : titleController.text,
+                "tasks" : thisPreset
+              };
+              String jsonString = json.encode(presetWithName, toEncodable: (e) => e.toString());
+              presets.add(jsonString);
+              prefs.setStringList("presets", presets);
+              Navigator.pop(context);
+            }
+          }
+        )
+      ],
     );
   }
 }
