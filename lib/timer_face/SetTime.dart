@@ -86,7 +86,7 @@ class _SetTimeState extends State<SetTime> {
       timeMarker = "AM";
       result += _endTime.hour.toString(); 
     }
-    result += ":" + _endTime.minute.toString() + timeMarker; 
+    result += ":" + _endTime.minute.toString().padLeft(2, "0") + timeMarker; 
     return result; 
   }
 
