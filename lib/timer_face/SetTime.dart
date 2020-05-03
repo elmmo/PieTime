@@ -40,13 +40,16 @@ class _SetTimeState extends State<SetTime> {
             RaisedButton(
               child: Text("Presets"),
               onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance().then((value) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return PresetsModal(prefs: value);
-                    }
-                  );
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                final presetDuration = await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return PresetsModal(prefs: prefs);
+                  }
+                ) as Duration;
+                setState(() {
+                  _duration = presetDuration;
+                  setEndTime();
                 });
               }
             ),
@@ -189,6 +192,7 @@ class _PresetsModalState extends State<PresetsModal> {
                   title: Text(thisPreset["name"]),
                   subtitle: Text(subtitle),
                   onTap: () {
+                    Navigator.pop(context, Duration(hours: hours, minutes: minutes, seconds: seconds));
                     // make this the current tasks
                   },
                 ),
