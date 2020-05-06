@@ -93,4 +93,11 @@ class TaskList {
   }
 
   bool isTimeValid(Duration t) => (timeUsed + t <= maxTime); 
+
+  void deleteAllTasks() {
+    list.clear(); 
+    id = 0; 
+    createAddButton(); 
+    timeUsed = Duration.zero;  
+  }
 }

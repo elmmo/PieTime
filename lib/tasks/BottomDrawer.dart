@@ -73,43 +73,16 @@ class _BottomDrawerState extends State<BottomDrawer> {
                     horizontal: MediaQuery.of(context).size.width * 0.1,
                     vertical: 16
                   ),
-                  itemCount: list.getLength(),
+                  itemCount: (list.getLength() > 1 ? list.getLength()+1 : list.getLength()),
                   itemBuilder: (context, index) {
                     Task task = list.getTaskAt(index);
-                    return GestureDetector(
-                      child: Card(
-                        color: cardBackgroundColor,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            getCardBorder(task),
-                            getCardBody(task),
-                          ],
-                        )
-                      ),
-                      onTap: () {
-                        showDialog(
-                          context: context, 
-                          builder: (context) {
-                            return ItemModal(
-                              task: task,
-                              totalDuration: list.maxTime,
-                              taskDuration: task.time,  
-                              timeChecker: list.isTimeValid,
-                              color: (task.isNew ? list.newItemColor : list.defaultColor),
-                              onUpdate: updateCard,
-                              onDelete: deleteCard,
-                            );
-                          }
-                        );
-                      }
-                    );
+                    return (index < list.getLength() ? createCard(task) : createButtonCard());
                   },
                 separatorBuilder: (context, index) {
                   return Container(height: 4, width: 0);
                 },
-                )
-              )
+                ),
+              ),           
             ]
           )
         );
@@ -166,6 +139,56 @@ class _BottomDrawerState extends State<BottomDrawer> {
     setState(() {
       list.deleteTask(task); 
     });
+  }
+
+  Widget createCard(Task task) {
+    return GestureDetector(
+      child: Card(
+        color: cardBackgroundColor,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            getCardBorder(task),
+            getCardBody(task),
+          ],
+        )
+      ),
+      onTap: () {
+        showDialog(
+          context: context, 
+          builder: (context) {
+            return ItemModal(
+              task: task,
+              totalDuration: list.maxTime,
+              taskDuration: task.time,  
+              timeChecker: list.isTimeValid,
+              color: (task.isNew ? list.newItemColor : list.defaultColor),
+              onUpdate: updateCard,
+              onDelete: deleteCard,
+            );
+          }
+        );
+      }
+    );
+  }
+
+  Widget createButtonCard() {
+    return Container(
+      color: backgroundColor,
+      child: ButtonBar(
+        alignment: MainAxisAlignment.spaceEvenly, 
+        children: [
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              setState(() {
+                list.deleteAllTasks();
+              });
+            }
+          )
+        ]
+      )
+    );
   }
 
 }
