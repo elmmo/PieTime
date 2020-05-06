@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'timer_face/PieTimer.dart';
-import 'BottomDrawer.dart';
+import 'tasks/BottomDrawer.dart';
 import 'timer_face/Util.dart';
+import 'TimeKeeper.dart';
 
-class OrgComponents {
+// static functions meant to be used across the app, non-static functions are for 
+// pages that require the main timer and task drawer (should only be home)
+class OrgComponents extends StatelessWidget {
+
+  Widget build(BuildContext context) {
+    Duration time = TimeKeeper.of(context).time; 
+    return Scaffold(
+      drawer: generateSideDrawer(), 
+      appBar: generateAppBar(context), 
+      // Contains everything below the Appbar
+      backgroundColor: Colors.grey[800],
+      body: generateAppBody(time),
+    );
+  }
+
   // Hamburger menu on the Appbar to the left
   static Widget generateSideDrawer() {
     return Drawer(
@@ -36,7 +51,7 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar(BuildContext context) {
+  static AppBar generateAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         'PieTime',
@@ -59,8 +74,8 @@ class OrgComponents {
     );
   }
 
-  // everything below the app bar on the main page
-  static Widget generateAppBody(ThemeData theme, Duration duration, PieTimer timer) {
+    // everything below the app bar on the main page
+  Widget generateAppBody(Duration time) {
     Map<String, double> dataMap = new Map();
     dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
     dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
@@ -85,11 +100,12 @@ class OrgComponents {
                 fontSize: 20,
               ),
             ),
-            timer, 
+            new PieTimer(time),  // PIE TIMER 
           ],
         )),
-        BottomDrawer(0,0,10)
+        new BottomDrawer()     // BOTTOM DRAWER 
       ],
     );
   }
 }
+

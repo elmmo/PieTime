@@ -71,7 +71,7 @@ class _SetTimeState extends State<SetTime> {
   }
 
   void setEndTime() {
-    if (_duration != new Duration(minutes: 0)) {
+    if (_duration != Duration.zero) {
       _endTime = DateTime.now().add(_duration);
     }
   }
@@ -91,5 +91,5 @@ class _SetTimeState extends State<SetTime> {
   }
 
   // checks if there is any time on the clock 
-  bool isValidTime() => _duration.inMinutes > Duration(minutes: 0).inMinutes; 
+  bool isValidTime() => _duration > Duration.zero; 
 }
