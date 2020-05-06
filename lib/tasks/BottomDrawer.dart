@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
 import 'TaskList.dart';
-// import 'ItemModal.dart';
+import 'ItemModal.dart';
+import '../TimeKeeper.dart';
 
 class BottomDrawer extends StatefulWidget {
-
-  final Duration totalDuration;
-
-  BottomDrawer(this.totalDuration); 
 
   @override
   _BottomDrawerState createState() => _BottomDrawerState();
@@ -25,11 +22,17 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   void initState() {
     list = new TaskList(); 
+    list.createAddButton();
+    list.maxTime = Duration.zero; 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (TimeKeeper.of(context) != null) {
+      final time = TimeKeeper.of(context).time;
+      list.maxTime = time; 
+    }
     // this is the component that allows dragging up and down
     return DraggableScrollableSheet(
       initialChildSize: 0.2,
@@ -85,38 +88,20 @@ class _BottomDrawerState extends State<BottomDrawer> {
                         )
                       ),
                       onTap: () {
-                        // Same modal is shown with slight tweaks based on whether the tapped card is the "new item" card or not
-                        if (task.isNew) {
-                          showDialog(
-                            context: context,
-                              builder: (context) {
-                                return ItemModal(
-                                  totalDuration: list.maxTime,
-                                  taskDuration: task.time, 
-                                  color: newColor, 
-                                  onUpdate: task.update,
-                                  onDelete: list.deleteTask,
-                                  isCompleted: task.completed,
-                                );
-                              }
-                          );
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return ItemModal(
-                                totalDuration: list.maxTime, 
-                                taskDuration: task.time, 
-                                color: list.defaultColor,
-                                onUpdate: task.update, 
-                                onDelete: list.deleteTask,
-                                oldTitle: task.title,
-                                oldTime: task.time, 
-                                isCompleted: task.completed
-                              );
-                            }
-                          );
-                        }
+                        showDialog(
+                          context: context, 
+                          builder: (context) {
+                            return ItemModal(
+                              task: task,
+                              totalDuration: list.maxTime,
+                              taskDuration: task.time,  
+                              timeChecker: list.isTimeValid,
+                              color: (task.isNew ? list.newItemColor : list.defaultColor),
+                              onUpdate: updateCard,
+                              onDelete: deleteCard,
+                            );
+                          }
+                        );
                       }
                     );
                   },
@@ -144,6 +129,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
     );
   }
 
+  // creates the main section of the card
   Widget getCardBody(Task task) {
     return Expanded(
       child: ListTile(
@@ -158,11 +144,28 @@ class _BottomDrawerState extends State<BottomDrawer> {
               size: 24,
               color: task.color
             ),
-            onPressed: () => task.update(false, isComplete: true)
+            onPressed: () {
+              return updateCard(task: task, isComplete: (task.completed ? false : true));
+            }
           ),
         title: Text(task.title, style: TextStyle(color: cardTextColor, fontSize: 12)),
       )
     );
+  }
+
+  void updateCard({Task task, bool isComplete, Duration newTime, String newTitle}) {
+    if (list.getTaskAt(list.getLength()-1) == task) {
+      list.createAddButton();
+    }
+    setState(() {
+      list.updateTask(task: task, title: newTitle, newTime: newTime, isComplete: isComplete); 
+    });
+  }
+
+  void deleteCard(Task task) {
+    setState(() {
+      list.deleteTask(task); 
+    });
   }
 
 }

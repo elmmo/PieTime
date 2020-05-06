@@ -98,7 +98,6 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // creates the floating action button that triggers the timer
   void generateToggleButton() {
-    print(_controller.duration);
     if (_controller.duration > Duration(milliseconds: 0)) {
       FloatingActionButton button = FloatingActionButton.extended(
         onPressed: _switchStatus,

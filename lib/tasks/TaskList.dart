@@ -8,8 +8,8 @@ class TaskList {
   int id; 
 
   // colors - assigned color will be overriden if user sets task colors individually
-  Color newItemColor; // the color used for the "new item" card
-  Color defaultColor; // the color used by default for cards 
+  Color newItemColor = Color.fromRGBO(57, 161, 135, 1); // the color used for the "new item" card
+  Color defaultColor = Color.fromRGBO(150, 0, 0, 1); // the color used by default for cards 
 
   TaskList() {
     maxTime = Duration.zero; 
@@ -26,7 +26,7 @@ class TaskList {
 
   void createAddButton() {
     list[id] = new Task(id, null);
-    list[id].update(true, newColor: newItemColor);
+    list[id].update(true, newTitle: "New Task", newColor: newItemColor);
     id++; 
   }
   
@@ -49,20 +49,28 @@ class TaskList {
   }
 
   // updates a given task based on its id after checking time (if time set)
-  bool updateTask(id, {Task t, String title, Duration time, bool isComplete, Color newColor}) {
-    if (time != null) {
-      if (isTimeValid(time)) {
-        list[list.length-1].update(true, newTime: time);
+  bool updateTask({Task task, String title, Duration newTime, bool isComplete, Color newColor}) {
+    if (task == null) return false; 
+    if (newColor != null) {
+      task.update(true, newColor: newColor); 
+    } else if (task.isNew) {
+      // if task is newly updated 
+      task.update(true, newColor: defaultColor); 
+    }
+    if (newTime != null) {
+      if (isTimeValid(newTime)) {
+        task.update(true, newTime: newTime);
+        timeUsed += newTime; 
       } else {
         // if requested duration is greater than the set time 
         return false; 
       }
     }
     if (title != null) {
-      list[list.length-1].update(true, newTitle: title); 
+      task.update(true, newTitle: title); 
     }
     if (isComplete != null) {
-      list[list.length-1].update(true, isComplete: isComplete);
+      task.update(true, isComplete: isComplete);
     }
     return true; 
   }
@@ -84,7 +92,5 @@ class TaskList {
     return null; 
   }
 
-  bool isTimeValid(Duration t) {
-    return timeUsed + t <= maxTime; 
-  }
+  bool isTimeValid(Duration t) => (timeUsed + t <= maxTime); 
 }

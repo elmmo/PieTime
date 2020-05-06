@@ -10,6 +10,7 @@ class Task {
   Color color;
 
   Task(this.id, this.timeCheck) {
+    this.title = "New Task";
     this.completed = false; 
     this.isNew = true; 
   }
@@ -21,7 +22,10 @@ class Task {
       return false; 
     }
     if (newTitle != null) title = newTitle;
-    if (newTime != null) time = newTime; 
+    if (newTime != null) {
+      time = newTime; 
+      isNew = false; 
+    }
     if (isComplete != null) completed = isComplete; 
     if (newColor != null) color = newColor; 
     return true; 

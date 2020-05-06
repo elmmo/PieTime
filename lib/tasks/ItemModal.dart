@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
+import 'Task.dart';
 
+// the popup dialog that comes up for creating or updating widgets 
 class ItemModal extends StatelessWidget {
   ItemModal({
     Key key,
     @required this.totalDuration,
     @required this.taskDuration,
     @required this.color,
-    @required this.onUpdate(bool isCreation, String newTitle, Duration newTime, String oldTitle, Duration oldTime, bool isCompleted),
-    @required this.onDelete(String title, Duration time, bool isCompleted),
-    this.oldTitle = "",
-    this.oldTime = const Duration(minutes: -1),
-    this.isCompleted = false
+    @required this.timeChecker, 
+    @required this.onUpdate,
+    @required this.onDelete,
+    @required this.task, 
   }) : super(key: key);
 
   final Duration totalDuration;
   final Duration taskDuration;
   final Color color;
+  final Function timeChecker; 
   final Function onUpdate;
   final Function onDelete;
-  final String oldTitle;
-  final Duration oldTime;
-  final bool isCompleted;
+  final Task task; 
 
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
@@ -58,17 +58,16 @@ class ItemModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isCreation = oldTitle == "" || oldTime == Duration(minutes: -1);
-    if (!isCreation) {
-      titleController.text = oldTitle;
-      hoursController.text = parseHours(oldTime);
-      minutesController.text = parseMinutes(oldTime);
-      secondsController.text = parseSeconds(oldTime);
+    if (!task.isNew) {
+      titleController.text = task.title; 
+      hoursController.text = parseHours(task.time); 
+      minutesController.text = parseMinutes(task.time);
+      secondsController.text = parseSeconds(task.time); 
     }
     return AlertDialog(
       backgroundColor: Color.fromRGBO(80, 80, 80, 1),
       title: Text(
-        isCreation ? "New Item" : oldTitle,
+        task.title, 
         style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 24)
       ),
       content: Form(
@@ -100,7 +99,6 @@ class ItemModal extends StatelessWidget {
                   int hrsInt = !hrsIsEmpty ? int.parse(hrs) : 0;
                   int minInt = !minIsEmpty ? int.parse(min) : 0;
                   int secInt = !secIsEmpty ? int.parse(sec) : 0;
-                  Duration proposedDuration = Duration(hours: hrsInt, minutes: minInt, seconds: secInt);
 
                   if (value.isEmpty) {
                     return "Item title can't be empty";
@@ -110,7 +108,7 @@ class ItemModal extends StatelessWidget {
                     return "Duration must be a number";
                   } else if (hrs == "0" && min == "0" && sec == "0") {
                     return "Duration can't be zero";
-                  } else if ((taskDuration + proposedDuration) > totalDuration) {
+                  } else if (!this.timeChecker(Duration(hours: hrsInt, minutes: minInt, seconds: secInt))) {
                     return "Total timer duration exceeded";
                   }
                   return null;
@@ -191,10 +189,10 @@ class ItemModal extends StatelessWidget {
             Container(height: 8, width: 0),
 
             Row(
-              mainAxisAlignment: !isCreation ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
+              mainAxisAlignment: !task.isNew ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
               children: <Widget>[
                 // Delete button if not creating a new task
-                !isCreation ? RaisedButton(
+                !task.isNew ? RaisedButton(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12)), side: BorderSide(color: Color.fromRGBO(209, 26, 42, 1))),
                   color: Color.fromRGBO(80, 80, 80, 1),
                   child: Text(
@@ -202,15 +200,7 @@ class ItemModal extends StatelessWidget {
                     style: TextStyle(color: Color.fromRGBO(209, 26, 42, 1), fontSize: 16),
                   ),
                   onPressed: () {
-                    onDelete(
-                      titleController.text,
-                      Duration(
-                        hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
-                        minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
-                        seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
-                      ),
-                      isCompleted
-                    );
+                    onDelete(task);
                     Navigator.pop(context);
                   },
                 ) : Container(),
@@ -220,39 +210,22 @@ class ItemModal extends StatelessWidget {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(12))),
                   color: color, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
                   child: Text(
-                    isCreation ? "Create" : "Update",
+                    task.isNew ? "Create" : "Update",
                     style: TextStyle(color: Colors.black, fontSize: 16)
                   ),
                   onPressed: () {
                     if (formKey.currentState.validate()) {
                       // if there's not an old title or time, we're creating a new item
-                      if (isCreation) {
-                        onUpdate(
-                          true,
-                          titleController.text,
-                          Duration(
+                      onUpdate(
+                        task: task, 
+                        newTitle: titleController.text, 
+                        newTime: Duration(
                             hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
                             minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
                             seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
                           ),
-                          oldTitle,
-                          oldTime,
-                          isCompleted
-                        );
-                      } else {
-                        onUpdate(
-                          false,
-                          titleController.text,
-                          Duration(
-                            hours: hoursController.text.isNotEmpty ? int.parse(hoursController.text) : 0,
-                            minutes: minutesController.text.isNotEmpty ? int.parse(minutesController.text) : 0,
-                            seconds: secondsController.text.isNotEmpty ? int.parse(secondsController.text) : 0
-                          ),
-                          oldTitle,
-                          oldTime,
-                          isCompleted
-                        );
-                      }
+                        isComplete: task.completed
+                      );
                       Navigator.pop(context);
                     }
                   },
