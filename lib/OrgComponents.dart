@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'PieTimer.dart';
-import 'BottomDrawer.dart';
+import 'timer_face/PieTimer.dart';
+import 'tasks/BottomDrawer.dart';
+import 'timer_face/Util.dart';
+import 'TimeKeeper.dart';
 
-class OrgComponents {
+// static functions meant to be used across the app, non-static functions are for
+// pages that require the main timer and task drawer (should only be home)
+class OrgComponents extends StatelessWidget {
+  Widget build(BuildContext context) {
+    Duration time = TimeKeeper.of(context).time;
+    return Scaffold(
+      drawer: generateSideDrawer(),
+      appBar: generateAppBar(context),
+      // Contains everything below the Appbar
+      backgroundColor: Colors.grey[800],
+      body: generateAppBody(time),
+    );
+  }
+
   // Hamburger menu on the Appbar to the left
-  static Widget generateSideDrawer(ThemeData theme) {
+  static Widget generateSideDrawer() {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -17,7 +31,7 @@ class OrgComponents {
               'Drawer Header',
             ),
             decoration: BoxDecoration(
-              color: theme.primaryColor,
+              // color: theme.primaryColor,
             ),
           ),
           // items within menu
@@ -35,30 +49,32 @@ class OrgComponents {
   }
 
   // standard app bar across PieTime
-  static Widget generateAppBar(ThemeData theme) {
+  static AppBar generateAppBar(BuildContext context) {
     return AppBar(
       title: Text(
         'PieTime',
+        // apply the text themes from ui branch
+        // style: arr.apply()
       ),
       // backgroundColor: theme.primaryColorDark,
       // backgroundColor: theme.accentColor,
       actions: <Widget>[
         Padding(
-          padding: EdgeInsets.only(right: 20.0),
-          // Plus icon on the Appbar to the right
-          child: Icon(
-            Icons.refresh,
-            size: 26.0,
-          ),
-        ),
+            padding: EdgeInsets.only(right: 20.0),
+            // Plus icon on the Appbar to the right
+            child: IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/setTime');
+                })),
       ],
     );
   }
 
   // everything below the app bar on the main page
-  static Widget generateAppBody(ThemeData theme) {
+  Widget generateAppBody(Duration time) {
     Map<String, double> dataMap = new Map();
-    dataMap.putIfAbsent("Mobile Apps Mockings", () => 15);
+    dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
     dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
     dataMap.putIfAbsent("Core 250 RR", () => 10);
 
@@ -66,12 +82,13 @@ class OrgComponents {
       children: <Widget>[
         Container(
           margin: EdgeInsets.only(bottom: 120.0, top: 40, right: 10, left: 10),
-          child: Image.asset('assets/hourMinMarks.png'),
+          // child: Image.asset('assets/hourMinMarks.png'),
         ),
         Container(
             margin: EdgeInsets.only(bottom: 135.0, right: 40, left: 40),
             child: Stack(
               children: <Widget>[
+                // timer circle
                 PieChart(
                   dataMap: dataMap,
                   showLegends: false,
@@ -82,13 +99,12 @@ class OrgComponents {
                   chartValueStyle: defaultChartValueStyle.copyWith(
                     color: Colors.blueGrey[900].withOpacity(0.9),
                     fontSize: 20,
-                    // colorList: //Takes list of colors
                   ),
                 ),
-                PieTimer(0, 0, 5),
+                new PieTimer(time), // PIE TIMER
               ],
             )),
-        BottomDrawer(0, 0, 5)
+        new BottomDrawer() // BOTTOM DRAWER
       ],
     );
   }

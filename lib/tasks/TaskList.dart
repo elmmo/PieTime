@@ -15,7 +15,7 @@ class TaskList {
   List<Color> colors400 = [
     Color.fromRGBO(227, 134, 106, 1),
     Color.fromRGBO(188, 103, 134, 1),
-    Color.fromRGBO(238, 93, 93, 1),
+    Color.fromRGBO(238, 93, 93, 1), //Don't know why but it starts here
     Color.fromRGBO(111, 89, 171, 1),
     Color.fromRGBO(51, 130, 209, 1),
     Color.fromRGBO(50, 196, 196, 1),
