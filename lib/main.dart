@@ -24,7 +24,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
           accentColor: Colors.red,
           backgroundColor: Colors.grey[800],
           secondaryHeaderColor: Colors.grey[900],
-          textTheme: GoogleFonts.almaraiTextTheme(Theme.of(context).textTheme),
+          textTheme: GoogleFonts.muliTextTheme(Theme.of(context).textTheme),
         ),
         routes: {
           '/setTime': (BuildContext context) => SetTime(_sendDuration, context),
