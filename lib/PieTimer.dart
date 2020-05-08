@@ -103,8 +103,9 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   Widget generatePie() {
     return Positioned.fill(
       child: CustomPaint(
-          painter: CustomTimerPainter(
-              animation: _controller, color: Colors.red[300])),
+          painter:
+              CustomTimerPainter(
+                animation: _controller, color: Colors.blueGrey[800])),
     );
   }
 
