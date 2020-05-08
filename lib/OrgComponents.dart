@@ -81,11 +81,11 @@ class OrgComponents extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(bottom: 120.0, top: 40, right: 10, left: 10),
-          // child: Image.asset('assets/hourMinMarks.png'),
+          margin: EdgeInsets.only(top: 90, right: 15, left: 15),
+          child: Image.asset('assets/TickMarks.png'),
         ),
         Container(
-            margin: EdgeInsets.only(bottom: 135.0, right: 40, left: 40),
+            margin: EdgeInsets.only(bottom: 135.0, right: 30, left: 30),
             child: Stack(
               children: <Widget>[
                 // timer circle
@@ -94,7 +94,7 @@ class OrgComponents extends StatelessWidget {
                   showLegends: false,
                   // showChartValueLabel: true,
                   animationDuration: Duration(milliseconds: 0),
-                  initialAngle: 4.7, //If timer moves clockwise
+                  initialAngle: 4.713, //If timer moves clockwise
                   showChartValuesInPercentage: false,
                   chartValueStyle: defaultChartValueStyle.copyWith(
                     color: Colors.blueGrey[900].withOpacity(0.9),
