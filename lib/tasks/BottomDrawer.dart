@@ -5,13 +5,18 @@ import 'ItemModal.dart';
 import '../TimeKeeper.dart';
 
 class BottomDrawer extends StatefulWidget {
+  BottomDrawer({Key key, @required this.callback}) : super(key: key);
+
+  final Function callback;
 
   @override
-  _BottomDrawerState createState() => _BottomDrawerState();
+  _BottomDrawerState createState() => _BottomDrawerState(callback: callback);
 }
 
 class _BottomDrawerState extends State<BottomDrawer> {
-  TaskList list; 
+  _BottomDrawerState({Key key, @required this.callback}) : super();
+
+  final Function callback;
 
   Color backgroundColor = Color.fromRGBO(51, 51, 51, 1);
   Color dragTabIconColor = Color.fromRGBO(121, 121, 121, 1);
@@ -20,18 +25,14 @@ class _BottomDrawerState extends State<BottomDrawer> {
   // green color for the "new item" card
   Color newColor = Color.fromRGBO(57, 161, 135, 1);
 
-  void initState() {
-    list = new TaskList(); 
-    list.createAddButton();
-    list.maxTime = Duration.zero; 
-    super.initState();
-  }
+  TaskList _taskList;
 
   @override
   Widget build(BuildContext context) {
     if (TimeKeeper.of(context) != null) {
       final time = TimeKeeper.of(context).time;
-      list.maxTime = time; 
+      _taskList = TimeKeeper.of(context).taskList;
+      _taskList.maxTime = time; 
     }
     // this is the component that allows dragging up and down
     return DraggableScrollableSheet(
@@ -73,9 +74,9 @@ class _BottomDrawerState extends State<BottomDrawer> {
                     horizontal: MediaQuery.of(context).size.width * 0.1,
                     vertical: 16
                   ),
-                  itemCount: list.getLength(),
+                  itemCount: _taskList.getLength(),
                   itemBuilder: (context, index) {
-                    Task task = list.getTaskAt(index);
+                    Task task = _taskList.getTaskAt(index);
                     return GestureDetector(
                       child: Card(
                         color: cardBackgroundColor,
@@ -93,10 +94,10 @@ class _BottomDrawerState extends State<BottomDrawer> {
                           builder: (context) {
                             return ItemModal(
                               task: task,
-                              totalDuration: list.maxTime,
+                              totalDuration: _taskList.maxTime,
                               taskDuration: task.time,  
-                              timeChecker: list.isTimeValid,
-                              color: (task.isNew ? list.newItemColor : list.defaultColor),
+                              timeChecker: _taskList.isTimeValid,
+                              color: (task.isNew ? _taskList.newItemColor : _taskList.defaultColor),
                               onUpdate: updateCard,
                               onDelete: deleteCard,
                             );
@@ -154,17 +155,19 @@ class _BottomDrawerState extends State<BottomDrawer> {
   }
 
   void updateCard({Task task, bool isComplete, Duration newTime, String newTitle}) {
-    if (list.getTaskAt(list.getLength()-1) == task) {
-      list.createAddButton();
+    if (_taskList.getTaskAt(_taskList.getLength()-1) == task) {
+      _taskList.createAddButton();
     }
     setState(() {
-      list.updateTask(task: task, title: newTitle, newTime: newTime, isComplete: isComplete); 
+      _taskList.updateTask(task: task, title: newTitle, newTime: newTime, isComplete: isComplete); 
+      this.widget.callback(_taskList);
     });
   }
 
   void deleteCard(Task task) {
     setState(() {
-      list.deleteTask(task); 
+      _taskList.deleteTask(task); 
+      this.widget.callback(_taskList);
     });
   }
 
