@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'OrgComponents.dart';
 import 'timer_face/SetTime.dart';
+import 'tasks/TaskList.dart';
 import 'TimeKeeper.dart';
 
 void main() => runApp(new PieTimerApp());
@@ -15,8 +16,14 @@ class PieTimerApp extends StatefulWidget {
 // entry for the rest of the app 
 class _PieTimerAppState extends State<PieTimerApp> {
   Duration _maxTime = Duration.zero; 
+  TaskList _taskList = new TaskList();
 
   Widget build(BuildContext context) {  
+    _taskList.maxTime = Duration.zero;
+    if (_taskList.getLength() == 0) {
+      _taskList.createAddButton();
+    }
+
     return MaterialApp(
       title: "Pie Timer",
       theme: ThemeData(
@@ -30,10 +37,10 @@ class _PieTimerAppState extends State<PieTimerApp> {
         ),
       ),
       routes: {
-        '/setTime': (BuildContext context) => SetTime(_sendDuration, context), 
+        '/setTime': (BuildContext context) => SetTime(_sendDuration, _updateTaskList, _taskList, context), 
       },
       home: Builder(
-        builder: (context) => TimeKeeper(_maxTime, child: OrgComponents())
+        builder: (context) => TimeKeeper(_maxTime, _taskList, child: OrgComponents(callback: _updateTaskList))
       )
     );
   }
@@ -44,5 +51,12 @@ class _PieTimerAppState extends State<PieTimerApp> {
       _maxTime = newTime; 
     }); 
     Navigator.pop(context); 
+  }
+
+  // callback for transferring tasklist across classes
+  void _updateTaskList(TaskList list) {
+    setState(() {
+      _taskList = list;
+    });
   }
 }

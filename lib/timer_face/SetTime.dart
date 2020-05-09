@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../tasks/TaskList.dart';
+import '../tasks/Task.dart';
 import '../OrgComponents.dart';
 
 class SetTime extends StatefulWidget {
-  final Function callback; 
+  final Function durationCallback; 
+  final Function taskListCallback;
+  final TaskList taskList;
   final BuildContext originalContext; 
   
-  SetTime(this.callback, this.originalContext);
+  SetTime(this.durationCallback, this.taskListCallback, this.taskList, this.originalContext);
 
   @override
-  _SetTimeState createState() => new _SetTimeState();
+  _SetTimeState createState() => new _SetTimeState(taskList: taskList);
 }
 
 class _SetTimeState extends State<SetTime> {
+  _SetTimeState({Key key, this.taskList}) : super();
+  final TaskList taskList;
+
   Duration _duration = Duration(hours: 0, minutes: 0);
   DateTime _endTime = new DateTime.now(); 
 
@@ -37,6 +44,7 @@ class _SetTimeState extends State<SetTime> {
               },
               snapToMins: 1.0,
             ),
+            // choose from presets
             RaisedButton(
               child: Text("Presets"),
               onPressed: () async {
@@ -44,13 +52,20 @@ class _SetTimeState extends State<SetTime> {
                 final presetDuration = await showDialog(
                   context: context,
                   builder: (context) {
-                    return PresetsModal(prefs: prefs);
+                    return PresetsModal(
+                      durationCallback: this.widget.durationCallback,
+                      taskListCallback: this.widget.taskListCallback,
+                      originalContext: this.widget.originalContext,
+                      prefs: prefs
+                    );
                   }
                 ) as Duration;
-                setState(() {
-                  _duration = presetDuration;
-                  setEndTime();
-                });
+                if (presetDuration != null) {
+                  setState(() {
+                    _duration = presetDuration;
+                    setEndTime();
+                  });
+                }
               }
             ),
             // the end time
@@ -78,7 +93,7 @@ class _SetTimeState extends State<SetTime> {
                 RaisedButton(
                   child: Text("Accept"),
                   onPressed: (isValidTime()) ? () {
-                    this.widget.callback(_duration, this.widget.originalContext); 
+                    this.widget.durationCallback(_duration, this.widget.originalContext); 
                   } : null, 
                 ),
               ],
@@ -114,8 +129,11 @@ class _SetTimeState extends State<SetTime> {
 }
 
 class PresetsModal extends StatefulWidget {
-  PresetsModal({Key key, @required this.prefs}) : super(key: key);
+  PresetsModal({Key key, @required this.durationCallback, @required this.taskListCallback, @required this.originalContext, @required this.prefs}) : super(key: key);
 
+  final Function durationCallback;
+  final Function taskListCallback;
+  final BuildContext originalContext;
   final SharedPreferences prefs;
 
   @override
@@ -152,6 +170,9 @@ class _PresetsModalState extends State<PresetsModal> {
   Widget build(BuildContext context) {
 
     List<String> presets = prefs.getStringList("presets");
+    if (presets == null) {
+      presets = [];
+    }
 
     return AlertDialog(
       title: Text("Timer Presets"),
@@ -175,9 +196,23 @@ class _PresetsModalState extends State<PresetsModal> {
                 minutes += parseMinutes(task["time"]);
                 seconds += parseSeconds(task["time"]);
               }
+              Duration duration = Duration(hours: hours, minutes: minutes, seconds: seconds);
               String tasks = numOfTasks.toString() + " task" + (numOfTasks == 1 ? "." : "s.");
               String time = "Total duration: " + hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
               String subtitle = tasks + " " + time;
+
+              TaskList taskListFromPreset = new TaskList();
+              taskListFromPreset.maxTime = duration;
+              for (var i = 0; i < thisPreset["tasks"].length; i++) {
+                Map task = thisPreset["tasks"][i];
+                taskListFromPreset.createAddButton();
+                Duration taskDuration = Duration(hours: parseHours(task["time"]), minutes: parseMinutes(task["time"]), seconds: parseSeconds(task["time"]));
+                taskListFromPreset.addTask(task["title"], time: taskDuration);
+              }
+              taskListFromPreset.createAddButton();
+
+              // checks if there is any time on the clock 
+              bool isValidTime() => duration > Duration.zero;
 
               return Dismissible(
                 key: UniqueKey(),
@@ -193,6 +228,10 @@ class _PresetsModalState extends State<PresetsModal> {
                   subtitle: Text(subtitle),
                   onTap: () {
                     Navigator.pop(context, Duration(hours: hours, minutes: minutes, seconds: seconds));
+                    if (isValidTime()) {
+                      this.widget.durationCallback(duration, this.widget.originalContext); 
+                    }
+                    this.widget.taskListCallback(taskListFromPreset);
                     // make this the current tasks
                   },
                 ),

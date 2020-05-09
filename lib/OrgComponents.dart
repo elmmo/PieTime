@@ -5,10 +5,15 @@ import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'timer_face/Util.dart';
 import 'TimeKeeper.dart';
+import 'tasks/TaskList.dart';
+import 'timer_face/NewPresetModal.dart';
 
 // static functions meant to be used across the app, non-static functions are for 
 // pages that require the main timer and task drawer (should only be home)
 class OrgComponents extends StatelessWidget {
+  OrgComponents({Key key, this.callback}) : super(key: key);
+
+  final Function callback;
 
   Widget build(BuildContext context) {
     Duration time = TimeKeeper.of(context).time; 
@@ -61,6 +66,20 @@ class OrgComponents extends StatelessWidget {
       ),
       backgroundColor: Colors.grey[900],
       actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.save),
+          onPressed: () {
+            if (TimeKeeper.of(context) != null) {
+              TaskList taskList = TimeKeeper.of(context).taskList;
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return NewPresetModal(taskList: taskList);
+                }
+              );
+            }
+          }
+        ),
         // Gear icon on the Appbar to the right
         IconButton(
           icon: Icon(Icons.settings),
@@ -116,7 +135,7 @@ class OrgComponents extends StatelessWidget {
             new PieTimer(time),  // PIE TIMER 
           ],
         )),
-        new BottomDrawer()     // BOTTOM DRAWER 
+        new BottomDrawer(callback: callback)     // BOTTOM DRAWER 
       ],
     );
   }
