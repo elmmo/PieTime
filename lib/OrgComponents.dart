@@ -29,12 +29,13 @@ class OrgComponents extends StatelessWidget {
 
   Widget build(BuildContext context) {
     Duration time = TimeKeeper.of(context).time;
+    Map<String, double> pieSlices = getChartValues(context, time);
     return Scaffold(
       drawer: generateSideDrawer(),
       appBar: generateAppBar(context),
       // Contains everything below the Appbar
       backgroundColor: Colors.grey[800],
-      body: generateAppBody(time),
+      body: generateAppBody(time, pieSlices),
     );
   }
 
@@ -111,13 +112,39 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
+  // Turns tasks from tasklist into a map of slices, which is used by pie chart
+  // Needs context for tasklist and duration to calculate time not used by tasks
+  Map<String, double> getChartValues(BuildContext context, Duration duration) {
+    TaskList taskList = TimeKeeper.of(context).taskList;
+    int listLength = taskList.getLength();
+    double timeTotal = duration.inMinutes.toDouble();
+    double timeUsed = 0;
+    final Map<String, double> dataMap = {};
+
+    if (listLength > 0) {
+      for (int i = 0; i < listLength; i++) {
+        // Don't add "New Task" from tasklist used for adding tasks
+        if (taskList.getTaskAt(i).time == null) {
+          continue;
+        } else { // Get task title and duration and add to pie chart dataMap
+          double timeSlice = taskList.getTaskAt(i).time.inMinutes.toDouble();
+          String name = taskList.getTaskAt(i).title;
+          dataMap.putIfAbsent(name, () => timeSlice);
+          timeUsed += timeSlice;
+        }
+      }
+    } 
+    // Finds remaining time so Pie Chart can make a slice for it
+    if (timeTotal > timeUsed) { 
+      dataMap.putIfAbsent("Remaining", () => timeTotal - timeUsed);
+    } else if (timeTotal == 0.0) { // If TaskList is empty, add default- throws a fit otherwise
+      dataMap.putIfAbsent("Default", () => 100);
+    }
+    return dataMap;
+  }
+
   // everything below the app bar on the main page
-  Widget generateAppBody(Duration time) {
-    // TODO: Needs to obtain task list info
-    Map<String, double> dataMap = new Map();
-    dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
-    dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
-    dataMap.putIfAbsent("Core 250 RR", () => 10);
+  Widget generateAppBody(Duration time, Map<String, double> taskMap) {
     double padTimer = 8;
     double timerSidePadding = 20;
 
@@ -134,7 +161,7 @@ class OrgComponents extends StatelessWidget {
                 ),
                 Padding(
                   child: PieChart(
-                    dataMap: dataMap,
+                    dataMap: taskMap,
                     showLegends: false,
                     showChartValueLabel: false,
                     animationDuration: Duration(milliseconds: 0),
@@ -142,7 +169,7 @@ class OrgComponents extends StatelessWidget {
                     showChartValuesInPercentage: false,
                     colorList: colorList,
                     chartValueStyle: defaultChartValueStyle.copyWith(
-                      color: Colors.blueGrey[900].withOpacity(0.0),
+                      color: Colors.blueGrey[900],
                       fontSize: 20,
                     ),
                   ),

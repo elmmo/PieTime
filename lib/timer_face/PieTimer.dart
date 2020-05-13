@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
-import 'package:pie_chart/pie_chart.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
 import 'Util.dart';
