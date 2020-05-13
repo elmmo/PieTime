@@ -29,6 +29,7 @@ dependencies:
   pie_chart: ^3.1.1
   flutter_duration_picker: "^1.0.0"
   vibration: ^1.2.4 #https://pub.dev/packages/vibration
+  shared_preferences: ^0.5.7 # Used to save settings
 
 dev_dependencies:
   flutter_test:

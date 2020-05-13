@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 // import 'package:fl_chart/fl_chart.dart';
+import 'SettingsModal.dart';
 import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'theme.dart';
 import 'TimeKeeper.dart';
+import 'tasks/TaskList.dart';
+import 'timer_face/NewPresetModal.dart';
 
 // static functions meant to be used across the app, non-static functions are for
 // pages that require the main timer and task drawer (should only be home)
@@ -19,6 +22,10 @@ class OrgComponents extends StatelessWidget {
     CustomColor.orange[colorValue],
     CustomColor.pink[colorValue],
   ];
+
+  OrgComponents({Key key, this.callback}) : super(key: key);
+
+  final Function callback;
 
   Widget build(BuildContext context) {
     Duration time = TimeKeeper.of(context).time;
@@ -69,6 +76,29 @@ class OrgComponents extends StatelessWidget {
       // backgroundColor: theme.primaryColorDark,
       // backgroundColor: theme.accentColor,
       actions: <Widget>[
+        IconButton(
+            icon: Icon(Icons.save),
+            onPressed: () {
+              if (TimeKeeper.of(context) != null) {
+                TaskList taskList = TimeKeeper.of(context).taskList;
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return NewPresetModal(taskList: taskList);
+                    });
+              }
+            }),
+        // Gear icon on the Appbar to the right
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            return showDialog(
+                context: context,
+                builder: (context) {
+                  return SettingsModal();
+                });
+          },
+        ),
         Padding(
             padding: EdgeInsets.only(right: 20.0),
             // Plus icon on the Appbar to the right
@@ -124,7 +154,7 @@ class OrgComponents extends StatelessWidget {
                 )
               ],
             )),
-        new BottomDrawer() // BOTTOM DRAWER
+        new BottomDrawer(callback: callback) // BOTTOM DRAWER
       ],
     );
   }
