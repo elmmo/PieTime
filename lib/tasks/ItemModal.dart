@@ -82,8 +82,7 @@ class ItemModal extends StatelessWidget {
               Container(
                 decoration: BoxDecoration(
                     border: Border(
-                        bottom: BorderSide(
-                            color: Color.fromRGBO(182, 182, 182, 1)))),
+                        )),
                 child: TextFormField(
                   controller: titleController,
                   onTap: () => titleController.selection = TextSelection(
@@ -100,7 +99,7 @@ class ItemModal extends StatelessWidget {
                     FocusScope.of(context).requestFocus(hoursFocus);
                   },
                   style: TextStyle(
-                      color: Color.fromRGBO(182, 182, 182, 1), fontSize: 20),
+                      color: Color.fromRGBO(182, 182, 182, 1), fontSize: 21),
                   validator: (value) {
                     String hrs = hoursController.text;
                     String min = minutesController.text;
@@ -131,13 +130,13 @@ class ItemModal extends StatelessWidget {
                     }
                     return null;
                   },
-                  decoration: new InputDecoration.collapsed(
+                  decoration: new InputDecoration(
+                    // border: InputBorder.none,
+                    errorStyle: TextStyle (color: Colors.red[300],),
                     hintStyle: TextStyle(
-                        color: Color.fromRGBO(182, 182, 182, 0.7),
+                        // color: Color.fromRGBO(182, 182, 182, 0.7),
                         fontSize: 20),
-                  ).copyWith(
-                      isDense: true,
-                      contentPadding: const EdgeInsets.only(top: 20.0)),
+                  ).copyWith(contentPadding: const EdgeInsets.only(top: 20.0)),
                 ),
               ),
 
