@@ -3,7 +3,7 @@ import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../tasks/TaskList.dart';
-import '../tasks/Task.dart';
+// import '../tasks/Task.dart';
 import '../OrgComponents.dart';
 
 class SetTime extends StatefulWidget {
@@ -29,12 +29,31 @@ class _SetTimeState extends State<SetTime> {
   Widget build(BuildContext context) {
 
     return new Scaffold(
-      appBar: OrgComponents.generateAppBar(context),
+       appBar: AppBar( // Changes plus icon to close and goes back to home
+        title: Text(
+          'PieTime',
+        ),
+        backgroundColor: Colors.grey[900],
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              // Plus icon on the Appbar to the right
+              child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })),
+        ],
+      ),
       drawer: OrgComponents.generateSideDrawer(),
       body: new Center(
         child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+             Padding(
+                  padding: EdgeInsets.fromLTRB(0, 70, 0, 30),
+                  child: getEndTimeString(),
+                ),
             // the set time picker 
             DurationPicker(
               duration: _duration,
@@ -75,23 +94,25 @@ class _SetTimeState extends State<SetTime> {
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: Text(getEndTimeString(), style: TextStyle(color: Colors.white, fontSize: 20))
-                )
+                  child: getEndTimeString()
+                  )
               ]
             ),
             // the accept and cancel buttons 
             ButtonBar(
               alignment: MainAxisAlignment.center,
+              buttonMinWidth: 100,
+              buttonPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               children: <Widget>[
                 FlatButton(
-                  child: Text("Cancel"),
+                  child: Text("Cancel", style: TextStyle(fontSize: 20),),
                   onPressed: () {
                     // navigate back to main screen 
                     Navigator.pop(context); 
                   }
                 ),
                 RaisedButton(
-                  child: Text("Accept"),
+                   child: Text("Accept", style: TextStyle(fontSize: 20),),
                   onPressed: (isValidTime()) ? () {
                     this.widget.durationCallback(_duration, this.widget.originalContext); 
                   } : null, 
@@ -110,18 +131,32 @@ class _SetTimeState extends State<SetTime> {
     }
   }
 
-  String getEndTimeString() {
-    String timeMarker; 
-    String result = "End Time: "; 
+  RichText getEndTimeString() {
+    String timeMarker;
+    String result = "";
+    // String result = "Ends at: ";
     if (_endTime.hour > 12) {
       timeMarker = "PM";
-      result += (_endTime.hour-12).toString(); 
-    } else { 
+      result += (_endTime.hour - 12).toString();
+    } else {
       timeMarker = "AM";
-      result += _endTime.hour.toString(); 
+      result += _endTime.hour.toString();
     }
-    result += ":" + _endTime.minute.toString().padLeft(2, "0") + timeMarker; 
-    return result; 
+    result += ":" + _endTime.minute.toString().padLeft(2, '0') + timeMarker;
+    // Makes "Ends at: " normal weight and the end time bolded
+    var text = new RichText(
+      text: new TextSpan(
+          style: new TextStyle(
+            fontSize: 24.0,
+          ),
+          children: <TextSpan>[
+            new TextSpan(text: 'Ends at: '),
+            new TextSpan(
+                text: '$result',
+                style: new TextStyle(fontWeight: FontWeight.bold)),
+          ]),
+    );
+    return text;
   }
 
   // checks if there is any time on the clock 

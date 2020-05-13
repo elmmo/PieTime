@@ -23,18 +23,3 @@ void getDialog(context, titleText, bodyText) {
             ]);
       });
 }
-
-Widget drawDottedBorder(List<Widget> widgetsInBorder) {
-  return DottedBorder(
-    color: Colors.white,
-    radius: Radius.circular(12),
-    dashPattern: [2.1, 20],
-    strokeWidth: 8,
-    borderType: BorderType.Circle,
-    padding: EdgeInsets.all(6),
-      // Red timer circle
-      child: Stack(
-        children: widgetsInBorder
-      )
-  );
-}

@@ -32,7 +32,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
         accentColor: Colors.red,
         backgroundColor: Colors.grey[800],
         secondaryHeaderColor: Colors.grey[900],
-        textTheme: GoogleFonts.almaraiTextTheme(
+        textTheme: GoogleFonts.muliTextTheme(
           Theme.of(context).textTheme
         ),
       ),
