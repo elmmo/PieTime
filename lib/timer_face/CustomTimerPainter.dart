@@ -20,7 +20,7 @@ class CustomTimerPainter extends CustomPainter {
       ..style = PaintingStyle.stroke 
       ..color = new Color(0xFF0099FF)
       ..style = PaintingStyle.fill
-      ..blendMode = BlendMode.hardLight;
+      ..blendMode = BlendMode.multiply;
 
       paint.color = color; 
       double progress = (1.0 - animation.value) * 2 * math.pi; 

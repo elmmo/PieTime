@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
+// import 'package:fl_chart/fl_chart.dart';
 import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
-import 'timer_face/Util.dart';
 import 'theme.dart';
 import 'TimeKeeper.dart';
 
 // static functions meant to be used across the app, non-static functions are for
 // pages that require the main timer and task drawer (should only be home)
 class OrgComponents extends StatelessWidget {
-  List<Color> colorList = [ //Colors for task slices
-    Color.fromRGBO(238, 93, 93, 1),
-    Color.fromRGBO(111, 89, 171, 1),
-    Color.fromRGBO(51, 130, 209, 1),
-    Color.fromRGBO(50, 196, 196, 1),
-    Color.fromRGBO(227, 134, 106, 1),
-    Color.fromRGBO(188, 103, 134, 1),
+  static int colorValue = 400; //Increment by 100 to change shade
+  List<Color> colorList = [
+    //Colors for task slices
+    CustomColor.red[colorValue],
+    CustomColor.purple[colorValue],
+    CustomColor.blue[colorValue],
+    CustomColor.green[colorValue],
+    CustomColor.orange[colorValue],
+    CustomColor.pink[colorValue],
   ];
 
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class OrgComponents extends StatelessWidget {
               'Drawer Header',
             ),
             decoration: BoxDecoration(
-              color: MaterialColor(CustomColor.red[300].value, CustomColor.red),
+              color: CustomColor.red[500],
             ),
           ),
           // items within menu

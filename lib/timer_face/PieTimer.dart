@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:vibration/vibration.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
 import 'Util.dart';
@@ -116,6 +117,10 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // creates the main circle graphic
   void generatePie() {
+    // Map<String, double> dataMap = new Map();
+    // dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
+    // dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
+    // dataMap.putIfAbsent("Core 250 RR", () => 10);
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter: CustomTimerPainter(
@@ -161,8 +166,8 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   void _vibrateAlert(int vibrationRepetition) {
     // run the vibration
     for (var i = 0; i < vibrationRepetition; i++) {
-      HapticFeedback.mediumImpact();
-      sleep(const Duration(milliseconds: 300));
+      Vibration.vibrate(duration: 150, amplitude: 250);
+      sleep(const Duration(milliseconds: 200));
     }
   }
 

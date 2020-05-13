@@ -9,6 +9,7 @@ Color mutedRed = Color.fromARGB(255, 144, 35, 35);
 Color primaryRed = Color.fromARGB(255, 244, 81, 81);
 Color playButton = Color.fromARGB(255, 54, 201, 182);
 
+// Source: https://gist.github.com/mikemimik/5ac2fa98fe6d132098603c1bd40263d5
 class CustomColor {
   CustomColor._();
   static const Map<int, Color> red = const <int, Color>{
