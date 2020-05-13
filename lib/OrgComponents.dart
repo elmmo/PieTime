@@ -31,7 +31,7 @@ class OrgComponents extends StatelessWidget {
     Duration time = TimeKeeper.of(context).time;
     Map<String, double> pieSlices = getChartValues(context, time);
     return Scaffold(
-      drawer: generateSideDrawer(),
+      // drawer: generateSideDrawer(),
       appBar: generateAppBar(context),
       // Contains everything below the Appbar
       backgroundColor: Colors.grey[800],
@@ -39,38 +39,20 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
-  // Hamburger menu on the Appbar to the left
-  static Widget generateSideDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          // header
-          DrawerHeader(
-            child: Text(
-              'Drawer Header',
-            ),
-            decoration: BoxDecoration(
-              color: CustomColor.red[500],
-            ),
-          ),
-          // items within menu
-          ListTile(
-            title: Text('Item 1'),
-            onTap: () {},
-          ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
-  }
-
   // standard app bar across PieTime
   static AppBar generateAppBar(BuildContext context) {
     return AppBar(
+      leading: // Gear icon on the Appbar to the right
+          IconButton(
+        icon: Icon(Icons.settings),
+        onPressed: () {
+          return showDialog(
+              context: context,
+              builder: (context) {
+                return SettingsModal();
+              });
+        },
+      ),
       title: Text(
         'PieTime',
       ),
@@ -89,17 +71,6 @@ class OrgComponents extends StatelessWidget {
                     });
               }
             }),
-        // Gear icon on the Appbar to the right
-        IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () {
-            return showDialog(
-                context: context,
-                builder: (context) {
-                  return SettingsModal();
-                });
-          },
-        ),
         Padding(
             padding: EdgeInsets.only(right: 20.0),
             // Plus icon on the Appbar to the right
@@ -126,18 +97,20 @@ class OrgComponents extends StatelessWidget {
         // Don't add "New Task" from tasklist used for adding tasks
         if (taskList.getTaskAt(i).time == null) {
           continue;
-        } else { // Get task title and duration and add to pie chart dataMap
+        } else {
+          // Get task title and duration and add to pie chart dataMap
           double timeSlice = taskList.getTaskAt(i).time.inMinutes.toDouble();
           String name = taskList.getTaskAt(i).title;
           dataMap.putIfAbsent(name, () => timeSlice);
           timeUsed += timeSlice;
         }
       }
-    } 
+    }
     // Finds remaining time so Pie Chart can make a slice for it
-    if (timeTotal > timeUsed) { 
+    if (timeTotal > timeUsed) {
       dataMap.putIfAbsent("Remaining", () => timeTotal - timeUsed);
-    } else if (timeTotal == 0.0) { // If TaskList is empty, add default- throws a fit otherwise
+    } else if (timeTotal == 0.0) {
+      // If TaskList is empty, add default- throws a fit otherwise
       dataMap.putIfAbsent("Default", () => 100);
     }
     return dataMap;

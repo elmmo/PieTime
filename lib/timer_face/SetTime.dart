@@ -45,7 +45,6 @@ class _SetTimeState extends State<SetTime> {
                   })),
         ],
       ),
-      drawer: OrgComponents.generateSideDrawer(),
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.start,

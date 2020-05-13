@@ -25,7 +25,7 @@ class TaskList {
     maxTime = Duration.zero;
     list = new Map<int, Task>();
     timeUsed = Duration.zero;
-    id = 0;  // for assigning id to tasks
+    id = 0; // for assigning id to tasks
   }
 
   int getLength() => list.length;
@@ -111,12 +111,13 @@ class TaskList {
 
   Color getDefaultColor() {
     int count = this.getLength();
-    int maxCount = colors400.length; 
+    int maxCount = colors400.length;
 
     for (int i = 0; i <= count; i++) {
       if (i == count) {
         return colors400[i % maxCount];
       }
     }
+    return null;
   }
 }
