@@ -7,12 +7,13 @@ import '../tasks/TaskList.dart';
 import '../OrgComponents.dart';
 
 class SetTime extends StatefulWidget {
-  final Function durationCallback; 
+  final Function durationCallback;
   final Function taskListCallback;
   final TaskList taskList;
-  final BuildContext originalContext; 
-  
-  SetTime(this.durationCallback, this.taskListCallback, this.taskList, this.originalContext);
+  final BuildContext originalContext;
+
+  SetTime(this.durationCallback, this.taskListCallback, this.taskList,
+      this.originalContext);
 
   @override
   _SetTimeState createState() => new _SetTimeState(taskList: taskList);
@@ -23,13 +24,13 @@ class _SetTimeState extends State<SetTime> {
   final TaskList taskList;
 
   Duration _duration = Duration(hours: 0, minutes: 0);
-  DateTime _endTime = new DateTime.now(); 
+  DateTime _endTime = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
-       appBar: AppBar( // Changes plus icon to close and goes back to home
+      appBar: AppBar(
+        // Changes plus icon to close and goes back to home
         title: Text(
           'PieTime',
         ),
@@ -45,77 +46,84 @@ class _SetTimeState extends State<SetTime> {
                   })),
         ],
       ),
-      drawer: OrgComponents.generateSideDrawer(),
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-             Padding(
-                  padding: EdgeInsets.fromLTRB(0, 70, 0, 30),
-                  child: getEndTimeString(),
-                ),
-            // the set time picker 
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 70, 0, 30),
+              child: getEndTimeString(),
+            ),
+            // the set time picker
             DurationPicker(
               duration: _duration,
               onChange: (val) {
                 this.setState(() => _duration = val);
-                setEndTime(); 
+                setEndTime();
               },
               snapToMins: 1.0,
             ),
             // choose from presets
             RaisedButton(
-              child: Text("Presets"),
-              onPressed: () async {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                final presetDuration = await showDialog(
-                  context: context,
-                  builder: (context) {
-                    return PresetsModal(
-                      durationCallback: this.widget.durationCallback,
-                      taskListCallback: this.widget.taskListCallback,
-                      originalContext: this.widget.originalContext,
-                      prefs: prefs
-                    );
+                child: Text("Presets",
+                    style: new TextStyle(
+                      fontSize: 20.0,
+                    )),
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  final presetDuration = await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return PresetsModal(
+                            durationCallback: this.widget.durationCallback,
+                            taskListCallback: this.widget.taskListCallback,
+                            originalContext: this.widget.originalContext,
+                            prefs: prefs);
+                      }) as Duration;
+                  if (presetDuration != null) {
+                    setState(() {
+                      _duration = presetDuration;
+                      setEndTime();
+                    });
                   }
-                ) as Duration;
-                if (presetDuration != null) {
-                  setState(() {
-                    _duration = presetDuration;
-                    setEndTime();
-                  });
-                }
-              }
-            ),
+                }),
             // the end time
             Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: getEndTimeString()
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    // child: getEndTimeString()
                   )
-              ]
-            ),
-            // the accept and cancel buttons 
+                ]),
+            // the accept and cancel buttons
             ButtonBar(
               alignment: MainAxisAlignment.center,
               buttonMinWidth: 100,
               buttonPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
               children: <Widget>[
                 FlatButton(
-                  child: Text("Cancel", style: TextStyle(fontSize: 20),),
-                  onPressed: () {
-                    // navigate back to main screen 
-                    Navigator.pop(context); 
-                  }
-                ),
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      // navigate back to main screen
+                      Navigator.pop(context);
+                    }),
                 RaisedButton(
-                   child: Text("Accept", style: TextStyle(fontSize: 20),),
-                  onPressed: (isValidTime()) ? () {
-                    this.widget.durationCallback(_duration, this.widget.originalContext); 
-                  } : null, 
+                  child: Text(
+                    "Accept",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: (isValidTime())
+                      ? () {
+                          this.widget.durationCallback(
+                              _duration, this.widget.originalContext);
+                        }
+                      : null,
                 ),
               ],
             ),
@@ -159,12 +167,18 @@ class _SetTimeState extends State<SetTime> {
     return text;
   }
 
-  // checks if there is any time on the clock 
-  bool isValidTime() => _duration > Duration.zero; 
+  // checks if there is any time on the clock
+  bool isValidTime() => _duration > Duration.zero;
 }
 
 class PresetsModal extends StatefulWidget {
-  PresetsModal({Key key, @required this.durationCallback, @required this.taskListCallback, @required this.originalContext, @required this.prefs}) : super(key: key);
+  PresetsModal(
+      {Key key,
+      @required this.durationCallback,
+      @required this.taskListCallback,
+      @required this.originalContext,
+      @required this.prefs})
+      : super(key: key);
 
   final Function durationCallback;
   final Function taskListCallback;
@@ -190,34 +204,32 @@ class _PresetsModalState extends State<PresetsModal> {
   // Returns the number of minutes from a Duration of hours and minutes
   int parseMinutes(String time) {
     int colonPos = time.indexOf(":");
-    int minutes = int.parse(time.substring(colonPos+1, colonPos+3));
+    int minutes = int.parse(time.substring(colonPos + 1, colonPos + 3));
     return minutes;
   }
 
   // Returns the number of seconds from a Duration of hours and minutes
   int parseSeconds(String time) {
     int colonPos = time.indexOf(":");
-    int seconds = int.parse(time.substring(colonPos+4, colonPos+6));
+    int seconds = int.parse(time.substring(colonPos + 4, colonPos + 6));
     return seconds;
   }
 
   @override
   Widget build(BuildContext context) {
-
     List<String> presets = prefs.getStringList("presets");
     if (presets == null) {
       presets = [];
     }
 
     return AlertDialog(
-      title: Text("Timer Presets"),
-      content: Container(
-        height: 300,
-        decoration: BoxDecoration(
-          border: Border(top: BorderSide(color: Colors.black))
-        ),
-        child: SingleChildScrollView(
-          child: ListView.separated(
+        title: Text("Timer Presets"),
+        content: Container(
+          height: 300,
+          decoration: BoxDecoration(
+              border: Border(top: BorderSide(color: Colors.black))),
+          child: SingleChildScrollView(
+              child: ListView.separated(
             shrinkWrap: true,
             itemCount: presets.length,
             itemBuilder: (context, index) {
@@ -231,9 +243,17 @@ class _PresetsModalState extends State<PresetsModal> {
                 minutes += parseMinutes(task["time"]);
                 seconds += parseSeconds(task["time"]);
               }
-              Duration duration = Duration(hours: hours, minutes: minutes, seconds: seconds);
-              String tasks = numOfTasks.toString() + " task" + (numOfTasks == 1 ? "." : "s.");
-              String time = "Total duration: " + hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
+              Duration duration =
+                  Duration(hours: hours, minutes: minutes, seconds: seconds);
+              String tasks = numOfTasks.toString() +
+                  " task" +
+                  (numOfTasks == 1 ? "." : "s.");
+              String time = "Total duration: " +
+                  hours.toString() +
+                  ":" +
+                  minutes.toString() +
+                  ":" +
+                  seconds.toString();
               String subtitle = tasks + " " + time;
 
               TaskList taskListFromPreset = new TaskList();
@@ -241,30 +261,37 @@ class _PresetsModalState extends State<PresetsModal> {
               for (var i = 0; i < thisPreset["tasks"].length; i++) {
                 Map task = thisPreset["tasks"][i];
                 taskListFromPreset.createAddButton();
-                Duration taskDuration = Duration(hours: parseHours(task["time"]), minutes: parseMinutes(task["time"]), seconds: parseSeconds(task["time"]));
+                Duration taskDuration = Duration(
+                    hours: parseHours(task["time"]),
+                    minutes: parseMinutes(task["time"]),
+                    seconds: parseSeconds(task["time"]));
                 taskListFromPreset.addTask(task["title"], time: taskDuration);
               }
               taskListFromPreset.createAddButton();
 
-              // checks if there is any time on the clock 
+              // checks if there is any time on the clock
               bool isValidTime() => duration > Duration.zero;
 
               return Dismissible(
                 key: UniqueKey(),
                 background: Container(
-                  color:Colors.red,
+                  color: Colors.red,
                   child: ListTile(
-                    leading: Icon(Icons.delete_forever, color: Colors.black),
-                    trailing: Icon(Icons.delete_forever, color: Colors.black)
-                  ),
+                      leading: Icon(Icons.delete_forever, color: Colors.black),
+                      trailing:
+                          Icon(Icons.delete_forever, color: Colors.black)),
                 ),
                 child: ListTile(
                   title: Text(thisPreset["name"]),
                   subtitle: Text(subtitle),
                   onTap: () {
-                    Navigator.pop(context, Duration(hours: hours, minutes: minutes, seconds: seconds));
+                    Navigator.pop(
+                        context,
+                        Duration(
+                            hours: hours, minutes: minutes, seconds: seconds));
                     if (isValidTime()) {
-                      this.widget.durationCallback(duration, this.widget.originalContext); 
+                      this.widget.durationCallback(
+                          duration, this.widget.originalContext);
                     }
                     this.widget.taskListCallback(taskListFromPreset);
                     // make this the current tasks
@@ -273,15 +300,13 @@ class _PresetsModalState extends State<PresetsModal> {
                 onDismissed: (direction) {
                   setState(() {
                     presets.removeAt(index);
-                    prefs.setStringList("presets", presets); 
+                    prefs.setStringList("presets", presets);
                   });
                 },
               );
             },
             separatorBuilder: (context, index) => Divider(color: Colors.black),
-          )
-        ),
-      )
-    );
+          )),
+        ));
   }
 }
