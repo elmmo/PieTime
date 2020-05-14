@@ -45,56 +45,59 @@ class _SettingsModalState extends State<SettingsModal> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text("Settings"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          // toggle dark mode
-          FutureBuilder<bool>(
-            future: _isDarkMode,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile();
-              } else {
-                if (snapshot.hasError) {
-                  return ListTile(title: Text("Error: ${snapshot.error}"));
+      content: Container(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            // toggle dark mode
+            FutureBuilder<bool>(
+              future: _isDarkMode,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ListTile();
                 } else {
-                  return SwitchListTile(
-                    value: snapshot.data,
-                    title: Text("Dark Mode"),
-                    activeColor: Colors.red,
-                    contentPadding: EdgeInsets.all(0),
-                    onChanged: (value) {
-                      toggleDarkMode(value);
-                    },
-                  );
+                  if (snapshot.hasError) {
+                    return ListTile(title: Text("Error: ${snapshot.error}"));
+                  } else {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text("Dark Mode"),
+                      activeColor: Colors.red,
+                      contentPadding: EdgeInsets.all(0),
+                      onChanged: (value) {
+                        toggleDarkMode(value);
+                      },
+                    );
+                  }
                 }
-              }
-            },
-          ),
-          // toggle should delete tasks after 30 days
-          FutureBuilder<bool>(
-            future: _shouldDelete,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile();
-              } else {
-                if (snapshot.hasError) {
-                  return ListTile(title: Text("Error: ${snapshot.error}"));
+              },
+            ),
+            // toggle should delete tasks after 30 days
+            FutureBuilder<bool>(
+              future: _shouldDelete,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ListTile();
                 } else {
-                  return SwitchListTile(
-                    value: snapshot.data,
-                    title: Text("Delete tasks after 30 days"),
-                    activeColor: Colors.red,
-                    contentPadding: EdgeInsets.all(0),
-                    onChanged: (value) {
-                      toggleDelete(value);
-                    },
-                  );
+                  if (snapshot.hasError) {
+                    return ListTile(title: Text("Error: ${snapshot.error}"));
+                  } else {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text("Delete tasks after 30 days"),
+                      activeColor: Colors.red,
+                      contentPadding: EdgeInsets.all(0),
+                      onChanged: (value) {
+                        toggleDelete(value);
+                      },
+                    );
+                  }
                 }
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       )
     );
   }
