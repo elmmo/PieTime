@@ -13,28 +13,31 @@ class NewPresetModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Form(
-        key: formKey,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
-          ),
-          child: TextFormField(
-            controller: titleController,
-            maxLength: 50, // max number of characters for item title
-            buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
-            textInputAction: TextInputAction.done,
-            style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
-            validator: (value) {
-              if (value.isEmpty) {
-                return "Preset title can't be empty";
-              } else {
-                return null;
-              }
-            },
-            decoration: InputDecoration.collapsed(
-              hintText: "Preset name",
-              hintStyle: TextStyle(color: Color.fromRGBO(182, 182, 182, 0.7), fontSize: 16)
+      title: Container(
+        width: double.maxFinite,
+        child: Form(
+          key: formKey,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(bottom: BorderSide(color: Color.fromRGBO(182, 182, 182, 1)))
+            ),
+            child: TextFormField(
+              controller: titleController,
+              maxLength: 50, // max number of characters for item title
+              buildCounter: (BuildContext context, { int currentLength, int maxLength, bool isFocused }) => null,
+              textInputAction: TextInputAction.done,
+              style: TextStyle(color: Color.fromRGBO(182, 182, 182, 1), fontSize: 16),
+              validator: (value) {
+                if (value.isEmpty) {
+                  return "Preset title can't be empty";
+                } else {
+                  return null;
+                }
+              },
+              decoration: InputDecoration.collapsed(
+                hintText: "Preset name",
+                hintStyle: TextStyle(color: Color.fromRGBO(182, 182, 182, 0.7), fontSize: 16)
+              ),
             ),
           ),
         ),

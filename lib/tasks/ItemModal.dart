@@ -73,160 +73,166 @@ class ItemModal extends StatelessWidget {
     }
     return AlertDialog(
       backgroundColor: Theme.of(context).canvasColor,
-      content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // New Task item title field
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        )),
-                child: TextFormField(
-                  controller: titleController,
-                  onTap: () => titleController.selection = TextSelection(
-                      baseOffset: 0, extentOffset: titleController.text.length),
+      content: Container(
+        width: double.maxFinite,
+        child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                // New Task item title field
+                Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          )),
+                  child: TextFormField(
+                    controller: titleController,
+                    onTap: () => titleController.selection = TextSelection(
+                        baseOffset: 0, extentOffset: titleController.text.length),
 
-                  maxLength: 50, // max number of characters for item title
-                  buildCounter: (BuildContext context,
-                          {int currentLength, int maxLength, bool isFocused}) =>
-                      null,
-                  textInputAction: TextInputAction.done,
-                  focusNode: titleFocus,
-                  onFieldSubmitted: (term) {
-                    titleFocus.unfocus();
-                    FocusScope.of(context).requestFocus(hoursFocus);
-                  },
-                  style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),
-                  validator: (value) {
-                    String hrs = hoursController.text;
-                    String min = minutesController.text;
-                    String sec = secondsController.text;
-                    bool hrsIsEmpty = hrs.isEmpty;
-                    bool minIsEmpty = min.isEmpty;
-                    bool secIsEmpty = sec.isEmpty;
-                    bool hrsIsInt = int.tryParse(hrs) == null;
-                    bool minIsInt = int.tryParse(min) == null;
-                    bool secIsInt = int.tryParse(sec) == null;
-                    int hrsInt = !hrsIsEmpty ? int.parse(hrs) : 0;
-                    int minInt = !minIsEmpty ? int.parse(min) : 0;
-                    int secInt = !secIsEmpty ? int.parse(sec) : 0;
-
-                    if (value.isEmpty) {
-                      // return "Item title can't be empty";
-                    } else if (hrsIsEmpty && minIsEmpty && secIsEmpty) {
-                      return "Duration can't be empty";
-                    } else if ((!hrsIsEmpty && hrsIsInt) ||
-                        (!minIsEmpty && minIsInt) ||
-                        (!secIsEmpty && secIsInt)) {
-                      return "Duration must be a number";
-                    } else if (hrs == "0" && min == "0" && sec == "0") {
-                      return "Duration can't be zero";
-                    } else if (!this.timeChecker(Duration(
-                        hours: hrsInt, minutes: minInt, seconds: secInt))) {
-                      return "Total timer duration exceeded";
-                    }
-                    return null;
-                  },
-                  decoration: new InputDecoration(
-                    // border: InputBorder.none,
-                    errorStyle: TextStyle (color: Colors.red[300],),
-                    hintStyle: TextStyle(
-                        // color: Color.fromRGBO(182, 182, 182, 0.7),
-                        fontSize: 20),
-                  ).copyWith(contentPadding: const EdgeInsets.only(top: 20.0)),
-                ),
-              ),
-
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CardField(
-                      controller: hoursController,
-                      thisFocus: hoursFocus,
-                      nextFocus: minutesFocus,
-                      rightMargin: 10,
-                      leftMargin: 0,
-                      formLabel: "hours"),
-                  CardField(
-                      controller: minutesController,
-                      thisFocus: minutesFocus,
-                      nextFocus: secondsFocus,
-                      rightMargin: 0,
-                      leftMargin: 0,
-                      formLabel: "min"),
-                  CardField(
-                      controller: secondsController,
-                      thisFocus: secondsFocus,
-                      nextFocus: submitFocus,
-                      rightMargin: 0,
-                      leftMargin: 10,
-                      formLabel: "sec"),
-                ],
-              ),
-              Container(height: 8, width: 0),
-
-              Row(
-                mainAxisAlignment: !task.isNew
-                    ? MainAxisAlignment.spaceAround
-                    : MainAxisAlignment.center,
-                children: <Widget>[
-                  // Delete button if not creating a new task
-                  !task.isNew
-                      ? RaisedButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12)),
-                              side: BorderSide(
-                                  color: Theme.of(context).errorColor)),
-                          color: Theme.of(context).canvasColor,
-                          child: Text(
-                            "Delete",
-                            style: TextStyle(
-                                color: Theme.of(context).errorColor,
-                                fontSize: 20),
-                          ),
-                          onPressed: () {
-                            onDelete(task);
-                            Navigator.pop(context);
-                          },
-                        )
-                      : Container(),
-
-                  // Action button
-                  RaisedButton(
-                    focusNode: submitFocus,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12))),
-                    color: Theme.of(context).accentColor, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
-                    child: Text(task.isNew ? "Create" : "Update",
-                        style: TextStyle(color: Theme.of(context).canvasColor, fontSize: 16)),
-                    onPressed: () {
-                      if (formKey.currentState.validate()) {
-                        // if there's not an old title or time, we're creating a new item
-                        onUpdate(
-                            task: task,
-                            newTitle: titleController.text,
-                            newTime: Duration(
-                                hours: hoursController.text.isNotEmpty
-                                    ? int.parse(hoursController.text)
-                                    : 0,
-                                minutes: minutesController.text.isNotEmpty
-                                    ? int.parse(minutesController.text)
-                                    : 0,
-                                seconds: secondsController.text.isNotEmpty
-                                    ? int.parse(secondsController.text)
-                                    : 0),
-                            isComplete: task.completed);
-                        Navigator.pop(context);
-                      }
+                    maxLength: 50, // max number of characters for item title
+                    buildCounter: (BuildContext context,
+                            {int currentLength, int maxLength, bool isFocused}) =>
+                        null,
+                    textInputAction: TextInputAction.done,
+                    focusNode: titleFocus,
+                    onFieldSubmitted: (term) {
+                      titleFocus.unfocus();
+                      FocusScope.of(context).requestFocus(hoursFocus);
                     },
+                    style: TextStyle(
+                        color: Color.fromRGBO(182, 182, 182, 1), fontSize: 21),
+                    validator: (value) {
+                      String hrs = hoursController.text;
+                      String min = minutesController.text;
+                      String sec = secondsController.text;
+                      bool hrsIsEmpty = hrs.isEmpty;
+                      bool minIsEmpty = min.isEmpty;
+                      bool secIsEmpty = sec.isEmpty;
+                      bool hrsIsInt = int.tryParse(hrs) == null;
+                      bool minIsInt = int.tryParse(min) == null;
+                      bool secIsInt = int.tryParse(sec) == null;
+                      int hrsInt = !hrsIsEmpty ? int.parse(hrs) : 0;
+                      int minInt = !minIsEmpty ? int.parse(min) : 0;
+                      int secInt = !secIsEmpty ? int.parse(sec) : 0;
+
+                      if (value.isEmpty) {
+                        // return "Item title can't be empty";
+                      } else if (hrsIsEmpty && minIsEmpty && secIsEmpty) {
+                        return "Duration can't be empty";
+                      } else if ((!hrsIsEmpty && hrsIsInt) ||
+                          (!minIsEmpty && minIsInt) ||
+                          (!secIsEmpty && secIsInt)) {
+                        return "Duration must be a number";
+                      } else if (hrs == "0" && min == "0" && sec == "0") {
+                        return "Duration can't be zero";
+                      } else if (!this.timeChecker(Duration(
+                          hours: hrsInt, minutes: minInt, seconds: secInt))) {
+                        return "Total timer duration exceeded";
+                      }
+                      return null;
+                    },
+                    decoration: new InputDecoration(
+                      // border: InputBorder.none,
+                      errorStyle: TextStyle (color: Colors.red[300],),
+                      hintStyle: TextStyle(
+                          // color: Color.fromRGBO(182, 182, 182, 0.7),
+                          fontSize: 20),
+                    ).copyWith(contentPadding: const EdgeInsets.only(top: 20.0)),
                   ),
-                ],
-              )
-            ],
-          )),
+                ),
+
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    CardField(
+                        controller: hoursController,
+                        thisFocus: hoursFocus,
+                        nextFocus: minutesFocus,
+                        rightMargin: 10,
+                        leftMargin: 0,
+                        formLabel: "hours"),
+                    CardField(
+                        controller: minutesController,
+                        thisFocus: minutesFocus,
+                        nextFocus: secondsFocus,
+                        rightMargin: 0,
+                        leftMargin: 0,
+                        formLabel: "min"),
+                    CardField(
+                        controller: secondsController,
+                        thisFocus: secondsFocus,
+                        nextFocus: submitFocus,
+                        rightMargin: 0,
+                        leftMargin: 10,
+                        formLabel: "sec"),
+                  ],
+                ),
+                Container(height: 8, width: 0),
+
+                Row(
+                  mainAxisAlignment: !task.isNew
+                      ? MainAxisAlignment.spaceAround
+                      : MainAxisAlignment.center,
+                  children: <Widget>[
+                    // Delete button if not creating a new task
+                    !task.isNew
+                        ? RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(12)),
+                                side: BorderSide(
+                                    color: Theme.of(context).errorColor
+                                    )),
+                            color: Theme.of(context).canvasColor,
+                            child: Text(
+                              "Delete",
+                              style: TextStyle(
+                                  color: Theme.of(context).errorColor,
+                                  fontSize: 20),
+                            ),
+                            onPressed: () {
+                              onDelete(task);
+                              Navigator.pop(context);
+                            },
+                          )
+                        : Container(),
+
+                    // Action button
+                    RaisedButton(
+                      focusNode: submitFocus,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12))),
+                      color: Colors.blue[
+                          400], // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
+                      child: Text(task.isNew ? "Create" : "Update",
+                          style: TextStyle(color: Theme.of(context).canvasColor, fontSize: 16)),
+                      onPressed: () {
+                        if (formKey.currentState.validate()) {
+                          // if there's not an old title or time, we're creating a new item
+                          onUpdate(
+                              task: task,
+                              newTitle: titleController.text,
+                              newTime: Duration(
+                                  hours: hoursController.text.isNotEmpty
+                                      ? int.parse(hoursController.text)
+                                      : 0,
+                                  minutes: minutesController.text.isNotEmpty
+                                      ? int.parse(minutesController.text)
+                                      : 0,
+                                  seconds: secondsController.text.isNotEmpty
+                                      ? int.parse(secondsController.text)
+                                      : 0),
+                              isComplete: task.completed);
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                )
+              ],
+            )),
+      ),
     );
   }
 }

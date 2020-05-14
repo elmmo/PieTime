@@ -48,60 +48,62 @@ class _SettingsModalState extends State<SettingsModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Settings",  style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          // toggle dark mode
-          FutureBuilder<bool>(
-            future: _isDarkMode,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile();
-              } else {
-                if (snapshot.hasError) {
-                  return ListTile(title: Text("Error: ${snapshot.error}"));
+      title: Text("Settings", style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
+      content: Container(
+        width: double.maxFinite,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            // toggle dark mode
+            FutureBuilder<bool>(
+              future: _isDarkMode,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ListTile();
                 } else {
-                  return SwitchListTile(
-                    value: snapshot.data,
-                    title: Text("Dark Mode",
+                  if (snapshot.hasError) {
+                    return ListTile(title: Text("Error: ${snapshot.error}"));
+                  } else {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                     title: Text("Dark Mode",
                     style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15)),
                     activeColor: Theme.of(context).primaryColorLight,
-                    contentPadding: EdgeInsets.all(0),
-                    onChanged: (value) {
-                      toggleDarkMode(value);
-                      value ? _changeTheme(context, MyThemeKeys.DARK) : _changeTheme(context, MyThemeKeys.LIGHT);
-                    },
-                  );
+                      contentPadding: EdgeInsets.all(0),
+                      onChanged: (value) {
+                        toggleDarkMode(value);
+                         value ? _changeTheme(context, MyThemeKeys.DARK) : _changeTheme(context, MyThemeKeys.LIGHT);
+                      },
+                    );
+                  }
                 }
-              }
-            },
-          ),
-          // toggle should delete tasks after 30 days
-          FutureBuilder<bool>(
-            future: _shouldDelete,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return ListTile();
-              } else {
-                if (snapshot.hasError) {
-                  return ListTile(title: Text("Error: ${snapshot.error}"));
+              },
+            ),
+            // toggle should delete tasks after 30 days
+            FutureBuilder<bool>(
+              future: _shouldDelete,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return ListTile();
                 } else {
-                  return SwitchListTile(
-                    value: snapshot.data,
-                    title: Text("Delete tasks after 30 days",
-                    style: Theme.of(context).textTheme.bodyText1),
-                    activeColor: Theme.of(context).primaryColorLight,
-                    contentPadding: EdgeInsets.all(0),
-                    onChanged: (value) {
-                      toggleDelete(value);
-                    },
-                  );
+                  if (snapshot.hasError) {
+                    return ListTile(title: Text("Error: ${snapshot.error}"));
+                  } else {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text("Delete tasks after 30 days"),
+                      activeColor: Theme.of(context).primaryColorLight,
+                      contentPadding: EdgeInsets.all(0),
+                      onChanged: (value) {
+                        toggleDelete(value);
+                      },
+                    );
+                  }
                 }
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       )
     );
   }

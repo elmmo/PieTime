@@ -225,18 +225,16 @@ class _PresetsModalState extends State<PresetsModal> {
     }
 
     return AlertDialog(
-      // contentTextStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
-      titleTextStyle: Theme.of(context).textTheme.headline5,
+        // contentTextStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
+        titleTextStyle: Theme.of(context).textTheme.headline5,
         title: Text("Timer Presets"),
         content: Container(
             height: 300,
+            width: double.maxFinite,
             decoration: BoxDecoration(
-                border: Border(
-                    top: BorderSide(
-                        color: Theme.of(context).textTheme.bodyText1.color))),
-            // child: SingleChildScrollView(
-
-            child: ListView.separated(
+                border: Border(top: BorderSide(color: Colors.black))),
+            child: SingleChildScrollView(
+                child: ListView.separated(
               shrinkWrap: true,
               itemCount: presets.length,
               itemBuilder: (context, index) {
@@ -262,6 +260,33 @@ class _PresetsModalState extends State<PresetsModal> {
                     ":" +
                     seconds.toString();
                 String subtitle = tasks + " " + time;
+
+                // child: ListView.separated(
+                //   shrinkWrap: true,
+                //   itemCount: presets.length,
+                //   itemBuilder: (context, index) {
+                //     dynamic thisPreset = json.decode(presets[index]);
+                //     int numOfTasks = thisPreset["tasks"].length;
+                //     int hours = 0;
+                //     int minutes = 0;
+                //     int seconds = 0;
+                //     for (var task in thisPreset["tasks"]) {
+                //       hours += parseHours(task["time"]);
+                //       minutes += parseMinutes(task["time"]);
+                //       seconds += parseSeconds(task["time"]);
+                //     }
+                //     Duration duration =
+                //         Duration(hours: hours, minutes: minutes, seconds: seconds);
+                //     String tasks = numOfTasks.toString() +
+                //         " task" +
+                //         (numOfTasks == 1 ? "." : "s.");
+                //     String time = "Total duration: " +
+                //         hours.toString() +
+                //         ":" +
+                //         minutes.toString() +
+                //         ":" +
+                //         seconds.toString();
+                //     String subtitle = tasks + " " + time;
 
                 TaskList taskListFromPreset = new TaskList();
                 taskListFromPreset.maxTime = duration;
@@ -290,8 +315,10 @@ class _PresetsModalState extends State<PresetsModal> {
                             Icon(Icons.delete_forever, color: Colors.black)),
                   ),
                   child: ListTile(
-                    title: Text(thisPreset["name"], style: Theme.of(context).textTheme.bodyText1),
-                    subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyText2),
+                    title: Text(thisPreset["name"],
+                        style: Theme.of(context).textTheme.bodyText1),
+                    subtitle: Text(subtitle,
+                        style: Theme.of(context).textTheme.bodyText2),
                     onTap: () {
                       Navigator.pop(
                           context,
@@ -318,7 +345,7 @@ class _PresetsModalState extends State<PresetsModal> {
               separatorBuilder: (context, index) =>
                   Divider(color: Theme.of(context).textTheme.bodyText1.color),
             )
-            // ),
-            ));
+                // ),
+                )));
   }
 }
