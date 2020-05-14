@@ -12,7 +12,7 @@ import 'timer_face/NewPresetModal.dart';
 // static functions meant to be used across the app, non-static functions are for
 // pages that require the main timer and task drawer (should only be home)
 class OrgComponents extends StatelessWidget {
-  static int colorValue = 400; //Increment by 100 to change shade
+  static int colorValue = 300; //Increment by 100 to change shade
   List<Color> colorList = [
     //Colors for task slices
     CustomColor.red[colorValue],
@@ -31,10 +31,8 @@ class OrgComponents extends StatelessWidget {
     Duration time = TimeKeeper.of(context).time;
     Map<String, double> pieSlices = getChartValues(context, time);
     return Scaffold(
-      // drawer: generateSideDrawer(),
       appBar: generateAppBar(context),
-      // Contains everything below the Appbar
-      backgroundColor: Colors.grey[800],
+      backgroundColor: Theme.of(context).canvasColor,
       body: generateAppBody(time, pieSlices),
     );
   }
@@ -56,8 +54,6 @@ class OrgComponents extends StatelessWidget {
       title: Text(
         'PieTime',
       ),
-      // backgroundColor: theme.primaryColorDark,
-      // backgroundColor: theme.accentColor,
       actions: <Widget>[
         IconButton(
             icon: Icon(Icons.save),

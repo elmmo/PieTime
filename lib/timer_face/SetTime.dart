@@ -32,9 +32,8 @@ class _SetTimeState extends State<SetTime> {
       appBar: AppBar(
         // Changes plus icon to close and goes back to home
         title: Text(
-          'PieTime',
+          'New Timer',
         ),
-        backgroundColor: Colors.grey[900],
         actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
@@ -48,10 +47,10 @@ class _SetTimeState extends State<SetTime> {
       ),
       body: new Center(
         child: new Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 70, 0, 30),
+              padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: getEndTimeString(),
             ),
             // the set time picker
@@ -64,45 +63,47 @@ class _SetTimeState extends State<SetTime> {
               snapToMins: 1.0,
             ),
             // choose from presets
-            RaisedButton(
-                child: Text("Presets",
-                    style: new TextStyle(
-                      fontSize: 20.0,
-                    )),
-                onPressed: () async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  final presetDuration = await showDialog(
-                      context: context,
-                      builder: (context) {
-                        return PresetsModal(
-                            durationCallback: this.widget.durationCallback,
-                            taskListCallback: this.widget.taskListCallback,
-                            originalContext: this.widget.originalContext,
-                            prefs: prefs);
-                      }) as Duration;
-                  if (presetDuration != null) {
-                    setState(() {
-                      _duration = presetDuration;
-                      setEndTime();
-                    });
-                  }
-                }),
-            // the end time
-            Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    // child: getEndTimeString()
-                  )
-                ]),
+            SizedBox(
+                width: 140,
+                child: RaisedButton(
+                    color: Theme.of(context).primaryColorLight,
+                    padding: EdgeInsets.all(14.0),
+                    child: Row(
+                      // Replace with a Row for horizontal icon + text
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Icon(Icons.timer, color: Colors.white),
+                        Text("Presets",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(fontSize: 18, color: Colors.white))
+                      ],
+                    ),
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      final presetDuration = await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return PresetsModal(
+                                durationCallback: this.widget.durationCallback,
+                                taskListCallback: this.widget.taskListCallback,
+                                originalContext: this.widget.originalContext,
+                                prefs: prefs);
+                          }) as Duration;
+                      if (presetDuration != null) {
+                        setState(() {
+                          _duration = presetDuration;
+                          setEndTime();
+                        });
+                      }
+                    })),
             // the accept and cancel buttons
             ButtonBar(
               alignment: MainAxisAlignment.center,
-              buttonMinWidth: 100,
-              buttonPadding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+              mainAxisSize: MainAxisSize.max,
+              buttonPadding: EdgeInsets.fromLTRB(30, 10, 30, 10),
               children: <Widget>[
                 FlatButton(
                     child: Text(
@@ -114,6 +115,7 @@ class _SetTimeState extends State<SetTime> {
                       Navigator.pop(context);
                     }),
                 RaisedButton(
+                  color: Theme.of(context).accentColor,
                   child: Text(
                     "Accept",
                     style: TextStyle(fontSize: 20),
@@ -223,91 +225,127 @@ class _PresetsModalState extends State<PresetsModal> {
     }
 
     return AlertDialog(
+        // contentTextStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
+        titleTextStyle: Theme.of(context).textTheme.headline5,
         title: Text("Timer Presets"),
         content: Container(
-          height: 300,
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black))),
-          child: SingleChildScrollView(
-              child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: presets.length,
-            itemBuilder: (context, index) {
-              dynamic thisPreset = json.decode(presets[index]);
-              int numOfTasks = thisPreset["tasks"].length;
-              int hours = 0;
-              int minutes = 0;
-              int seconds = 0;
-              for (var task in thisPreset["tasks"]) {
-                hours += parseHours(task["time"]);
-                minutes += parseMinutes(task["time"]);
-                seconds += parseSeconds(task["time"]);
-              }
-              Duration duration =
-                  Duration(hours: hours, minutes: minutes, seconds: seconds);
-              String tasks = numOfTasks.toString() +
-                  " task" +
-                  (numOfTasks == 1 ? "." : "s.");
-              String time = "Total duration: " +
-                  hours.toString() +
-                  ":" +
-                  minutes.toString() +
-                  ":" +
-                  seconds.toString();
-              String subtitle = tasks + " " + time;
+            height: 300,
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.black))),
+            child: SingleChildScrollView(
+                child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: presets.length,
+              itemBuilder: (context, index) {
+                dynamic thisPreset = json.decode(presets[index]);
+                int numOfTasks = thisPreset["tasks"].length;
+                int hours = 0;
+                int minutes = 0;
+                int seconds = 0;
+                for (var task in thisPreset["tasks"]) {
+                  hours += parseHours(task["time"]);
+                  minutes += parseMinutes(task["time"]);
+                  seconds += parseSeconds(task["time"]);
+                }
+                Duration duration =
+                    Duration(hours: hours, minutes: minutes, seconds: seconds);
+                String tasks = numOfTasks.toString() +
+                    " task" +
+                    (numOfTasks == 1 ? "." : "s.");
+                String time = "Total duration: " +
+                    hours.toString() +
+                    ":" +
+                    minutes.toString() +
+                    ":" +
+                    seconds.toString();
+                String subtitle = tasks + " " + time;
 
-              TaskList taskListFromPreset = new TaskList();
-              taskListFromPreset.maxTime = duration;
-              for (var i = 0; i < thisPreset["tasks"].length; i++) {
-                Map task = thisPreset["tasks"][i];
+                // child: ListView.separated(
+                //   shrinkWrap: true,
+                //   itemCount: presets.length,
+                //   itemBuilder: (context, index) {
+                //     dynamic thisPreset = json.decode(presets[index]);
+                //     int numOfTasks = thisPreset["tasks"].length;
+                //     int hours = 0;
+                //     int minutes = 0;
+                //     int seconds = 0;
+                //     for (var task in thisPreset["tasks"]) {
+                //       hours += parseHours(task["time"]);
+                //       minutes += parseMinutes(task["time"]);
+                //       seconds += parseSeconds(task["time"]);
+                //     }
+                //     Duration duration =
+                //         Duration(hours: hours, minutes: minutes, seconds: seconds);
+                //     String tasks = numOfTasks.toString() +
+                //         " task" +
+                //         (numOfTasks == 1 ? "." : "s.");
+                //     String time = "Total duration: " +
+                //         hours.toString() +
+                //         ":" +
+                //         minutes.toString() +
+                //         ":" +
+                //         seconds.toString();
+                //     String subtitle = tasks + " " + time;
+
+                TaskList taskListFromPreset = new TaskList();
+                taskListFromPreset.maxTime = duration;
+                for (var i = 0; i < thisPreset["tasks"].length; i++) {
+                  Map task = thisPreset["tasks"][i];
+                  taskListFromPreset.createAddButton();
+                  Duration taskDuration = Duration(
+                      hours: parseHours(task["time"]),
+                      minutes: parseMinutes(task["time"]),
+                      seconds: parseSeconds(task["time"]));
+                  taskListFromPreset.addTask(task["title"], time: taskDuration);
+                }
                 taskListFromPreset.createAddButton();
-                Duration taskDuration = Duration(
-                    hours: parseHours(task["time"]),
-                    minutes: parseMinutes(task["time"]),
-                    seconds: parseSeconds(task["time"]));
-                taskListFromPreset.addTask(task["title"], time: taskDuration);
-              }
-              taskListFromPreset.createAddButton();
 
-              // checks if there is any time on the clock
-              bool isValidTime() => duration > Duration.zero;
+                // checks if there is any time on the clock
+                bool isValidTime() => duration > Duration.zero;
 
-              return Dismissible(
-                key: UniqueKey(),
-                background: Container(
-                  color: Colors.red,
+                return Dismissible(
+                  key: UniqueKey(),
+                  background: Container(
+                    color: Colors.red,
+                    child: ListTile(
+                        leading:
+                            Icon(Icons.delete_forever, color: Colors.black),
+                        trailing:
+                            Icon(Icons.delete_forever, color: Colors.black)),
+                  ),
                   child: ListTile(
-                      leading: Icon(Icons.delete_forever, color: Colors.black),
-                      trailing:
-                          Icon(Icons.delete_forever, color: Colors.black)),
-                ),
-                child: ListTile(
-                  title: Text(thisPreset["name"]),
-                  subtitle: Text(subtitle),
-                  onTap: () {
-                    Navigator.pop(
-                        context,
-                        Duration(
-                            hours: hours, minutes: minutes, seconds: seconds));
-                    if (isValidTime()) {
-                      this.widget.durationCallback(
-                          duration, this.widget.originalContext);
-                    }
-                    this.widget.taskListCallback(taskListFromPreset);
-                    // make this the current tasks
+                    title: Text(thisPreset["name"],
+                        style: Theme.of(context).textTheme.bodyText1),
+                    subtitle: Text(subtitle,
+                        style: Theme.of(context).textTheme.bodyText2),
+                    onTap: () {
+                      Navigator.pop(
+                          context,
+                          Duration(
+                              hours: hours,
+                              minutes: minutes,
+                              seconds: seconds));
+                      if (isValidTime()) {
+                        this.widget.durationCallback(
+                            duration, this.widget.originalContext);
+                      }
+                      this.widget.taskListCallback(taskListFromPreset);
+                      // make this the current tasks
+                    },
+                  ),
+                  onDismissed: (direction) {
+                    setState(() {
+                      presets.removeAt(index);
+                      prefs.setStringList("presets", presets);
+                    });
                   },
-                ),
-                onDismissed: (direction) {
-                  setState(() {
-                    presets.removeAt(index);
-                    prefs.setStringList("presets", presets);
-                  });
-                },
-              );
-            },
-            separatorBuilder: (context, index) => Divider(color: Colors.black),
-          )),
-        ));
+                );
+              },
+              separatorBuilder: (context, index) =>
+                  Divider(color: Theme.of(context).textTheme.bodyText1.color),
+            )
+                // ),
+                )));
   }
 }

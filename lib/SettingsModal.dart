@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'theme.dart';
 
 class SettingsModal extends StatefulWidget {
   @override
@@ -7,6 +8,9 @@ class SettingsModal extends StatefulWidget {
 }
 
 class _SettingsModalState extends State<SettingsModal> {
+    void _changeTheme(BuildContext buildContext, MyThemeKeys key) {
+    CustomTheme.instanceOf(buildContext).changeTheme(key);
+  }
 
   static final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   Future<bool> _isDarkMode;
@@ -44,7 +48,7 @@ class _SettingsModalState extends State<SettingsModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Settings"),
+      title: Text("Settings", style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 25)),
       content: Container(
         width: double.maxFinite,
         child: Column(
@@ -62,11 +66,13 @@ class _SettingsModalState extends State<SettingsModal> {
                   } else {
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Dark Mode"),
-                      activeColor: Colors.red,
+                     title: Text("Dark Mode",
+                    style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15)),
+                    activeColor: Theme.of(context).primaryColorLight,
                       contentPadding: EdgeInsets.all(0),
                       onChanged: (value) {
                         toggleDarkMode(value);
+                         value ? _changeTheme(context, MyThemeKeys.DARK) : _changeTheme(context, MyThemeKeys.LIGHT);
                       },
                     );
                   }
@@ -86,7 +92,7 @@ class _SettingsModalState extends State<SettingsModal> {
                     return SwitchListTile(
                       value: snapshot.data,
                       title: Text("Delete tasks after 30 days"),
-                      activeColor: Colors.red,
+                      activeColor: Theme.of(context).primaryColorLight,
                       contentPadding: EdgeInsets.all(0),
                       onChanged: (value) {
                         toggleDelete(value);

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/widgets.dart';
 // https://medium.com/flutter-community/dynamic-theming-with-flutter-78681285d85f
-// https://medium.com/py-bits/turn-any-color-to-material-color-for-flutter-d8e8e037a837
 
 enum MyThemeKeys { LIGHT, DARK, DARKER }
 
 Color mutedRed = Color.fromARGB(255, 144, 35, 35);
 Color primaryRed = Color.fromARGB(255, 244, 81, 81);
-Color playButton = Color.fromARGB(255, 54, 201, 182);
+Color newTaskLight = Color.fromARGB(255, 54, 201, 182);
 
 // Source: https://gist.github.com/mikemimik/5ac2fa98fe6d132098603c1bd40263d5
 class CustomColor {
   CustomColor._();
+
   static const Map<int, Color> red = const <int, Color>{
     50: const Color.fromRGBO(249, 214, 214, 1),
     100: const Color.fromRGBO(248, 190, 190, 1),
@@ -88,29 +89,38 @@ class CustomColor {
 
 class MyThemes {
   static final ThemeData lightTheme = ThemeData(
-    primaryColor: primaryRed,
-    primarySwatch: MaterialColor(CustomColor.red[50].value, CustomColor.red),
+    primaryColor: CustomColor.red[600],
+    primaryColorLight: CustomColor.blue[400],
     brightness: Brightness.light,
-    accentColor: Colors.redAccent,
+    accentColor: CustomColor.green[200],
     primaryColorDark: mutedRed,
-    focusColor: playButton,
+    textTheme: GoogleFonts.muliTextTheme().copyWith(bodyText1: TextStyle(color: Colors.grey[900])),
+    backgroundColor: Colors.grey[200],
   );
 
   static final ThemeData darkTheme = ThemeData(
-    primaryColor: primaryRed,
+    primaryColorLight: CustomColor.red[500],
+    buttonColor: CustomColor.green[600],
+    primaryColor: Colors.grey[900],
     primarySwatch: MaterialColor(CustomColor.red[100].value, CustomColor.red),
     brightness: Brightness.dark,
-    accentColor: Colors.redAccent,
-    primaryColorDark: mutedRed,
-    focusColor: playButton,
+    cardColor: Colors.grey[800],
+    canvasColor: Color.fromRGBO(69, 69, 69, 1),
+    backgroundColor: Colors.grey[850],
+    primaryColorDark: Colors.grey[700],
+    textTheme: GoogleFonts.muliTextTheme()
+        .copyWith(
+        bodyText1: TextStyle(color: Colors.grey[200]), 
+        headline5: TextStyle(color: Colors.grey[50], fontSize: 20),
+        bodyText2: TextStyle(color: Colors.grey[400])),
   );
 
   static final ThemeData darkerTheme = ThemeData(
     primaryColor: Colors.black,
     brightness: Brightness.dark,
-    accentColor: Colors.redAccent,
     primaryColorDark: mutedRed,
-    focusColor: playButton,
+    textTheme: GoogleFonts.muliTextTheme()
+        .copyWith(bodyText1: TextStyle(color: Colors.grey[200])),
   );
 
   static ThemeData getThemeFromKey(MyThemeKeys themeKey) {
@@ -122,7 +132,7 @@ class MyThemes {
       case MyThemeKeys.DARKER:
         return darkerTheme;
       default:
-        return lightTheme;
+        return darkTheme;
     }
   }
 }

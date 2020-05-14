@@ -11,11 +11,11 @@ void getDialog(context, titleText, bodyText) {
         return AlertDialog(
             title: new Text(titleText),
             content: Container(width: double.maxFinite, child: new Text(bodyText)),
-            backgroundColor: Colors.grey[50],
+            backgroundColor: Theme.of(context).backgroundColor,
             actions: <Widget>[
               new FlatButton(
                   child: new Text("Ok"),
-                  color: Colors.cyan[800],
+                  color: Theme.of(context).accentColor,
                   onPressed: () {
                     Navigator.of(builderContext).pop();
                   })

@@ -109,7 +109,9 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
           icon: Icon(_status == PieTimerStatus.playing
               ? Icons.pause
               : Icons.play_arrow),
-          label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play"));
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.tealAccent[700],
+          label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
       _buildStack[PieTimerComponent.toggleButton] = button;
     }
   }
