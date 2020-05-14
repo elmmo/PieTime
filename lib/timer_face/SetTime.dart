@@ -260,34 +260,6 @@ class _PresetsModalState extends State<PresetsModal> {
                     ":" +
                     seconds.toString();
                 String subtitle = tasks + " " + time;
-
-                // child: ListView.separated(
-                //   shrinkWrap: true,
-                //   itemCount: presets.length,
-                //   itemBuilder: (context, index) {
-                //     dynamic thisPreset = json.decode(presets[index]);
-                //     int numOfTasks = thisPreset["tasks"].length;
-                //     int hours = 0;
-                //     int minutes = 0;
-                //     int seconds = 0;
-                //     for (var task in thisPreset["tasks"]) {
-                //       hours += parseHours(task["time"]);
-                //       minutes += parseMinutes(task["time"]);
-                //       seconds += parseSeconds(task["time"]);
-                //     }
-                //     Duration duration =
-                //         Duration(hours: hours, minutes: minutes, seconds: seconds);
-                //     String tasks = numOfTasks.toString() +
-                //         " task" +
-                //         (numOfTasks == 1 ? "." : "s.");
-                //     String time = "Total duration: " +
-                //         hours.toString() +
-                //         ":" +
-                //         minutes.toString() +
-                //         ":" +
-                //         seconds.toString();
-                //     String subtitle = tasks + " " + time;
-
                 TaskList taskListFromPreset = new TaskList();
                 taskListFromPreset.maxTime = duration;
                 for (var i = 0; i < thisPreset["tasks"].length; i++) {
