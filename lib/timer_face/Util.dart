@@ -10,7 +10,7 @@ void getDialog(context, titleText, bodyText) {
       builder: (BuildContext builderContext) {
         return AlertDialog(
             title: new Text(titleText),
-            content: new Text(bodyText),
+            content: Container(width: double.maxFinite, child: new Text(bodyText)),
             backgroundColor: Colors.grey[50],
             actions: <Widget>[
               new FlatButton(

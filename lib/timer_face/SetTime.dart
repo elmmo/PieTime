@@ -226,6 +226,7 @@ class _PresetsModalState extends State<PresetsModal> {
         title: Text("Timer Presets"),
         content: Container(
           height: 300,
+          width: double.maxFinite,
           decoration: BoxDecoration(
               border: Border(top: BorderSide(color: Colors.black))),
           child: SingleChildScrollView(
