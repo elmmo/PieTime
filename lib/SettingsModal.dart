@@ -91,8 +91,9 @@ class _SettingsModalState extends State<SettingsModal> {
                   } else {
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Delete tasks after 30 days"),
-                      activeColor: Theme.of(context).primaryColorLight,
+                      title: Text("Delete tasks after 30 days",
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 15)),
+                    activeColor: Theme.of(context).primaryColorLight,
                       contentPadding: EdgeInsets.all(0),
                       onChanged: (value) {
                         toggleDelete(value);
