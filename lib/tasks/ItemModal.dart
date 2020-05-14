@@ -72,7 +72,7 @@ class ItemModal extends StatelessWidget {
       secondsController.text = parseSeconds(task.time);
     }
     return AlertDialog(
-      backgroundColor: Colors.grey[800],
+      backgroundColor: Theme.of(context).canvasColor,
       content: Form(
           key: formKey,
           child: Column(
@@ -98,8 +98,7 @@ class ItemModal extends StatelessWidget {
                     titleFocus.unfocus();
                     FocusScope.of(context).requestFocus(hoursFocus);
                   },
-                  style: TextStyle(
-                      color: Color.fromRGBO(182, 182, 182, 1), fontSize: 21),
+                  style: Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 20),
                   validator: (value) {
                     String hrs = hoursController.text;
                     String min = minutesController.text;
@@ -180,12 +179,12 @@ class ItemModal extends StatelessWidget {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(12)),
                               side: BorderSide(
-                                  color: Color.fromRGBO(209, 26, 42, 1))),
-                          color: Color.fromRGBO(80, 80, 80, 1),
+                                  color: Theme.of(context).errorColor)),
+                          color: Theme.of(context).canvasColor,
                           child: Text(
                             "Delete",
                             style: TextStyle(
-                                color: Color.fromRGBO(209, 26, 42, 1),
+                                color: Theme.of(context).errorColor,
                                 fontSize: 20),
                           ),
                           onPressed: () {
@@ -200,10 +199,9 @@ class ItemModal extends StatelessWidget {
                     focusNode: submitFocus,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12))),
-                    color: Colors.blue[
-                        400], // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
+                    color: Theme.of(context).accentColor, // button color will be the same color as the item's color, if it's a new item the color is the color it will be once created
                     child: Text(task.isNew ? "Create" : "Update",
-                        style: TextStyle(color: Colors.black, fontSize: 16)),
+                        style: TextStyle(color: Theme.of(context).canvasColor, fontSize: 16)),
                     onPressed: () {
                       if (formKey.currentState.validate()) {
                         // if there's not an old title or time, we're creating a new item
