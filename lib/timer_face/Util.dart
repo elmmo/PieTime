@@ -9,13 +9,13 @@ void getDialog(context, titleText, bodyText) {
       context: context,
       builder: (BuildContext builderContext) {
         return AlertDialog(
-            title: new Text(titleText),
-            content: Container(width: double.maxFinite, child: new Text(bodyText)),
+            title: new Text(titleText, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color)),
+            content: Container(width: double.maxFinite, child: new Text(bodyText, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color))),
             backgroundColor: Theme.of(context).backgroundColor,
             actions: <Widget>[
               new FlatButton(
-                  child: new Text("Ok"),
-                  color: Theme.of(context).accentColor,
+                  child: new Text("Ok", ),
+                  color: Theme.of(context).primaryColorLight,
                   onPressed: () {
                     Navigator.of(builderContext).pop();
                   })

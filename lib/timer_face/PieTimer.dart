@@ -118,10 +118,6 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // creates the main circle graphic
   void generatePie() {
-    // Map<String, double> dataMap = new Map();
-    // dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
-    // dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
-    // dataMap.putIfAbsent("Core 250 RR", () => 10);
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter: CustomTimerPainter(
