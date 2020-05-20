@@ -233,8 +233,7 @@ class _PresetsModalState extends State<PresetsModal> {
             width: double.maxFinite,
             decoration: BoxDecoration(
                 border: Border(top: BorderSide(color: Colors.black))),
-            child: SingleChildScrollView(
-                child: ListView.separated(
+            child: ListView.separated(
               shrinkWrap: true,
               itemCount: presets.length,
               itemBuilder: (context, index) {
@@ -316,8 +315,8 @@ class _PresetsModalState extends State<PresetsModal> {
               },
               separatorBuilder: (context, index) =>
                   Divider(color: Theme.of(context).textTheme.bodyText1.color),
-            )
-                // ),
-                )));
+              // )
+              // ),
+            )));
   }
 }
