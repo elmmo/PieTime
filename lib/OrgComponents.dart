@@ -3,19 +3,15 @@ import 'package:fl_chart/fl_chart.dart';
 import 'SettingsModal.dart';
 import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
-import 'theme.dart';
+// import 'theme.dart';
 import 'TimeKeeper.dart';
 import 'tasks/TaskList.dart';
 import 'timer_face/NewPresetModal.dart';
 import 'timer_face/timerSlice.dart';
 
-
-
 // static functions meant to be used across the app, non-static functions are for
 // pages that require the main timer and task drawer (should only be home)
 class OrgComponents extends StatelessWidget {
-
-
   OrgComponents({Key key, this.callback}) : super(key: key);
 
   final Function callback;
@@ -72,12 +68,9 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
-  
-  
-
   // everything below the app bar on the main page
   Widget generateAppBody(Duration time, List<PieChartSectionData> taskMap) {
-    double padTimer = 25;
+    double padTimer = 8;
     double timerSidePadding = 20;
 
     return Stack(
@@ -95,6 +88,7 @@ class OrgComponents extends StatelessWidget {
                   alignment: Alignment.center,
                   child: PieChart(PieChartData(
                     sections: taskMap,
+                    centerSpaceRadius: 0,
                     startDegreeOffset: -90,
                     borderData: FlBorderData(show: false),
                     // centerSpaceRadius: 20,

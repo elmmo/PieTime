@@ -31,7 +31,7 @@ List<PieChartSectionData> getChartSections(
   double timeUsed = 0;
 
   final List<PieChartSectionData> sectionData = [];
-  double sliceRadius = 130; //Controls how big each slice is
+  double sliceRadius = 144; //Controls how big each slice is
   var titleTextStyle = new TextStyle(
       //Styles the title of each task slice
       fontSize: 15,
@@ -59,7 +59,7 @@ List<PieChartSectionData> getChartSections(
     }
   }
   // Finds remaining time so Pie Chart can make a slice for it
-  if (timeTotal > timeUsed && timeTotal != 0.0) {
+  if (timeTotal > timeUsed && timeUsed != 0.0) {
     sectionData.add(PieChartSectionData(
       color: CustomColor.remainder,
       value: timeTotal - timeUsed,
@@ -67,10 +67,10 @@ List<PieChartSectionData> getChartSections(
       radius: sliceRadius,
       titleStyle: titleTextStyle,
     ));
-  } else if (timeTotal == 0.0) {
+  } else{
     // If TaskList is empty, add untitled default
     sectionData.add(PieChartSectionData(
-        color: CustomColor.remainder,
+        color: sliceColors[0],
         value: 1,
         title: "",
         radius: sliceRadius,
