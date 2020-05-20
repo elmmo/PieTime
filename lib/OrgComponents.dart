@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pie_chart/pie_chart.dart';
-// import 'package:fl_chart/fl_chart.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'SettingsModal.dart';
 import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
@@ -8,20 +7,14 @@ import 'theme.dart';
 import 'TimeKeeper.dart';
 import 'tasks/TaskList.dart';
 import 'timer_face/NewPresetModal.dart';
+import 'timer_face/timerSlice.dart';
+
+
 
 // static functions meant to be used across the app, non-static functions are for
 // pages that require the main timer and task drawer (should only be home)
 class OrgComponents extends StatelessWidget {
-  static int colorValue = 300; //Increment by 100 to change shade
-  List<Color> colorList = [
-    //Colors for task slices
-    CustomColor.red[colorValue],
-    CustomColor.purple[colorValue],
-    CustomColor.blue[colorValue],
-    CustomColor.green[colorValue],
-    CustomColor.orange[colorValue],
-    CustomColor.pink[colorValue],
-  ];
+
 
   OrgComponents({Key key, this.callback}) : super(key: key);
 
@@ -29,7 +22,7 @@ class OrgComponents extends StatelessWidget {
 
   Widget build(BuildContext context) {
     Duration time = TimeKeeper.of(context).time;
-    Map<String, double> pieSlices = getChartValues(context, time);
+    List<PieChartSectionData> pieSlices = getChartSections(context, time);
     return Scaffold(
       appBar: generateAppBar(context),
       backgroundColor: Theme.of(context).canvasColor,
@@ -79,42 +72,12 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
-  // Turns tasks from tasklist into a map of slices, which is used by pie chart
-  // Needs context for tasklist and duration to calculate time not used by tasks
-  Map<String, double> getChartValues(BuildContext context, Duration duration) {
-    TaskList taskList = TimeKeeper.of(context).taskList;
-    int listLength = taskList.getLength();
-    double timeTotal = duration.inMinutes.toDouble();
-    double timeUsed = 0;
-    final Map<String, double> dataMap = {};
-
-    if (listLength > 0) {
-      for (int i = 0; i < listLength; i++) {
-        // Don't add "New Task" from tasklist used for adding tasks
-        if (taskList.getTaskAt(i).time == null) {
-          continue;
-        } else {
-          // Get task title and duration and add to pie chart dataMap
-          double timeSlice = taskList.getTaskAt(i).time.inMinutes.toDouble();
-          String name = taskList.getTaskAt(i).title;
-          dataMap.putIfAbsent(name, () => timeSlice);
-          timeUsed += timeSlice;
-        }
-      }
-    }
-    // Finds remaining time so Pie Chart can make a slice for it
-    if (timeTotal > timeUsed) {
-      dataMap.putIfAbsent("Remaining", () => timeTotal - timeUsed);
-    } else if (timeTotal == 0.0) {
-      // If TaskList is empty, add default- throws a fit otherwise
-      dataMap.putIfAbsent("Default", () => 100);
-    }
-    return dataMap;
-  }
+  
+  
 
   // everything below the app bar on the main page
-  Widget generateAppBody(Duration time, Map<String, double> taskMap) {
-    double padTimer = 8;
+  Widget generateAppBody(Duration time, List<PieChartSectionData> taskMap) {
+    double padTimer = 25;
     double timerSidePadding = 20;
 
     return Stack(
@@ -128,21 +91,15 @@ class OrgComponents extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Image.asset('assets/TickMarks.png'),
                 ),
-                Padding(
-                  child: PieChart(
-                    dataMap: taskMap,
-                    showLegends: false,
-                    showChartValueLabel: false,
-                    animationDuration: Duration(milliseconds: 0),
-                    initialAngle: 4.713, //If timer moves clockwise
-                    showChartValuesInPercentage: false,
-                    colorList: colorList,
-                    chartValueStyle: defaultChartValueStyle.copyWith(
-                      color: Colors.blueGrey[900],
-                      fontSize: 20,
-                    ),
-                  ),
-                  padding: EdgeInsets.all(padTimer),
+                Align(
+                  alignment: Alignment.center,
+                  child: PieChart(PieChartData(
+                    sections: taskMap,
+                    startDegreeOffset: -90,
+                    borderData: FlBorderData(show: false),
+                    // centerSpaceRadius: 20,
+                    sectionsSpace: 0,
+                  )),
                 ),
                 Padding(
                   padding: EdgeInsets.all(padTimer),

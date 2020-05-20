@@ -125,7 +125,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter: CustomTimerPainter(
-              animation: _controller, color: Colors.blueGrey[800])),
+              animation: _controller, color: Colors.blueGrey[700])),
     );
     _buildStack[PieTimerComponent.pie] = pie;
   }
@@ -140,7 +140,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
             children: <Widget>[
               Text(
                 text,
-                style: TextStyle(fontSize: 55.0, color: Colors.white),
+                style: TextStyle(fontSize: 40.0, color: Colors.white),
               )
             ]));
     return timerText;
