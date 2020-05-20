@@ -275,15 +275,17 @@ class _PresetsModalState extends State<PresetsModal> {
                 // checks if there is any time on the clock
                 bool isValidTime() => duration > Duration.zero;
 
+                // Swipe to delete preset item
                 return Dismissible(
                   key: UniqueKey(),
                   background: Container(
                     color: Theme.of(context).errorColor,
                     child: ListTile(
                         leading:
-                            Icon(Icons.delete_forever, color: Theme.of(context).textTheme.bodyText1.color),
+                            Icon(Icons.delete_forever, color: Colors.white),
+                        title: Text('Delete', style: TextStyle(color: Colors.white)),
                         trailing:
-                            Icon(Icons.delete_forever, color: Theme.of(context).textTheme.bodyText1.color)),
+                            Icon(Icons.delete_forever, color: Colors.white)),
                   ),
                   child: ListTile(
                     title: Text(thisPreset["name"],
@@ -315,8 +317,6 @@ class _PresetsModalState extends State<PresetsModal> {
               },
               separatorBuilder: (context, index) =>
                   Divider(color: Theme.of(context).textTheme.bodyText1.color),
-              // )
-              // ),
             )));
   }
 }

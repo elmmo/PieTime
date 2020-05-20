@@ -96,6 +96,7 @@ class MyThemes {
     primaryColorDark: mutedRed,
     textTheme: GoogleFonts.muliTextTheme().copyWith(bodyText1: TextStyle(color: Colors.grey[900])),
     backgroundColor: Colors.grey[200],
+    errorColor: CustomColor.red[300],
   );
 
   static final ThemeData darkTheme = ThemeData(
