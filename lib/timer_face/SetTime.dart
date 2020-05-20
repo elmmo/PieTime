@@ -232,7 +232,7 @@ class _PresetsModalState extends State<PresetsModal> {
             height: 300,
             width: double.maxFinite,
             decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.black))),
+                border: Border(top: BorderSide(color: Theme.of(context).textTheme.bodyText1.color))),
             child: ListView.separated(
               shrinkWrap: true,
               itemCount: presets.length,
@@ -278,12 +278,12 @@ class _PresetsModalState extends State<PresetsModal> {
                 return Dismissible(
                   key: UniqueKey(),
                   background: Container(
-                    color: Colors.red,
+                    color: Theme.of(context).errorColor,
                     child: ListTile(
                         leading:
-                            Icon(Icons.delete_forever, color: Colors.black),
+                            Icon(Icons.delete_forever, color: Theme.of(context).textTheme.bodyText1.color),
                         trailing:
-                            Icon(Icons.delete_forever, color: Colors.black)),
+                            Icon(Icons.delete_forever, color: Theme.of(context).textTheme.bodyText1.color)),
                   ),
                   child: ListTile(
                     title: Text(thisPreset["name"],
