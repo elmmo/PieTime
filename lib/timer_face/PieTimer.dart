@@ -3,6 +3,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
 import 'Util.dart';
+import '../Theme.dart';
 
 enum PieTimerStatus { none, playing, paused }
 
@@ -109,9 +110,11 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
           icon: Icon(_status == PieTimerStatus.playing
               ? Icons.pause
               : Icons.play_arrow),
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.tealAccent[700],
-          label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
+          foregroundColor: Colors.white,
+          backgroundColor: CustomColor.newTask,
+          label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play",
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
       _buildStack[PieTimerComponent.toggleButton] = button;
     }
   }
@@ -128,16 +131,28 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // creates and positions the text in the middle of the pie
   Widget generateTimerText(text) {
+    Color timerTextbg = Colors.grey[600];
     Widget timerText = Align(
         alignment: FractionalOffset.center,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(
-                text,
-                style: TextStyle(fontSize: 40.0, color: Colors.white),
-              )
+              Container(
+                  decoration: BoxDecoration(
+                      color: timerTextbg,
+                      backgroundBlendMode: BlendMode.multiply,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16.0),
+                      )),
+                child: Padding(
+                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                  child: Text(
+                    text,
+                    style: TextStyle(fontSize: 40.0, color: Colors.white),
+                  )
+                ,)
+                  ),
             ]));
     return timerText;
   }

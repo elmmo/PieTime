@@ -77,7 +77,7 @@ class OrgComponents extends StatelessWidget {
       children: <Widget>[
         Container(
             margin: EdgeInsets.only(
-                bottom: 135.0, right: timerSidePadding, left: timerSidePadding),
+                bottom: 145.0, right: timerSidePadding, left: timerSidePadding),
             child: Stack(
               children: <Widget>[
                 Align(
@@ -89,9 +89,8 @@ class OrgComponents extends StatelessWidget {
                   child: PieChart(PieChartData(
                     sections: taskMap,
                     centerSpaceRadius: 0,
-                    startDegreeOffset: -90,
+                    startDegreeOffset: 270,
                     borderData: FlBorderData(show: false),
-                    // centerSpaceRadius: 20,
                     sectionsSpace: 0,
                   )),
                 ),
