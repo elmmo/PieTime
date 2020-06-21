@@ -79,11 +79,15 @@ class _BottomDrawerState extends State<BottomDrawer> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 GestureDetector(
-                                  child: Icon(
-                                    Icons.delete_outline, 
+                                  child: Icon(Icons.delete_outline, 
                                     size: 30,                // COULD MAKE RESPONSIVE 
                                     color: Colors.grey[800], 
-                                  )
+                                  ), 
+                                  onTap: () {
+                                    setState(() {
+                                      _taskList.clear(); 
+                                    });
+                                  }
                                 )
                             ])
                           )
