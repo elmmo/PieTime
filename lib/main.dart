@@ -35,12 +35,13 @@ class _PieTimerAppState extends State<PieTimerApp> {
               SetTime(_sendDuration, _updateTaskList, _taskList, context),
         },
         home: Builder(
-            builder: (context) => TimeKeeper(_maxTime, _taskList,
+            builder: (context) => TimeKeeper(_maxTime, _taskList, _sendDuration,
                 child: OrgComponents(callback: _updateTaskList))));
   }
 
   // callback for transferring duration across classes
   void _sendDuration(Duration newTime, BuildContext context) {
+    print("send Duration called");
     setState(() {
       _maxTime = newTime;
     });
