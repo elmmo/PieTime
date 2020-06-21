@@ -41,7 +41,6 @@ class _PieTimerAppState extends State<PieTimerApp> {
 
   // callback for transferring duration across classes
   void _sendDuration(Duration newTime, BuildContext context) {
-    print("send Duration called");
     setState(() {
       _maxTime = newTime;
     });

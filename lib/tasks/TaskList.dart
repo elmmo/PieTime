@@ -101,6 +101,11 @@ class TaskList {
     deleteTaskById(task.id);
   }
 
+  void clear() {
+    list.clear(); 
+    createAddButton(); 
+  }
+
   // returns a task at the value index provided
   Task getTaskAt(int index) {
     if (index < list.length) return list.values.elementAt(index);
