@@ -52,6 +52,7 @@ class TaskList {
       return true;
     } else if (isTimeValid(time)) {
       list[list.length - 1].update(true, newTime: time);
+      list[list.length - 1].update(true, newPercentage: time.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
       timeUsed += time;
       return true;
     }
@@ -75,6 +76,7 @@ class TaskList {
     if (newTime != null) {
       if (isTimeValid(newTime)) {
         task.update(true, newTime: newTime);
+        task.update(true, newPercentage: newTime.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
         timeUsed += newTime;
       } else {
         // if requested duration is greater than the set time

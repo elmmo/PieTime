@@ -4,7 +4,8 @@ class Task {
   final int id; 
   final Function timeCheck; 
   String title;
-  Duration time; 
+  Duration time;
+  double percentage;
   bool completed;
   bool isNew; 
   Color color;
@@ -17,7 +18,7 @@ class Task {
 
   // verified will check if the time has been approved or not 
   // update must go through the checking process of tasklist because duration can change 
-  bool update(bool verified, {String newTitle, Duration newTime, bool isComplete, Color newColor}) {
+  bool update(bool verified, {String newTitle, Duration newTime, double newPercentage, bool isComplete, Color newColor}) {
     if (!verified && time != null && timeCheck()) {
       return false; 
     }
@@ -26,6 +27,7 @@ class Task {
       time = newTime; 
       isNew = false; 
     }
+    if (newPercentage != null) percentage = newPercentage;
     if (isComplete != null) completed = isComplete; 
     if (newColor != null) color = newColor; 
     return true; 

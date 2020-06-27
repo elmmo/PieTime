@@ -41,6 +41,13 @@ class _PieTimerAppState extends State<PieTimerApp> {
 
   // callback for transferring duration across classes
   void _sendDuration(Duration newTime, BuildContext context) {
+    if (_maxTime != Duration.zero && _taskList.list.length != 0) {
+      _taskList.list.forEach((key, value) {
+        if (value.percentage != null) {
+          value.update(true, newTime: Duration(minutes: (newTime.inMinutes * value.percentage).floor()));
+        }
+      });
+    }
     setState(() {
       _maxTime = newTime;
     });
