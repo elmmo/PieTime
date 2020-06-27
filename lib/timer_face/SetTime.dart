@@ -51,7 +51,7 @@ class _SetTimeState extends State<SetTime> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: getEndTimeString(),
+              child: getEndTimeString(Theme.of(context).textTheme.bodyText2.color)
             ),
             // the set time picker
             DurationPicker(
@@ -141,7 +141,7 @@ class _SetTimeState extends State<SetTime> {
     }
   }
 
-  RichText getEndTimeString() {
+  RichText getEndTimeString(Color color) {
     String timeMarker;
     String result = "";
     // String result = "Ends at: ";
@@ -158,6 +158,7 @@ class _SetTimeState extends State<SetTime> {
       text: new TextSpan(
           style: new TextStyle(
             fontSize: 24.0,
+            color: color,
           ),
           children: <TextSpan>[
             new TextSpan(text: 'Ends at: '),

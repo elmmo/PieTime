@@ -33,11 +33,12 @@ List<PieChartSectionData> getChartSections(
   Duration timeUsed = Duration(seconds: 0);
 
   final List<PieChartSectionData> sectionData = [];
-  double sliceRadius = 169.5; //Controls how big each slice is
-  double positionOffset = .65; //How far away labels are from center
+  double sliceRadius = 169.7;  // Controls how big each slice is
+  // double sliceRadius = 144;  // Smaller size for different screens
+  double positionOffset = .65; // How far away labels are from center
   var titleTextStyle = new TextStyle(
       fontSize: 15, fontWeight: FontWeight.normal, color: Colors.black54);
-  
+
   if (listLength > 1) {
     for (int i = 0; i < listLength; i++) {
       // Don't add "New Task" from tasklist used for adding tasks
@@ -63,7 +64,7 @@ List<PieChartSectionData> getChartSections(
 
   //TODO: Not sure yet but I think the error with the "duration over time"
   // on presets (when it's clearly not) has to do with how presets are stored.
-  // When there's a preset with a lot of leftover time, it doesn't appear on 
+  // When there's a preset with a lot of leftover time, it doesn't appear on
   // the slices as leftover time- the current tasks appear to take up the whole time
 
   if (duration > timeUsed && listLength > 1) {

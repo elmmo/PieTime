@@ -70,7 +70,7 @@ class OrgComponents extends StatelessWidget {
 
   // everything below the app bar on the main page
   Widget generateAppBody(Duration time, List<PieChartSectionData> taskMap) {
-    double padTimer = 8;
+    double padTimer = 7.9;
     double timerSidePadding = 20;
 
     return Stack(
