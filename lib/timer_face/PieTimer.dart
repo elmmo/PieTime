@@ -3,11 +3,11 @@ import 'package:vibration/vibration.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
 import 'Util.dart';
-import '../Theme.dart';
+import '../TimeKeeper.dart';
 
-enum PieTimerStatus { none, playing, paused }
+enum PieTimerStatus { none, playing, paused, cancelled }
 
-enum PieTimerComponent { pie, timerText, toggleButton }
+enum PieTimerComponent { pie, timerText, buttonBar }
 
 class PieTimer extends StatefulWidget {
   final Duration duration;
@@ -44,57 +44,14 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     _buildStack = new Map();
   }
 
-  // returns the time remaining on the clock
-  String get timerString {
-    Duration dur = (_controller.value == 0)
-        ? _controller.duration
-        : _controller.duration * _controller.value;
-    if (dur.inHours == 0) {
-      return '${(dur.inMinutes).toString()}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
-    } else {
-      return '${(dur.inHours).toString()}:${(dur.inMinutes % 60).toString().padLeft(2, '0')}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
-    }
-  }
-
-  // detects status of animation and returns the timer status
-  // if optional param supplied, switch to that state with no change in animation
-  // optional param only meant to be used for none state
-  void _switchStatus([PieTimerStatus requestStatus]) {
-    PieTimerStatus switchTo;
-    if (requestStatus == null) {
-      switch (_status) {
-        case PieTimerStatus.none:
-        case PieTimerStatus.paused:
-          {
-            switchTo = PieTimerStatus.playing;
-            _controller.reverse(
-                from: (_controller.value == 0.0) ? 1.0 : _controller.value);
-          }
-          break;
-        case PieTimerStatus.playing:
-          {
-            switchTo = PieTimerStatus.paused;
-            _controller.stop();
-          }
-          break;
-      }
-    } else {
-      switchTo = requestStatus;
-    }
-    // sets the state of status to whatever was determined previously
-    setState(() {
-      _status = switchTo;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     generatePie();
-    generateToggleButton();
+    generateControlButtons(context);
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
-            animation: getUpdate(),
+            animation: getUpdate(context),
             builder: (context, child) =>
                 // buildStack pushes all static values to be positioned and separately adds
                 // elements that need to be rebuilt every time the animation controller changes
@@ -102,21 +59,29 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
                     [generateTimerText(timerString)])));
   }
 
-  // creates the floating action button that triggers the timer
-  void generateToggleButton() {
-    if (_controller.duration > Duration(milliseconds: 0)) {
-      FloatingActionButton button = FloatingActionButton.extended(
-          onPressed: _switchStatus,
-          icon: Icon(_status == PieTimerStatus.playing
-              ? Icons.pause
-              : Icons.play_arrow),
-          foregroundColor: Colors.white,
-          backgroundColor: CustomColor.newTask,
-          label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play",
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)));
-      _buildStack[PieTimerComponent.toggleButton] = button;
-    }
+  // creates the buttons that control the timer once duration has been set 
+  void generateControlButtons(BuildContext context) {
+    // pause / play button 
+    RaisedButton toggleButton = RaisedButton.icon(
+      onPressed: _switchStatus, 
+      icon: Icon(_status == PieTimerStatus.playing ? Icons.pause : Icons.play_arrow, color: Colors.white),
+      textColor: Colors.white, 
+      splashColor: Colors.white,
+      color: Colors.tealAccent[700],
+      label: Text(_status == PieTimerStatus.playing ? "Pause" : "Play", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))
+    );
+    // reset the timer back to the original duration 
+    OutlineButton resetButton = OutlineButton.icon(
+      icon: Icon(Icons.fast_rewind), 
+      onPressed: () => _resetTimer(context), 
+      label: Text("Cancel")
+    );
+    // store both buttons in bar for alignment 
+    ButtonBar bar = new ButtonBar(
+      alignment: MainAxisAlignment.start, 
+      children: [toggleButton, resetButton]   
+    );
+    _buildStack[PieTimerComponent.buttonBar] = (_controller.duration > Duration.zero) ? bar : Visibility(visible: false, child: bar); 
   }
 
   // creates the main circle graphic
@@ -174,6 +139,60 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     ]);
   }
 
+
+  // returns the time remaining on the clock
+  String get timerString {
+    Duration dur = (_controller.value == 0)
+        ? _controller.duration
+        : _controller.duration * _controller.value;
+    if (dur.inHours == 0) {
+      return '${(dur.inMinutes).toString()}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
+    } else {
+      return '${(dur.inHours).toString()}:${(dur.inMinutes % 60).toString().padLeft(2, '0')}:${(dur.inSeconds % 60).toString().padLeft(2, '0')}';
+    }
+  }
+
+  // detects status of animation and returns the timer status
+  // if optional param supplied, does not detect state and blindly uses that param to switch state
+  // optional param only meant to be used for none state or cancelled state
+  void _switchStatus([PieTimerStatus requestStatus]) {
+    PieTimerStatus switchTo;
+    if (requestStatus == null) {
+      switch (_status) {
+        case PieTimerStatus.none:
+        case PieTimerStatus.cancelled: 
+        case PieTimerStatus.paused:
+          {
+            switchTo = PieTimerStatus.playing;
+            _controller.reverse(
+                from: (_controller.value == 0.0) ? 1.0 : _controller.value);
+          }
+          break;
+        case PieTimerStatus.playing:
+          {
+            switchTo = PieTimerStatus.paused;
+            _controller.stop();
+          }
+          break;
+      }
+    } else {
+      switchTo = requestStatus;
+      if (switchTo == PieTimerStatus.cancelled) {
+        _controller.reset(); 
+      }
+    }
+    // sets the state of status to whatever was determined previously
+    setState(() {
+      _status = switchTo;
+    });
+  }
+
+  void _resetTimer(BuildContext context) {
+    _switchStatus(PieTimerStatus.cancelled);
+    _controller.duration = Duration.zero; 
+    TimeKeeper.of(context).setDurationCallback(Duration.zero, context);
+  }
+
   // run the vibration for the alert
   void _vibrateAlert(int vibrationRepetition) {
     // run the vibration
@@ -184,10 +203,10 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
   }
 
   // update after setTime
-  AnimationController getUpdate() {
+  AnimationController getUpdate(BuildContext context) {
     setState(() {
       _controller.duration = this.widget.duration;
-      generateToggleButton();
+      generateControlButtons(context);
     });
     return _controller;
   }

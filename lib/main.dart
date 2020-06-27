@@ -36,7 +36,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
               SetTime(_sendDuration, _updateTaskList, _taskList, context),
         },
         home: Builder(
-            builder: (context) => TimeKeeper(_maxTime, _taskList,
+            builder: (context) => TimeKeeper(_maxTime, _taskList, _sendDuration,
                 child: OrgComponents(callback: _updateTaskList))));
   }
 

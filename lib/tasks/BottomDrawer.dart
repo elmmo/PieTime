@@ -68,10 +68,32 @@ class _BottomDrawerState extends State<BottomDrawer> {
                       padding: EdgeInsets.symmetric(
                           horizontal: MediaQuery.of(context).size.width * 0.1,
                           vertical: 16),
-                      itemCount: _taskList.getLength(),
+                      itemCount: (_taskList.getLength() > 1) ? _taskList.getLength()+1 :  _taskList.getLength(),
                       itemBuilder: (context, index) {
                         Task task = _taskList.getTaskAt(index);
-                        return GestureDetector(
+                        return (index == _taskList.getLength()) ? 
+                          // if items in task list, show trash icon 
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  child: Icon(Icons.delete_outline, 
+                                    size: 30,                // COULD MAKE RESPONSIVE 
+                                    color: Colors.grey[800], 
+                                  ), 
+                                  onTap: () {
+                                    setState(() {
+                                      _taskList.clear(); 
+                                    });
+                                  }
+                                )
+                            ])
+                          )
+                          : 
+                          // show items in task list 
+                          GestureDetector(
                             child: Card(
                                 color: Theme.of(context).cardColor,
                                 child: Row(
@@ -102,7 +124,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                       separatorBuilder: (context, index) {
                         return Container(height: 4, width: 0);
                       },
-                    ))
+                    )),
               ]));
         });
   }
