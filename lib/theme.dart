@@ -13,6 +13,14 @@ Color newTaskLight = Color.fromARGB(255, 54, 201, 182);
 class CustomColor {
   CustomColor._();
 
+  static const Color newTask = Color.fromRGBO(6, 214, 160, 1);
+  static const Color newTaskDark = Color.fromRGBO(7, 59, 76, 1);
+  static const Color remainder = Color.fromRGBO(135, 142, 136, 1);
+  static const Color defaultColor = Color.fromRGBO(209, 74, 74, 1);
+  static const Color colorAccent = Color.fromRGBO(77, 186, 137, 1);
+  // static const Color colorAccent = Color.fromRGBO(119, 146, 244, 1);
+  static const Color colorAccentDark = Color.fromRGBO(36, 42, 119, 1);
+
   static const Map<int, Color> red = const <int, Color>{
     50: const Color.fromRGBO(249, 214, 214, 1),
     100: const Color.fromRGBO(248, 190, 190, 1),
@@ -94,8 +102,10 @@ class MyThemes {
     brightness: Brightness.light,
     accentColor: CustomColor.green[200],
     primaryColorDark: mutedRed,
-    textTheme: GoogleFonts.muliTextTheme().copyWith(bodyText1: TextStyle(color: Colors.grey[900])),
+    textTheme: GoogleFonts.muliTextTheme()
+        .copyWith(bodyText1: TextStyle(color: Colors.grey[900])),
     backgroundColor: Colors.grey[200],
+    errorColor: CustomColor.red[300],
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -108,9 +118,8 @@ class MyThemes {
     canvasColor: Color.fromRGBO(69, 69, 69, 1),
     backgroundColor: Colors.grey[850],
     primaryColorDark: Colors.grey[700],
-    textTheme: GoogleFonts.muliTextTheme()
-        .copyWith(
-        bodyText1: TextStyle(color: Colors.grey[200]), 
+    textTheme: GoogleFonts.muliTextTheme().copyWith(
+        bodyText1: TextStyle(color: Colors.grey[200]),
         headline5: TextStyle(color: Colors.grey[50], fontSize: 20),
         bodyText2: TextStyle(color: Colors.grey[400])),
   );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
+import '../Theme.dart';
 
 class TaskList {
   Map<int, Task> list;
@@ -8,17 +9,19 @@ class TaskList {
   int id;
 
   // colors - assigned color will be overriden if user sets task colors individually
-  Color newItemColor =
-      Color.fromRGBO(57, 161, 135, 1); // the color used for the "new item" card
-  Color defaultColor =
-      Color.fromRGBO(150, 0, 0, 1); // the color used by default for cards
-  List<Color> colors400 = [
-    Color.fromRGBO(227, 134, 106, 1),
-    Color.fromRGBO(188, 103, 134, 1),
-    Color.fromRGBO(238, 93, 93, 1), //Don't know why but it starts here
-    Color.fromRGBO(111, 89, 171, 1),
-    Color.fromRGBO(51, 130, 209, 1),
-    Color.fromRGBO(50, 196, 196, 1),
+  Color newItemColor = CustomColor.newTask;
+  //   static const Color newTask = Color.fromRGBO(45, 225, 194, 1); // the color used for the "new item" card
+  Color defaultColor = CustomColor.defaultColor;
+
+  static int colorValue = 300; //Increment by 100 to change shade
+  List<Color> sliceColors = [
+    //Colors for task slices
+    CustomColor.red[colorValue],
+    CustomColor.purple[colorValue],
+    CustomColor.blue[colorValue],
+    CustomColor.green[colorValue],
+    CustomColor.orange[colorValue],
+    CustomColor.pink[colorValue],
   ];
 
   TaskList() {
@@ -117,12 +120,12 @@ class TaskList {
   bool isTimeValid(Duration t) => (timeUsed + t <= maxTime);
 
   Color getDefaultColor() {
-    int count = this.getLength();
-    int maxCount = colors400.length;
+    int count = list.length - 1;
+    int maxCount = sliceColors.length;
 
     for (int i = 0; i <= count; i++) {
       if (i == count) {
-        return colors400[i % maxCount];
+        return sliceColors[i % maxCount];
       }
     }
     return null;

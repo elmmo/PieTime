@@ -30,6 +30,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
     return MaterialApp(
         title: "Pie Timer",
         theme: CustomTheme.of(context),
+        debugShowCheckedModeBanner: false,
         routes: {
           '/setTime': (BuildContext context) =>
               SetTime(_sendDuration, _updateTaskList, _taskList, context),

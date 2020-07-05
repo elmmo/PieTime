@@ -51,7 +51,7 @@ class _SetTimeState extends State<SetTime> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: getEndTimeString(),
+              child: getEndTimeString(Theme.of(context).textTheme.bodyText2.color)
             ),
             // the set time picker
             DurationPicker(
@@ -141,7 +141,7 @@ class _SetTimeState extends State<SetTime> {
     }
   }
 
-  RichText getEndTimeString() {
+  RichText getEndTimeString(Color color) {
     String timeMarker;
     String result = "";
     // String result = "Ends at: ";
@@ -158,6 +158,7 @@ class _SetTimeState extends State<SetTime> {
       text: new TextSpan(
           style: new TextStyle(
             fontSize: 24.0,
+            color: color,
           ),
           children: <TextSpan>[
             new TextSpan(text: 'Ends at: '),
@@ -232,7 +233,7 @@ class _PresetsModalState extends State<PresetsModal> {
             height: 300,
             width: double.maxFinite,
             decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.black))),
+                border: Border(top: BorderSide(color: Theme.of(context).textTheme.bodyText1.color))),
             child: ListView.separated(
               shrinkWrap: true,
               itemCount: presets.length,
@@ -275,15 +276,17 @@ class _PresetsModalState extends State<PresetsModal> {
                 // checks if there is any time on the clock
                 bool isValidTime() => duration > Duration.zero;
 
+                // Swipe to delete preset item
                 return Dismissible(
                   key: UniqueKey(),
                   background: Container(
-                    color: Colors.red,
+                    color: Theme.of(context).errorColor,
                     child: ListTile(
                         leading:
-                            Icon(Icons.delete_forever, color: Colors.black),
+                            Icon(Icons.delete_forever, color: Colors.white),
+                        title: Text('Delete', style: TextStyle(color: Colors.white)),
                         trailing:
-                            Icon(Icons.delete_forever, color: Colors.black)),
+                            Icon(Icons.delete_forever, color: Colors.white)),
                   ),
                   child: ListTile(
                     title: Text(thisPreset["name"],
@@ -315,8 +318,6 @@ class _PresetsModalState extends State<PresetsModal> {
               },
               separatorBuilder: (context, index) =>
                   Divider(color: Theme.of(context).textTheme.bodyText1.color),
-              // )
-              // ),
             )));
   }
 }

@@ -3,7 +3,7 @@ import 'Task.dart';
 import 'TaskList.dart';
 import 'ItemModal.dart';
 import '../TimeKeeper.dart';
-import '../theme.dart';
+import '../Theme.dart';
 
 class BottomDrawer extends StatefulWidget {
   BottomDrawer({Key key, @required this.callback}) : super(key: key);
@@ -18,7 +18,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
   _BottomDrawerState({Key key, @required this.callback}) : super();
 
   final Function callback;
-  Color newColor = newTaskLight;
+  Color newColor = CustomColor.newTask;
 
   TaskList _taskList;
 

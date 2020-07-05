@@ -86,30 +86,38 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
 
   // creates the main circle graphic
   void generatePie() {
-    // Map<String, double> dataMap = new Map();
-    // dataMap.putIfAbsent("Mobile Apps Mockings", () => 10);
-    // dataMap.putIfAbsent("Graphic Design Sketch", () => 15);
-    // dataMap.putIfAbsent("Core 250 RR", () => 10);
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter: CustomTimerPainter(
-              animation: _controller, color: Colors.blueGrey[800])),
+              animation: _controller, color: Colors.blueGrey[700])),
     );
     _buildStack[PieTimerComponent.pie] = pie;
   }
 
   // creates and positions the text in the middle of the pie
   Widget generateTimerText(text) {
+    Color timerTextbg = Colors.grey[600];
     Widget timerText = Align(
         alignment: FractionalOffset.center,
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(
-                text,
-                style: TextStyle(fontSize: 55.0, color: Colors.white),
-              )
+              Container(
+                  decoration: BoxDecoration(
+                      color: timerTextbg,
+                      backgroundBlendMode: BlendMode.multiply,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(16.0),
+                      )),
+                child: Padding(
+                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                  child: Text(
+                    text,
+                    style: TextStyle(fontSize: 40.0, color: Colors.white),
+                  )
+                ,)
+                  ),
             ]));
     return timerText;
   }
