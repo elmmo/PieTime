@@ -6,6 +6,7 @@ import 'tasks/BottomDrawer.dart';
 // import 'theme.dart';
 import 'TimeKeeper.dart';
 import 'tasks/TaskList.dart';
+import 'setup/SetupController.dart';
 import 'timer_face/NewPresetModal.dart';
 import 'timer_face/timerSlice.dart';
 
@@ -26,7 +27,6 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
-  // standard app bar across PieTime
   static AppBar generateAppBar(BuildContext context) {
     return AppBar(
       leading: // Gear icon on the Appbar to the right
@@ -62,7 +62,8 @@ class OrgComponents extends StatelessWidget {
             child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/setTime');
+                  SetupController setupController = new SetupController(context);
+                  setupController.setup();
                 })),
       ],
     );

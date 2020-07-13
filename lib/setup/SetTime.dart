@@ -3,41 +3,27 @@ import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../tasks/TaskList.dart';
-// import '../tasks/Task.dart';
-import '../OrgComponents.dart';
 
 class SetTime extends StatefulWidget {
-  final Function durationCallback;
-  final Function taskListCallback;
-  final TaskList taskList;
-  final BuildContext originalContext;
-
-  SetTime(this.durationCallback, this.taskListCallback, this.taskList,
-      this.originalContext);
 
   @override
-  _SetTimeState createState() => new _SetTimeState(taskList: taskList);
+  _SetTimeState createState() => new _SetTimeState();
 }
 
 class _SetTimeState extends State<SetTime> {
-  _SetTimeState({Key key, this.taskList}) : super();
-  final TaskList taskList;
-
-  Duration _duration = Duration(hours: 0, minutes: 0);
+  Duration _duration = Duration.zero;
   DateTime _endTime = new DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        // Changes plus icon to close and goes back to home
         title: Text(
           'New Timer',
         ),
         actions: <Widget>[
           Padding(
               padding: EdgeInsets.only(right: 20.0),
-              // Plus icon on the Appbar to the right
               child: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
@@ -87,9 +73,9 @@ class _SetTimeState extends State<SetTime> {
                           context: context,
                           builder: (context) {
                             return PresetsModal(
-                                durationCallback: this.widget.durationCallback,
-                                taskListCallback: this.widget.taskListCallback,
-                                originalContext: this.widget.originalContext,
+                                // durationCallback: this.widget.durationCallback,
+                                // taskListCallback: this.widget.taskListCallback,
+                                // originalContext: this.widget.originalContext,
                                 prefs: prefs);
                           }) as Duration;
                       if (presetDuration != null) {
@@ -106,26 +92,13 @@ class _SetTimeState extends State<SetTime> {
               buttonPadding: EdgeInsets.fromLTRB(30, 10, 30, 10),
               children: <Widget>[
                 FlatButton(
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    onPressed: () {
-                      // navigate back to main screen
-                      Navigator.pop(context);
-                    }),
+                    child: Text( "Cancel", style: TextStyle(fontSize: 20)),
+                    // navigate back to main screen
+                    onPressed: () => Navigator.pop(context)),
                 RaisedButton(
                   color: Theme.of(context).accentColor,
-                  child: Text(
-                    "Accept",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  onPressed: (isValidTime())
-                      ? () {
-                          this.widget.durationCallback(
-                              _duration, this.widget.originalContext);
-                        }
-                      : null,
+                  child: Text( "Accept", style: TextStyle(fontSize: 20)),
+                  onPressed: (isValidTime()) ? () => Navigator.pop(context, _duration) : null,
                 ),
               ],
             ),

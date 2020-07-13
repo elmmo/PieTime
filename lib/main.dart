@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'OrgComponents.dart';
 import 'theme.dart';
-import 'timer_face/SetTime.dart';
+import 'setup/SetTime.dart';
 import 'tasks/TaskList.dart';
+import 'setup/SetupController.dart';
+import 'setup/SetTasks.dart';
 import 'TimeKeeper.dart';
 
 void main() => runApp(
-      CustomTheme(
-        initialThemeKey: MyThemeKeys.DARK,
-        child: new PieTimerApp()),
-    );
+  CustomTheme(
+    initialThemeKey: MyThemeKeys.DARK,
+    child: new PieTimerApp(),
+  ),
+);
 
 class PieTimerApp extends StatefulWidget {
   @override
@@ -33,10 +36,12 @@ class _PieTimerAppState extends State<PieTimerApp> {
         debugShowCheckedModeBanner: false,
         routes: {
           '/setTime': (BuildContext context) =>
-              SetTime(_sendDuration, _updateTaskList, _taskList, context),
+              SetTime(),
+          '/setTasks': (BuildContext context) => 
+              SetTasks(),
         },
         home: Builder(
-            builder: (context) => TimeKeeper(_maxTime, _taskList, _sendDuration,
+            builder: (context) => TimeKeeper(_maxTime, _taskList,
                 child: OrgComponents(callback: _updateTaskList))));
   }
 
@@ -52,7 +57,6 @@ class _PieTimerAppState extends State<PieTimerApp> {
     setState(() {
       _maxTime = newTime;
     });
-    Navigator.pop(context);
   }
 
   // callback for transferring tasklist across classes
