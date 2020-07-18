@@ -33,7 +33,7 @@ class _SettingsModalState extends State<SettingsModal> {
       });
     });
   }
-  
+
   @override
   void initState() {
     super.initState();
