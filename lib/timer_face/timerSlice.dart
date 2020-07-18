@@ -5,8 +5,7 @@ import '../tasks/TaskList.dart';
 import '../DAO.dart';
 
 /* 
-timerSlice.dart merely exists to take pressure off of OrgComponents
-by housing getChartSections, which takes the context and timer duration
+TimerSlice.dart houses getChartSections, which takes the context and timer duration
 and returns a list of <PieChartSectionData> that PieChart uses for 
 each timer slice. 
 */

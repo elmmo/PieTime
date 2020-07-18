@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
 import 'TaskList.dart';
-import 'ItemModal.dart';
+import 'TaskModal.dart';
 import '../DAO.dart';
 import '../Theme.dart';
 
@@ -107,7 +107,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return ItemModal(
+                                    return TaskModal(
                                       task: task,
                                       totalDuration: _taskList.maxTime,
                                       taskDuration: task.time,

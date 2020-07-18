@@ -6,8 +6,8 @@ import 'tasks/BottomDrawer.dart';
 import 'DAO.dart';
 import 'tasks/TaskList.dart';
 import 'setup/SetupController.dart';
-import 'timer_face/NewPresetModal.dart';
-import 'timer_face/timerSlice.dart';
+import 'presets/NewPresetModal.dart';
+import 'timer_face/TimerSlice.dart';
 
 class Layout extends StatelessWidget {
   Layout({Key key, this.timeUpdateCallback, this.taskUpdateCallback}) : super(key: key);

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import '../tasks/TaskList.dart';
 import 'dto/ControllerDTO.dart';
+import '../presets/PresetsModal.dart';
 
 class SetTime extends StatefulWidget {
-
   @override
   _SetTimeState createState() => new _SetTimeState();
 }
@@ -17,7 +15,7 @@ class _SetTimeState extends State<SetTime> {
 
   @override
   Widget build(BuildContext context) {
-    final ControllerDTO dto = ModalRoute.of(context).settings.arguments; 
+    final ControllerDTO dto = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
       appBar: dto.controller.getSetupAppBar("Set Timer"),
       body: new Center(
@@ -25,9 +23,9 @@ class _SetTimeState extends State<SetTime> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-              child: getEndTimeString(Theme.of(context).textTheme.bodyText2.color)
-            ),
+                padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                child: getEndTimeString(
+                    Theme.of(context).textTheme.bodyText2.color)),
             // the set time picker
             DurationPicker(
               duration: _duration,
@@ -55,25 +53,7 @@ class _SetTimeState extends State<SetTime> {
                                 .copyWith(fontSize: 18, color: Colors.white))
                       ],
                     ),
-                    onPressed: () async {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      final presetDuration = await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return PresetsModal(
-                                // durationCallback: this.widget.durationCallback,
-                                // taskListCallback: this.widget.taskListCallback,
-                                // originalContext: this.widget.originalContext,
-                                prefs: prefs);
-                          }) as Duration;
-                      if (presetDuration != null) {
-                        setState(() {
-                          _duration = presetDuration;
-                          setEndTime();
-                        });
-                      }
-                    })),
+                    onPressed: () => showPresetOptions())),
             // the accept and cancel buttons
             ButtonBar(
               alignment: MainAxisAlignment.center,
@@ -81,17 +61,19 @@ class _SetTimeState extends State<SetTime> {
               buttonPadding: EdgeInsets.fromLTRB(30, 10, 30, 10),
               children: <Widget>[
                 FlatButton(
-                    child: Text( "Cancel", style: TextStyle(fontSize: 20)),
+                    child: Text("Cancel", style: TextStyle(fontSize: 20)),
                     // navigate back to main screen
                     onPressed: () => Navigator.pop(context)),
                 RaisedButton(
                   color: Theme.of(context).accentColor,
-                  child: Text( "Accept", style: TextStyle(fontSize: 20)),
-                  onPressed: (isValidTime()) ? () {
-                    // access callback passed by SetupController to go to SetTasks
-                    dto.controller.setTime(_duration); 
-                    dto.controller.next("/setTasks"); 
-                  } : null,
+                  child: Text("Accept", style: TextStyle(fontSize: 20)),
+                  onPressed: (isValidTime())
+                      ? () {
+                          // access callback passed by SetupController to go to SetTasks
+                          dto.controller.setTime(_duration);
+                          dto.controller.next("/setTasks");
+                        }
+                      : null,
                 ),
               ],
             ),
@@ -138,152 +120,23 @@ class _SetTimeState extends State<SetTime> {
 
   // checks if there is any time on the clock
   bool isValidTime() => (_duration > Duration.zero && _duration != null);
-}
 
-class PresetsModal extends StatefulWidget {
-  PresetsModal(
-      {Key key,
-      @required this.durationCallback,
-      @required this.taskListCallback,
-      @required this.originalContext,
-      @required this.prefs})
-      : super(key: key);
-
-  final Function durationCallback;
-  final Function taskListCallback;
-  final BuildContext originalContext;
-  final SharedPreferences prefs;
-
-  @override
-  _PresetsModalState createState() => _PresetsModalState(prefs: prefs);
-}
-
-class _PresetsModalState extends State<PresetsModal> {
-  _PresetsModalState({Key key, @required this.prefs}) : super();
-
-  final SharedPreferences prefs;
-
-  // Returns the number of hours from a Duration of hours and minutes
-  int parseHours(String time) {
-    int colonPos = time.indexOf(":");
-    int hours = int.parse(time.substring(0, colonPos));
-    return hours;
-  }
-
-  // Returns the number of minutes from a Duration of hours and minutes
-  int parseMinutes(String time) {
-    int colonPos = time.indexOf(":");
-    int minutes = int.parse(time.substring(colonPos + 1, colonPos + 3));
-    return minutes;
-  }
-
-  // Returns the number of seconds from a Duration of hours and minutes
-  int parseSeconds(String time) {
-    int colonPos = time.indexOf(":");
-    int seconds = int.parse(time.substring(colonPos + 4, colonPos + 6));
-    return seconds;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    List<String> presets = prefs.getStringList("presets");
-    if (presets == null) {
-      presets = [];
+  void showPresetOptions() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final presetDuration = await showDialog(
+        context: context,
+        builder: (context) {
+          return PresetsModal(
+              // durationCallback: this.widget.durationCallback,
+              // taskListCallback: this.widget.taskListCallback,
+              // originalContext: this.widget.originalContext,
+              prefs: prefs);
+        }) as Duration;
+    if (presetDuration != null) {
+      setState(() {
+        _duration = presetDuration;
+        setEndTime();
+      });
     }
-
-    return AlertDialog(
-        // contentTextStyle: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.white),
-        titleTextStyle: Theme.of(context).textTheme.headline5,
-        title: Text("Timer Presets"),
-        content: Container(
-            height: 300,
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Theme.of(context).textTheme.bodyText1.color))),
-            child: ListView.separated(
-              shrinkWrap: true,
-              itemCount: presets.length,
-              itemBuilder: (context, index) {
-                dynamic thisPreset = json.decode(presets[index]);
-                int numOfTasks = thisPreset["tasks"].length;
-                int hours = 0;
-                int minutes = 0;
-                int seconds = 0;
-                for (var task in thisPreset["tasks"]) {
-                  hours += parseHours(task["time"]);
-                  minutes += parseMinutes(task["time"]);
-                  seconds += parseSeconds(task["time"]);
-                }
-                Duration duration =
-                    Duration(hours: hours, minutes: minutes, seconds: seconds);
-                String tasks = numOfTasks.toString() +
-                    " task" +
-                    (numOfTasks == 1 ? "." : "s.");
-                String time = "Total duration: " +
-                    hours.toString() +
-                    ":" +
-                    minutes.toString() +
-                    ":" +
-                    seconds.toString();
-                String subtitle = tasks + " " + time;
-                TaskList taskListFromPreset = new TaskList();
-                taskListFromPreset.maxTime = duration;
-                for (var i = 0; i < thisPreset["tasks"].length; i++) {
-                  Map task = thisPreset["tasks"][i];
-                  taskListFromPreset.createAddButton();
-                  Duration taskDuration = Duration(
-                      hours: parseHours(task["time"]),
-                      minutes: parseMinutes(task["time"]),
-                      seconds: parseSeconds(task["time"]));
-                  taskListFromPreset.addTask(task["title"], time: taskDuration);
-                }
-                taskListFromPreset.createAddButton();
-
-                // checks if there is any time on the clock
-                bool isValidTime() => duration > Duration.zero;
-
-                // Swipe to delete preset item
-                return Dismissible(
-                  key: UniqueKey(),
-                  background: Container(
-                    color: Theme.of(context).errorColor,
-                    child: ListTile(
-                        leading:
-                            Icon(Icons.delete_forever, color: Colors.white),
-                        title: Text('Delete', style: TextStyle(color: Colors.white)),
-                        trailing:
-                            Icon(Icons.delete_forever, color: Colors.white)),
-                  ),
-                  child: ListTile(
-                    title: Text(thisPreset["name"],
-                        style: Theme.of(context).textTheme.bodyText1),
-                    subtitle: Text(subtitle,
-                        style: Theme.of(context).textTheme.bodyText2),
-                    onTap: () {
-                      Navigator.pop(
-                          context,
-                          Duration(
-                              hours: hours,
-                              minutes: minutes,
-                              seconds: seconds));
-                      if (isValidTime()) {
-                        this.widget.durationCallback(
-                            duration, this.widget.originalContext);
-                      }
-                      this.widget.taskListCallback(taskListFromPreset);
-                      // make this the current tasks
-                    },
-                  ),
-                  onDismissed: (direction) {
-                    setState(() {
-                      presets.removeAt(index);
-                      prefs.setStringList("presets", presets);
-                    });
-                  },
-                );
-              },
-              separatorBuilder: (context, index) =>
-                  Divider(color: Theme.of(context).textTheme.bodyText1.color),
-            )));
   }
 }
