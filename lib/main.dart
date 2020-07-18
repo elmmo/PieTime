@@ -4,7 +4,7 @@ import 'theme.dart';
 import 'setup/SetTime.dart';
 import 'tasks/TaskList.dart';
 import 'setup/SetupController.dart';
-import 'setup/SetTasks.dart';
+import 'setup/AddTasks.dart';
 import 'TimeKeeper.dart';
 
 void main() => runApp(
@@ -27,22 +27,22 @@ class _PieTimerAppState extends State<PieTimerApp> {
   Widget build(BuildContext context) {
     _taskList.maxTime = Duration.zero;
     if (_taskList.getLength() == 0) {
-      _taskList.createAddButton();
+      // _taskList.createAddButton();
     }
 
     return MaterialApp(
         title: "Pie Timer",
         theme: CustomTheme.of(context),
         debugShowCheckedModeBanner: false,
+        initialRoute: "/",
         routes: {
-          '/setTime': (BuildContext context) =>
+          "/": (BuildContext context) => 
+              TimeKeeper(_maxTime, _taskList, child: OrgComponents(callback: _updateTaskList)),
+          "/setTime": (BuildContext context) =>
               SetTime(),
-          '/setTasks': (BuildContext context) => 
+          "/setTasks": (BuildContext context) => 
               SetTasks(),
-        },
-        home: Builder(
-            builder: (context) => TimeKeeper(_maxTime, _taskList,
-                child: OrgComponents(callback: _updateTaskList))));
+        });
   }
 
   // callback for transferring duration across classes

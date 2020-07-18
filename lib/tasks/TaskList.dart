@@ -38,7 +38,7 @@ class TaskList {
   }
 
   void createAddButton() {
-    list[id] = new Task(id, null);
+    // list[id] = new Task(id, null);
     list[id].update(true, newTitle: "New Task", newColor: newItemColor);
     id++;
   }

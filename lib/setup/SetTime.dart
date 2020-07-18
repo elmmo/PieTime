@@ -3,6 +3,7 @@ import 'package:flutter_duration_picker/flutter_duration_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../tasks/TaskList.dart';
+import 'dto/ControllerDTO.dart';
 
 class SetTime extends StatefulWidget {
 
@@ -16,21 +17,9 @@ class _SetTimeState extends State<SetTime> {
 
   @override
   Widget build(BuildContext context) {
+    final ControllerDTO dto = ModalRoute.of(context).settings.arguments; 
     return new Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'New Timer',
-        ),
-        actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  })),
-        ],
-      ),
+      appBar: dto.controller.getSetupAppBar("Set Timer"),
       body: new Center(
         child: new Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -98,7 +87,11 @@ class _SetTimeState extends State<SetTime> {
                 RaisedButton(
                   color: Theme.of(context).accentColor,
                   child: Text( "Accept", style: TextStyle(fontSize: 20)),
-                  onPressed: (isValidTime()) ? () => Navigator.pop(context, _duration) : null,
+                  onPressed: (isValidTime()) ? () {
+                    // access callback passed by SetupController to go to SetTasks
+                    dto.controller.setTime(_duration); 
+                    dto.controller.next("/setTasks"); 
+                  } : null,
                 ),
               ],
             ),
@@ -144,7 +137,7 @@ class _SetTimeState extends State<SetTime> {
   }
 
   // checks if there is any time on the clock
-  bool isValidTime() => _duration > Duration.zero;
+  bool isValidTime() => (_duration > Duration.zero && _duration != null);
 }
 
 class PresetsModal extends StatefulWidget {

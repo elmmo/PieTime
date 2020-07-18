@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
 import '../tasks/TaskList.dart';
+import 'dto/ControllerDTO.dart';
 
 class SetupController {
-  BuildContext originalContext; 
+  final BuildContext originalContext; 
   Duration time; 
   TaskList tasks; 
 
   SetupController(this.originalContext); 
 
-  void setup() async {
-    this.time = await Navigator.pushNamed<dynamic>(originalContext, '/setTime');
-    this.tasks = await Navigator.pushNamed<dynamic>(originalContext, '/setTasks', 
-      arguments: {
-        'time': time
-      }); 
+  void setup() {
+    next("/setTime"); 
+  }
+
+  // goes to the page passed as a param 
+  void next(String route) {
+    Navigator.pushNamed<dynamic>(originalContext, route, arguments: ControllerDTO(this)); 
+  }
+
+  void setTime(Duration time) {
+    this.time = time; 
+  }
+
+  void setTasks(TaskList list) {
+    this.tasks = list; 
   }
 
   // app bar specific to the setup process 
   // @param titleText: what the name of the page should be 
-  AppBar generateSetupAppBar(String titleText) {
+  AppBar getSetupAppBar(String titleText) {
     return AppBar(
       title: Text(titleText), 
       actions: <Widget>[
@@ -27,7 +37,7 @@ class SetupController {
           child: IconButton(
             icon: Icon(Icons.close), 
             onPressed: () {
-              Navigator.pop(originalContext);
+              Navigator.popUntil(originalContext, ModalRoute.withName("/"));
             }
           )
         )

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class Task {
   final int id; 
-  final Function timeCheck; 
+  Function timeCheck; 
   String title;
   Duration time;
   double percentage;
@@ -10,7 +10,8 @@ class Task {
   bool isNew; 
   Color color;
 
-  Task(this.id, this.timeCheck) {
+  Task(this.id) {
+    this.timeCheck = () => print("Hello World");
     this.title = "New Task";
     this.completed = false; 
     this.isNew = true; 
