@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../tasks/TaskList.dart';
-import '../TimeKeeper.dart';
+import '../DAO.dart';
 
 /* 
 timerSlice.dart merely exists to take pressure off of OrgComponents
@@ -26,7 +26,7 @@ List<Color> sliceColors = [
 // Needs context for tasklist and duration to calculate time not used by tasks
 List<PieChartSectionData> getChartSections(
     BuildContext context, Duration duration) {
-  TaskList taskList = TimeKeeper.of(context).taskList;
+  TaskList taskList = DAO.of(context).taskList;
   int listLength = taskList.getLength(); //list length
   double timeTotal = duration.inSeconds.toDouble();
   // double timeUsed = 0;

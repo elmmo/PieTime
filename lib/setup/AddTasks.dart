@@ -9,7 +9,6 @@ class SetTasks extends StatefulWidget {
 }
 
 class _SetTasksState extends State<SetTasks> {
-  TaskList _tasks = new TaskList(); 
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,8 @@ class _SetTasksState extends State<SetTasks> {
                 // TODO: add tasklist logic that builds out the list, replace the mock with that 
 
                 TaskList list = new TaskList();
-                Navigator.pop(context, list); 
+                dto.controller.setTasks(list); 
+                Navigator.popUntil(context, ModalRoute.withName("/"));
 
               }
             )

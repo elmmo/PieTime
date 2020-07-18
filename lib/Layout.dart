@@ -3,22 +3,20 @@ import 'package:fl_chart/fl_chart.dart';
 import 'SettingsModal.dart';
 import 'timer_face/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
-// import 'theme.dart';
-import 'TimeKeeper.dart';
+import 'DAO.dart';
 import 'tasks/TaskList.dart';
 import 'setup/SetupController.dart';
 import 'timer_face/NewPresetModal.dart';
 import 'timer_face/timerSlice.dart';
 
-// static functions meant to be used across the app, non-static functions are for
-// pages that require the main timer and task drawer (should only be home)
-class OrgComponents extends StatelessWidget {
-  OrgComponents({Key key, this.callback}) : super(key: key);
+class Layout extends StatelessWidget {
+  Layout({Key key, this.timeUpdateCallback, this.taskUpdateCallback}) : super(key: key);
 
-  final Function callback;
+  final Function timeUpdateCallback; 
+  final Function taskUpdateCallback;
 
   Widget build(BuildContext context) {
-    Duration time = TimeKeeper.of(context).time;
+    Duration time = DAO.of(context).time;
     List<PieChartSectionData> pieSlices = getChartSections(context, time);
     return Scaffold(
       appBar: generateAppBar(context),
@@ -27,7 +25,7 @@ class OrgComponents extends StatelessWidget {
     );
   }
 
-  static AppBar generateAppBar(BuildContext context) {
+  AppBar generateAppBar(BuildContext context) {
     return AppBar(
       leading: // Gear icon on the Appbar to the right
           IconButton(
@@ -47,8 +45,8 @@ class OrgComponents extends StatelessWidget {
         IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              if (TimeKeeper.of(context) != null) {
-                TaskList taskList = TimeKeeper.of(context).taskList;
+              if (DAO.of(context) != null) {
+                TaskList taskList = DAO.of(context).taskList;
                 showDialog(
                     context: context,
                     builder: (context) {
@@ -62,7 +60,7 @@ class OrgComponents extends StatelessWidget {
             child: IconButton(
                 icon: Icon(Icons.add),
                 onPressed: () {
-                  SetupController setupController = new SetupController(context);
+                  SetupController setupController = new SetupController(context, timeUpdateCallback, taskUpdateCallback);
                   setupController.setup();
                 })),
       ],
@@ -101,7 +99,7 @@ class OrgComponents extends StatelessWidget {
                 )
               ],
             )),
-        new BottomDrawer(callback: callback) // BOTTOM DRAWER
+        new BottomDrawer(callback: taskUpdateCallback) // BOTTOM DRAWER
       ],
     );
   }

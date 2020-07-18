@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'OrgComponents.dart';
+import 'Layout.dart';
 import 'theme.dart';
 import 'setup/SetTime.dart';
 import 'tasks/TaskList.dart';
-import 'setup/SetupController.dart';
 import 'setup/AddTasks.dart';
-import 'TimeKeeper.dart';
+import 'DAO.dart';
 
 void main() => runApp(
   CustomTheme(
@@ -37,7 +36,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
         initialRoute: "/",
         routes: {
           "/": (BuildContext context) => 
-              TimeKeeper(_maxTime, _taskList, child: OrgComponents(callback: _updateTaskList)),
+              DAO(_maxTime, _taskList, child: Layout(timeUpdateCallback: sendDuration, taskUpdateCallback: sendTaskList)),
           "/setTime": (BuildContext context) =>
               SetTime(),
           "/setTasks": (BuildContext context) => 
@@ -46,7 +45,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
   }
 
   // callback for transferring duration across classes
-  void _sendDuration(Duration newTime, BuildContext context) {
+  void sendDuration(Duration newTime) {
     if (_maxTime != Duration.zero && _taskList.list.length != 0) {
       _taskList.list.forEach((key, value) {
         if (value.percentage != null) {
@@ -60,7 +59,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
   }
 
   // callback for transferring tasklist across classes
-  void _updateTaskList(TaskList list) {
+  void sendTaskList(TaskList list) {
     setState(() {
       _taskList = list;
     });

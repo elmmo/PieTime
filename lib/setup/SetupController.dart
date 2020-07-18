@@ -4,10 +4,12 @@ import 'dto/ControllerDTO.dart';
 
 class SetupController {
   final BuildContext originalContext; 
+  final Function timeUpdateCallback; 
+  final Function taskUpdateCallback;
   Duration time; 
-  TaskList tasks; 
+  TaskList tasklist; 
 
-  SetupController(this.originalContext); 
+  SetupController(this.originalContext, this.timeUpdateCallback, this.taskUpdateCallback); 
 
   void setup() {
     next("/setTime"); 
@@ -20,10 +22,12 @@ class SetupController {
 
   void setTime(Duration time) {
     this.time = time; 
+    timeUpdateCallback(time);
   }
 
   void setTasks(TaskList list) {
-    this.tasks = list; 
+    this.tasklist = list; 
+    taskUpdateCallback(list); 
   }
 
   // app bar specific to the setup process 

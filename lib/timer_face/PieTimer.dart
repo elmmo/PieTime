@@ -3,7 +3,7 @@ import 'package:vibration/vibration.dart';
 import 'dart:io';
 import 'CustomTimerPainter.dart';
 import 'Util.dart';
-import '../TimeKeeper.dart';
+import '../DAO.dart';
 
 enum PieTimerStatus { none, playing, paused, cancelled }
 

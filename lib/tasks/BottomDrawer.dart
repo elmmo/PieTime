@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'Task.dart';
 import 'TaskList.dart';
 import 'ItemModal.dart';
-import '../TimeKeeper.dart';
+import '../DAO.dart';
 import '../Theme.dart';
 
 class BottomDrawer extends StatefulWidget {
@@ -24,9 +24,9 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    if (TimeKeeper.of(context) != null) {
-      final time = TimeKeeper.of(context).time;
-      _taskList = TimeKeeper.of(context).taskList;
+    if (DAO.of(context) != null) {
+      final time = DAO.of(context).time;
+      _taskList = DAO.of(context).taskList;
       _taskList.maxTime = time; 
     }
     // this is the component that allows dragging up and down
