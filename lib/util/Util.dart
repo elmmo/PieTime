@@ -6,10 +6,22 @@ import 'dart:io';
 // context is the build context (depends on where you're placing the alert)
 // titleText is the text that will show on top of the alert
 // bodyText is the text within the alert
-void getTextDialog(context, titleText, bodyText) {
+void getTextDialog(context, titleText, bodyText, {List<Widget> buttons}) {
+  if (buttons == null || buttons.isEmpty) {
+    print("buttons registered as null or empty");
+    buttons = <Widget>[
+      new FlatButton(
+          child: new Text("Ok"),
+          color: Theme.of(context).primaryColorLight,
+          onPressed: () {
+            Navigator.pop(context); 
+          })
+    ];
+  }
   showDialog(
       context: context,
-      builder: (BuildContext builderContext) {
+      barrierDismissible: true,
+      builder: (BuildContext context) {
         return AlertDialog(
             title: new Text(titleText,
                 style: TextStyle(
@@ -20,14 +32,7 @@ void getTextDialog(context, titleText, bodyText) {
                     style: TextStyle(
                         color: Theme.of(context).textTheme.bodyText1.color))),
             backgroundColor: Theme.of(context).backgroundColor,
-            actions: <Widget>[
-              new FlatButton(
-                  child: new Text("Ok"),
-                  color: Theme.of(context).primaryColorLight,
-                  onPressed: () {
-                    Navigator.of(builderContext).pop();
-                  })
-            ]);
+            actions: buttons);
       });
 }
 

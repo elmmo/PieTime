@@ -11,8 +11,7 @@ class Task {
   Color color;
 
   Task(this.id) {
-    this.timeCheck = () => print("Hello World");
-    this.title = "New Task";
+    this.title;
     this.completed = false; 
     this.isNew = true; 
   }

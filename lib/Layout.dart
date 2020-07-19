@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'SettingsModal.dart';
-import 'timer_face/PieTimer.dart';
+import 'util/SettingsModal.dart';
+import 'timer/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'DAO.dart';
 import 'tasks/TaskList.dart';
 import 'setup/SetupController.dart';
 import 'presets/NewPresetModal.dart';
-import 'timer_face/TimerSlice.dart';
+import 'timer/TimerSlice.dart';
 
 class Layout extends StatelessWidget {
   Layout({Key key, this.timeUpdateCallback, this.taskUpdateCallback}) : super(key: key);

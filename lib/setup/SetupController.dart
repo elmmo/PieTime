@@ -20,19 +20,28 @@ class SetupController {
     Navigator.pushNamed<dynamic>(originalContext, route, arguments: ControllerDTO(this)); 
   }
 
+  // both set time and send time need to be used to send time back to timekeeper 
+  // both set tasks and send tasks need to be used to send time back to dao
+
   void setTime(Duration time) {
     this.time = time; 
-    timeUpdateCallback(time);
+  }
+
+  void sendTimeToDAO() {
+    timeUpdateCallback(this.time); 
   }
 
   void setTasks(TaskList list) {
     this.tasklist = list; 
-    taskUpdateCallback(list); 
+  }
+
+  void sendTasksToDAO() {
+    taskUpdateCallback(this.tasklist); 
   }
 
   // app bar specific to the setup process 
   // @param titleText: what the name of the page should be 
-  AppBar getSetupAppBar(String titleText) {
+  AppBar getSetupAppBar(String titleText, {Function closeCallback}) {
     return AppBar(
       title: Text(titleText), 
       actions: <Widget>[
@@ -41,7 +50,11 @@ class SetupController {
           child: IconButton(
             icon: Icon(Icons.close), 
             onPressed: () {
-              Navigator.popUntil(originalContext, ModalRoute.withName("/"));
+              if (closeCallback != null) {
+                closeCallback(); 
+              } else {
+                Navigator.popUntil(originalContext, ModalRoute.withName("/"));
+              }
             }
           )
         )

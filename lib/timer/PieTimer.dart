@@ -33,7 +33,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
         )
       ..addStatusListener((animationStatus) {
         // listens for changes to the animation to update the timer status
-        if (animationStatus == AnimationStatus.dismissed) {
+        if (animationStatus == AnimationStatus.dismissed && _status != PieTimerStatus.cancelled) {
           vibrateAlert(5);
           getTextDialog(context, "Timer Complete", "The timer is finished.");
           _switchStatus(PieTimerStatus.none);
@@ -71,12 +71,8 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     // reset the timer back to the original duration 
     OutlineButton resetButton = OutlineButton.icon(
       icon: Icon(Icons.fast_rewind), 
-      onPressed: () {
-        (_checkTimerStatusReset()) ? _resetTimer(context) : () => {
-          
-        };
-      }, 
-      label: Text("Cancel")
+      onPressed: _checkTimerStatusReset() ? () => _resetTimer(context) : null,
+      label: Text("Reset")
     );
     // store both buttons in bar for alignment 
     ButtonBar bar = new ButtonBar(
@@ -179,20 +175,21 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
       }
     } else {
       switchTo = requestStatus;
-      if (switchTo == PieTimerStatus.cancelled) {
-        _controller.reset(); 
-      }
     }
     // sets the state of status to whatever was determined previously
     setState(() {
       _status = switchTo;
     });
+    if (switchTo == PieTimerStatus.cancelled) {
+        _controller.reset(); 
+    }
   }
 
   // set the timer duration back to zero 
-  void _resetTimer(BuildContext context) {
+  bool _resetTimer(BuildContext context) {
     _switchStatus(PieTimerStatus.cancelled);
     _controller.duration = Duration.zero; 
+    return true; 
   }
 
   // verifies that a reset is possible (e.g., that the timer is actually running)
