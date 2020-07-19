@@ -1,7 +1,178 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../tasks/TaskList.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import '../tasks/Task.dart';
+import '../Layout.dart';
+import '../DurationPicker.dart';
+
+class SetTime extends StatefulWidget {
+  final Function durationCallback;
+  final Function taskListCallback;
+  final TaskList taskList;
+  final BuildContext originalContext;
+
+  SetTime(this.durationCallback, this.taskListCallback, this.taskList,
+      this.originalContext);
+
+  @override
+  _SetTimeState createState() => new _SetTimeState(taskList: taskList);
+}
+
+class _SetTimeState extends State<SetTime> {
+  _SetTimeState({Key key, this.taskList}) : super();
+  final TaskList taskList;
+
+  Duration _duration = Duration(hours: 0, minutes: 0);
+  DateTime _endTime = new DateTime.now();
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: AppBar(
+        // Changes plus icon to close and goes back to home
+        title: Text(
+          'New Timer',
+        ),
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              // Plus icon on the Appbar to the right
+              child: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })),
+        ],
+      ),
+      body: new Center(
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+              child: getEndTimeString(Theme.of(context).textTheme.bodyText2.color)
+            ),
+            // the set time picker
+            DurationPicker(
+              duration: _duration,
+              onChange: (val) {
+                this.setState(() => _duration = val);
+                setEndTime();
+              },
+              snapToMins: 1.0,
+            ),
+            // choose from presets
+            SizedBox(
+                width: 140,
+                child: RaisedButton(
+                    color: Theme.of(context).primaryColorLight,
+                    padding: EdgeInsets.all(14.0),
+                    child: Row(
+                      // Replace with a Row for horizontal icon + text
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Icon(Icons.timer, color: Colors.white),
+                        Text("Presets",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText1
+                                .copyWith(fontSize: 18, color: Colors.white))
+                      ],
+                    ),
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      final presetDuration = await showDialog(
+                          context: context,
+                          builder: (context) {
+                            return PresetsModal(
+                                durationCallback: this.widget.durationCallback,
+                                taskListCallback: this.widget.taskListCallback,
+                                originalContext: this.widget.originalContext,
+                                prefs: prefs);
+                          }) as Duration;
+                      if (presetDuration != null) {
+                        setState(() {
+                          _duration = presetDuration;
+                          setEndTime();
+                        });
+                      }
+                    })),
+            // the accept and cancel buttons
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              buttonPadding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+              children: <Widget>[
+                FlatButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    onPressed: () {
+                      // navigate back to main screen
+                      Navigator.pop(context);
+                    }),
+                RaisedButton(
+                  color: Theme.of(context).accentColor,
+                  child: Text(
+                    "Accept",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onPressed: (isValidTime())
+                      ? () {
+                          this.widget.durationCallback(
+                              _duration, this.widget.originalContext);
+                        }
+                      : null,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void setEndTime() {
+    if (_duration != Duration.zero) {
+      _endTime = DateTime.now().add(_duration);
+    }
+  }
+
+  RichText getEndTimeString(Color color) {
+    String timeMarker;
+    String result = "";
+    // String result = "Ends at: ";
+    if (_endTime.hour > 12) {
+      timeMarker = "PM";
+      result += (_endTime.hour - 12).toString();
+    } else {
+      timeMarker = "AM";
+      result += _endTime.hour.toString();
+    }
+    result += ":" + _endTime.minute.toString().padLeft(2, '0') + timeMarker;
+    // Makes "Ends at: " normal weight and the end time bolded
+    var text = new RichText(
+      text: new TextSpan(
+          style: new TextStyle(
+            fontSize: 24.0,
+            color: color,
+          ),
+          children: <TextSpan>[
+            new TextSpan(text: 'Ends at: '),
+            new TextSpan(
+                text: '$result',
+                style: new TextStyle(fontWeight: FontWeight.bold)),
+          ]),
+    );
+    return text;
+  }
+
+  // checks if there is any time on the clock
+  bool isValidTime() => _duration > Duration.zero;
+}
 
 class PresetsModal extends StatefulWidget {
   PresetsModal(
