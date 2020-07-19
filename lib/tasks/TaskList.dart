@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
-import '../Theme.dart';
+import '../util/theme.dart';
 
 class TaskList {
   Map<int, Task> list;
@@ -38,7 +38,7 @@ class TaskList {
   }
 
   void createAddButton() {
-    list[id] = new Task(id, null);
+    // list[id] = new Task(id, null);
     list[id].update(true, newTitle: "New Task", newColor: newItemColor);
     id++;
   }

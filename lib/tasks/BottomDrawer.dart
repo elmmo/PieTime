@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
 import 'TaskList.dart';
-import 'ItemModal.dart';
-import '../TimeKeeper.dart';
-import '../Theme.dart';
+import 'TaskModal.dart';
+import '../DAO.dart';
+import '../util/theme.dart';
 
 class BottomDrawer extends StatefulWidget {
   BottomDrawer({Key key, @required this.callback}) : super(key: key);
@@ -24,9 +24,9 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    if (TimeKeeper.of(context) != null) {
-      final time = TimeKeeper.of(context).time;
-      _taskList = TimeKeeper.of(context).taskList;
+    if (DAO.of(context) != null) {
+      final time = DAO.of(context).time;
+      _taskList = DAO.of(context).taskList;
       _taskList.maxTime = time; 
     }
     // this is the component that allows dragging up and down
@@ -107,7 +107,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                               showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return ItemModal(
+                                    return TaskModal(
                                       task: task,
                                       totalDuration: _taskList.maxTime,
                                       taskDuration: task.time,

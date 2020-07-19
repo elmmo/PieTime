@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
-import '../theme.dart';
+import '../util/theme.dart';
 
 
-// the popup dialog that comes up for creating or updating widgets
-class ItemModal extends StatelessWidget {
-  ItemModal({
+// the popup dialog that comes up for creating or updating tasks
+class TaskModal extends StatelessWidget {
+  TaskModal({
     Key key,
     @required this.totalDuration,
     @required this.taskDuration,
@@ -237,7 +237,7 @@ class ItemModal extends StatelessWidget {
   }
 }
 
-// Styled TextFormField for all fields in ItemModal class
+// Styled TextFormField for all fields in TaskModal class
 class CardField extends StatelessWidget {
   final TextEditingController controller;
   final FocusNode thisFocus;

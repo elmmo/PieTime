@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
-import 'dart:io';
 import 'CustomTimerPainter.dart';
-import 'Util.dart';
-import '../TimeKeeper.dart';
+import '../util/Util.dart';
+import '../DAO.dart';
 
 enum PieTimerStatus { none, playing, paused, cancelled }
 
@@ -35,9 +33,9 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
         )
       ..addStatusListener((animationStatus) {
         // listens for changes to the animation to update the timer status
-        if (animationStatus == AnimationStatus.dismissed) {
-          _vibrateAlert(5);
-          getDialog(context, "Timer Complete", "The timer is finished.");
+        if (animationStatus == AnimationStatus.dismissed && _status != PieTimerStatus.cancelled) {
+          vibrateAlert(5);
+          getTextDialog(context, "Timer Complete", "The timer is finished.");
           _switchStatus(PieTimerStatus.none);
         }
       });
@@ -51,7 +49,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     return Scaffold(
         backgroundColor: Colors.transparent,
         body: AnimatedBuilder(
-            animation: getUpdate(context),
+            animation: (getUpdate(context)),
             builder: (context, child) =>
                 // buildStack pushes all static values to be positioned and separately adds
                 // elements that need to be rebuilt every time the animation controller changes
@@ -73,8 +71,8 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     // reset the timer back to the original duration 
     OutlineButton resetButton = OutlineButton.icon(
       icon: Icon(Icons.fast_rewind), 
-      onPressed: () => _resetTimer(context), 
-      label: Text("Cancel")
+      onPressed: _checkTimerStatusReset() ? () => _resetTimer(context) : null,
+      label: Text("Reset")
     );
     // store both buttons in bar for alignment 
     ButtonBar bar = new ButtonBar(
@@ -177,29 +175,26 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
       }
     } else {
       switchTo = requestStatus;
-      if (switchTo == PieTimerStatus.cancelled) {
-        _controller.reset(); 
-      }
     }
     // sets the state of status to whatever was determined previously
     setState(() {
       _status = switchTo;
     });
+    if (switchTo == PieTimerStatus.cancelled) {
+        _controller.reset(); 
+    }
   }
 
-  void _resetTimer(BuildContext context) {
+  // set the timer duration back to zero 
+  bool _resetTimer(BuildContext context) {
     _switchStatus(PieTimerStatus.cancelled);
     _controller.duration = Duration.zero; 
-    TimeKeeper.of(context).setDurationCallback(Duration.zero, context);
+    return true; 
   }
 
-  // run the vibration for the alert
-  void _vibrateAlert(int vibrationRepetition) {
-    // run the vibration
-    for (var i = 0; i < vibrationRepetition; i++) {
-      Vibration.vibrate(duration: 150, amplitude: 250);
-      sleep(const Duration(milliseconds: 200));
-    }
+  // verifies that a reset is possible (e.g., that the timer is actually running)
+  bool _checkTimerStatusReset() {
+    return (_status == PieTimerStatus.playing); 
   }
 
   // update after setTime
