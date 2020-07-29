@@ -44,21 +44,6 @@ class SetupController {
   AppBar getSetupAppBar(String titleText, {Function closeCallback}) {
     return AppBar(
       title: Text(titleText), 
-      actions: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(right: 20.0), 
-          child: IconButton(
-            icon: Icon(Icons.close), 
-            onPressed: () {
-              if (closeCallback != null) {
-                closeCallback(); 
-              } else {
-                Navigator.popUntil(originalContext, ModalRoute.withName("/"));
-              }
-            }
-          )
-        )
-      ]
     );
   }
 }

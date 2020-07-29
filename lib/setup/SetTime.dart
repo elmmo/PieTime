@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_duration_picker/flutter_duration_picker.dart';
+import '../durationPicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dto/ControllerDTO.dart';
 import '../presets/PresetsModal.dart';
@@ -23,7 +23,7 @@ class _SetTimeState extends State<SetTime> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Padding(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                padding: EdgeInsets.fromLTRB(0, 30, 0, 10),
                 child: getEndTimeString(
                     Theme.of(context).textTheme.bodyText2.color)),
             // the set time picker
@@ -39,7 +39,7 @@ class _SetTimeState extends State<SetTime> {
             SizedBox(
                 width: 140,
                 child: RaisedButton(
-                    color: Theme.of(context).primaryColorLight,
+                    color: Theme.of(context).buttonColor,
                     padding: EdgeInsets.all(14.0),
                     child: Row(
                       // Replace with a Row for horizontal icon + text
@@ -56,16 +56,11 @@ class _SetTimeState extends State<SetTime> {
                     onPressed: () => showPresetOptions())),
             // the accept and cancel buttons
             ButtonBar(
-              alignment: MainAxisAlignment.center,
+              alignment: MainAxisAlignment.end,
               mainAxisSize: MainAxisSize.max,
               buttonPadding: EdgeInsets.fromLTRB(30, 10, 30, 10),
               children: <Widget>[
                 FlatButton(
-                    child: Text("Cancel", style: TextStyle(fontSize: 20)),
-                    // navigate back to main screen
-                    onPressed: () => Navigator.pop(context)),
-                RaisedButton(
-                  color: Theme.of(context).accentColor,
                   child: Text("Accept", style: TextStyle(fontSize: 20)),
                   onPressed: (isValidTime())
                       ? () {
@@ -94,10 +89,10 @@ class _SetTimeState extends State<SetTime> {
     String result = "";
     // String result = "Ends at: ";
     if (_endTime.hour > 12) {
-      timeMarker = "PM";
+      timeMarker = "pm";
       result += (_endTime.hour - 12).toString();
     } else {
-      timeMarker = "AM";
+      timeMarker = "am";
       result += _endTime.hour.toString();
     }
     result += ":" + _endTime.minute.toString().padLeft(2, '0') + timeMarker;
@@ -105,7 +100,7 @@ class _SetTimeState extends State<SetTime> {
     var text = new RichText(
       text: new TextSpan(
           style: new TextStyle(
-            fontSize: 24.0,
+            fontSize: 22.0,
             color: color,
           ),
           children: <TextSpan>[
