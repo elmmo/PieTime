@@ -27,7 +27,6 @@ dependencies:
   cupertino_icons: ^0.1.2
   pie_chart: ^3.1.1
   fl_chart: ^0.9.4
-  flutter_duration_picker: 
   vibration: ^1.2.4 #https://pub.dev/packages/vibration
   shared_preferences: ^0.5.7 # Used to save settings
 
