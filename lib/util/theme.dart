@@ -109,7 +109,7 @@ class MyThemes {
   );
 
   static final ThemeData darkTheme = ThemeData(
-    primaryColorLight: CustomColor.red[500],
+    primaryColorLight: CustomColor.green[300],
     buttonColor: CustomColor.green[600],
     primaryColor: Colors.grey[900],
     primarySwatch: MaterialColor(CustomColor.red[100].value, CustomColor.red),

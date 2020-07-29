@@ -70,9 +70,9 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     );
     // reset the timer back to the original duration 
     OutlineButton resetButton = OutlineButton.icon(
-      icon: Icon(Icons.fast_rewind), 
+      icon: Icon(Icons.fast_rewind, color: Colors.white), 
       onPressed: _checkTimerStatusReset() ? () => _resetTimer(context) : null,
-      label: Text("Reset")
+      label: Text("Reset", style: TextStyle(color: Colors.white))
     );
     // store both buttons in bar for alignment 
     ButtonBar bar = new ButtonBar(

@@ -39,7 +39,7 @@ class _SetTimeState extends State<SetTime> {
             SizedBox(
                 width: 140,
                 child: RaisedButton(
-                    color: Theme.of(context).buttonColor,
+                    color: Theme.of(context).primaryColorLight,
                     padding: EdgeInsets.all(14.0),
                     child: Row(
                       // Replace with a Row for horizontal icon + text
