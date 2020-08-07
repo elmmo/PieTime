@@ -29,6 +29,7 @@ dependencies:
   fl_chart: ^0.9.4
   vibration: ^1.2.4 #https://pub.dev/packages/vibration
   shared_preferences: ^0.5.7 # Used to save settings
+  backdrop: ">=0.0.0 <0.1.0"
 
 dev_dependencies:
   flutter_test:
