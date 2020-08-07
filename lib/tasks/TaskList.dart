@@ -10,12 +10,10 @@ class TaskList {
 
   // colors - assigned color will be overriden if user sets task colors individually
   Color newItemColor = CustomColor.newTask;
-  //   static const Color newTask = Color.fromRGBO(45, 225, 194, 1); // the color used for the "new item" card
   Color defaultColor = CustomColor.defaultColor;
 
   static int colorValue = 300; //Increment by 100 to change shade
   List<Color> sliceColors = [
-    //Colors for task slices
     CustomColor.red[colorValue],
     CustomColor.purple[colorValue],
     CustomColor.blue[colorValue],

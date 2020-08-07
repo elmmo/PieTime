@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'CustomTimerPainter.dart';
 import '../util/Util.dart';
+import '../util/theme.dart';
 import '../DAO.dart';
 
 enum PieTimerStatus { none, playing, paused, cancelled }
@@ -87,7 +88,7 @@ class _PieTimerState extends State<PieTimer> with TickerProviderStateMixin {
     Widget pie = Positioned.fill(
       child: CustomPaint(
           painter: CustomTimerPainter(
-              animation: _controller, color: Colors.blueGrey[700])),
+              animation: _controller, color: CustomColor.timerOverlay)),
     );
     _buildStack[PieTimerComponent.pie] = pie;
   }

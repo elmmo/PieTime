@@ -15,6 +15,7 @@ class CustomColor {
 
   static const Color newTask = Color.fromRGBO(6, 214, 160, 1);
   static const Color newTaskDark = Color.fromRGBO(7, 59, 76, 1);
+  static const Color timerOverlay = Color(0xFF455A64);
   static const Color remainder = Color.fromRGBO(135, 142, 136, 1);
   static const Color defaultColor = Color.fromRGBO(209, 74, 74, 1);
   static const Color colorAccent = Color.fromRGBO(77, 186, 137, 1);
