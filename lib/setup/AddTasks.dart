@@ -46,6 +46,15 @@ class _SetTasksState extends State<SetTasks> {
                 dto.controller.setTasks(list);
                 dto.controller.sendTasksToDAO();
                 Navigator.popUntil(context, ModalRoute.withName("/"));
+              }),
+          FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text("Skip"),
+              padding: EdgeInsets.all(8.0),
+              onPressed: () {
+                dto.controller.sendTimeToDAO(); 
+                Navigator.popUntil(context, ModalRoute.withName("/"));
               })
         ]),
       ),
