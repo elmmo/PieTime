@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../durationPicker.dart';
+import '../timer/durationPicker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dto/ControllerDTO.dart';
 import '../presets/PresetsModal.dart';
