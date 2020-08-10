@@ -40,7 +40,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
           "/setTime": (BuildContext context) =>
               SetTime(),
           "/setTasks": (BuildContext context) => 
-              SetTasks(),
+              SetTasks(callback: sendTaskList),
         });
   }
 
