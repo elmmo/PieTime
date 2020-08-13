@@ -22,14 +22,14 @@ class Layout extends StatelessWidget {
     List<PieChartSectionData> pieSlices = getChartSections(context, time);
     return BackdropScaffold(
       title: Text("PieTime"),
-      actions: getAppbarbuttons(context),
+      actions: getAppbarButtons(context),
       backpanel: generateBackPanel(context),
       headerHeight: 500,
       body: generateAppBody(time, pieSlices),
     );
   }
 
-  List<Widget> getAppbarbuttons(BuildContext context) {
+  List<Widget> getAppbarButtons(BuildContext context) {
     return <Widget>[
       Padding(
           padding: EdgeInsets.only(right: 20.0),
