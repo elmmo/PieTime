@@ -18,7 +18,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
   _BottomDrawerState({Key key, @required this.callback}) : super();
 
   final Function callback;
-  Color newColor = CustomColor.newTask;
+  Color newColor = CustomColor.colorAccent;
 
   TaskList _taskList;
 

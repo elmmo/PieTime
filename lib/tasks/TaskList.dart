@@ -9,7 +9,7 @@ class TaskList {
   int id;
 
   // colors - assigned color will be overriden if user sets task colors individually
-  Color newItemColor = CustomColor.newTask;
+  Color newItemColor = CustomColor.colorAccent;
   //   static const Color newTask = Color.fromRGBO(45, 225, 194, 1); // the color used for the "new item" card
   Color defaultColor = CustomColor.defaultColor;
 
