@@ -30,6 +30,8 @@ dependencies:
   flutter_duration_picker: 
   vibration: ^1.2.4 #https://pub.dev/packages/vibration
   shared_preferences: ^0.5.7 # Used to save settings
+  wakelock: ^0.1.4+2
+  fluttertoast: ^7.0.2
 
 dev_dependencies:
   flutter_test:
