@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../tasks/Task.dart';
-import '../tasks/TaskList.dart';
-import '../tasks/TaskModal.dart';
+import '../tasks/TaskTest.dart';
+// import '../tasks/TaskList.dart';
+// import '../tasks/TaskModal.dart';
 import 'dto/ControllerDTO.dart';
 import '../DAO.dart';
 import '../util/Util.dart';
@@ -22,26 +22,26 @@ class _SetTasksState extends State<SetTasks> {
   _SetTasksState({Key key, @required this.callback}) : super();
 
   final Function callback;
-  TaskList _taskList = new TaskList();
-  Task task = new Task(0);
-  List<Task> _list = [];
+  TaskListTest _taskList = new TaskListTest();
+  TaskTest task = new TaskTest(0);
+  List<TaskTest> _list = [];
 
   // Substitute for taskList tasks
   // create some color values
   Color pickerColor = Color(0xffff30a0);
-  static Color currentColor = Color(0xffff30a0);
-  static List<dynamic> testList = ["foo", "bar", "baz"];
-  Map<String, Color> testMap = {for (var v in testList) v: currentColor};
 
   @override
   Widget build(BuildContext context) {
     if (DAO.of(context) != null) {
       final time = DAO.of(context).time;
-      _taskList = DAO.of(context).taskList;
+      // _taskList = DAO.of(context).taskList;
       _taskList.maxTime = time;
     }
     final ControllerDTO dto = ModalRoute.of(context).settings.arguments;
     _taskList.setMaxTime(dto.controller.time);
+    Duration rando = new Duration(minutes: 10);
+    // _taskList.addTask("NewTask1", time: rando);
+    print(_taskList.orderedTasks.length);
     return new Scaffold(
         appBar: dto.controller.getSetupAppBar("Add Tasks"),
         body: new Center(
@@ -56,7 +56,7 @@ class _SetTasksState extends State<SetTasks> {
                             "${_taskList.maxTime.inMinutes} min. remaining",
                             style: TextStyle(fontSize: 20)),
                         children: List.generate(
-                          testList.length,
+                          _taskList.orderedTasks.length,
                           (index) {
                             return getListCard(index);
                           },
@@ -70,10 +70,10 @@ class _SetTasksState extends State<SetTasks> {
                             if (oldIndex < newIndex) {
                               newIndex -= 1;
                             }
-                            final replaceWidget = testList.removeAt(oldIndex);
-                            testList.insert(newIndex, replaceWidget);
-                            // final replaceWidget = _list.removeAt(oldIndex);
-                            // _list.insert(newIndex, replaceWidget);
+                            final replaceWidget =
+                                _taskList.orderedTasks.removeAt(oldIndex);
+                            _taskList.orderedTasks
+                                .insert(newIndex, replaceWidget);
                           });
                         })),
                 // + Add Task Button
@@ -96,22 +96,25 @@ class _SetTasksState extends State<SetTasks> {
                       borderRadius: BorderRadius.circular(30.0),
                     ),
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return TaskModal(
-                              task: task,
-                              totalDuration: _taskList.maxTime,
-                              taskDuration: task.time,
-                              timeChecker: _taskList.isTimeValid,
-                              color: (task.isNew
-                                  ? _taskList.newItemColor
-                                  : _taskList.defaultColor),
-                              onUpdate: updateCard,
-                              onDelete: deleteCard,
-                            );
-                          });
-                      _list.add(_taskList.getTaskAt(_taskList.getLength() - 1));
+                      // For testing. Does NOT allow users to create customized tasks, only makes an example task with a default duration of 10 min.
+                      _taskList.addTask("AnotherNewtask!", time: rando);
+                      setState(() {});
+                      // showDialog(
+                      //     context: context,
+                      //     builder: (context) {
+                      //       return TaskModal(
+                      //         task: task,
+                      //         totalDuration: _taskList.maxTime,
+                      //         taskDuration: task.time,
+                      //         timeChecker: _taskList.isTimeValid,
+                      //         color: (task.isNew
+                      //             ? _taskList.newItemColor
+                      //             : _taskList.defaultColor),
+                      //         onUpdate: updateCard,
+                      //         onDelete: deleteCard,
+                      //       );
+                      //     });
+                      // _list.add(_taskList.getTaskAt(_taskList.getLength() - 1));
                     },
                   ),
                 ),
@@ -123,15 +126,14 @@ class _SetTasksState extends State<SetTasks> {
                       style: TextStyle(
                           fontSize: 18.0,
                           color: Theme.of(context).textTheme.headline3.color)),
-                  // padding: EdgeInsets.all(5.0),
                   onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return NewPresetModal(
-                            taskList: _taskList,
-                          );
-                        });
+                    // showDialog(
+                    //     context: context,
+                    //     builder: (context) {
+                    //       return NewPresetModal(
+                    //         taskList: _taskList,
+                    //       );
+                    //     });
                   },
                 ),
                 // Skip/Done buttons
@@ -160,9 +162,11 @@ class _SetTasksState extends State<SetTasks> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 40.0, vertical: 15.0),
                           onPressed: () {
+                            // Throws an exception when pressed.
+
                             // _taskList = listToTaskList(_list, _taskList);
                             dto.controller.sendTimeToDAO();
-                            dto.controller.setTasks(_taskList);
+                            // dto.controller.setTasks(_taskList);
                             dto.controller.sendTasksToDAO();
                             Navigator.popUntil(
                                 context, ModalRoute.withName("/"));
@@ -175,7 +179,7 @@ class _SetTasksState extends State<SetTasks> {
   }
 
   void updateCard(
-      {Task task, bool isComplete, Duration newTime, String newTitle}) {
+      {TaskTest task, bool isComplete, Duration newTime, String newTitle}) {
     setState(() {
       _taskList.updateTask(
           task: task,
@@ -186,15 +190,15 @@ class _SetTasksState extends State<SetTasks> {
     });
   }
 
-  void deleteCard(Task task) {
+  void deleteCard(TaskTest task) {
     setState(() {
-      _taskList.deleteTask(task);
+      // _taskList.deleteTask(task);
       this.widget.callback(_taskList);
     });
   }
 
   // try to figure it out without this
-  TaskList listToTaskList(List<Task> list, TaskList tasks) {
+  TaskListTest listToTaskList(List<TaskTest> list, TaskListTest tasks) {
     for (int i = 0; i < list.length; i++) {
       tasks.addTask(list[i].title);
     }
@@ -212,40 +216,40 @@ class _SetTasksState extends State<SetTasks> {
         child: AlertDialog(
           title: const Text('Pick a color!'),
           content: SingleChildScrollView(
+            // Default color picker
             child: ColorPicker(
-              pickerColor: pickerColor,
+              pickerColor: _taskList.orderedTasks[index].color,
               onColorChanged: changeColor,
               showLabel: true,
               pickerAreaHeightPercent: 0.8,
             ),
+
             // Use Material color picker:
-            //
             // child: MaterialPicker(
             //   pickerColor: pickerColor,
             //   onColorChanged: changeColor,
-            //   showLabel: true, // only on portrait mode
+            // showLabel: true, // only on portrait mode
             // ),
           ),
           actions: <Widget>[
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 12, 5),
                 child: FlatButton(
-                  child: const Text('DONE'),
-                  onPressed: () {
-                    setState(() => currentColor = pickerColor);
-                    testMap[testList[index]] = currentColor;
-                    Navigator.of(context).pop();
-                    // TODO: make picker color of each task match the tasks's current color
-                    // So that when opened, the color displayed on the picker matches the current tasks's color
-                  },
-                )),
+                    child: const Text('DONE'),
+                    onPressed: () {
+                      setState(() =>
+                          _taskList.orderedTasks[index].color = pickerColor);
+                      Navigator.of(context).pop();
+                      // TODO: make picker color of each task match the tasks's current color
+                      // So that when opened, the color displayed on the picker matches the current tasks's color
+                    })),
           ],
         ));
   }
 
-  // Contains the contents for each task on the list 
+  // Contains the contents for each task on the list
   Widget getListCard(int index) {
-    List listItems = testList;
+    List listItems = _taskList.orderedTasks;
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
       elevation: 0,
@@ -254,21 +258,22 @@ class _SetTasksState extends State<SetTasks> {
       child: InkWell(
           splashColor: Theme.of(context).splashColor,
           onTap: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return TaskModal(
-                    task: task,
-                    totalDuration: _taskList.maxTime,
-                    taskDuration: task.time,
-                    timeChecker: _taskList.isTimeValid,
-                    color: (task.isNew
-                        ? _taskList.newItemColor
-                        : _taskList.defaultColor),
-                    onUpdate: updateCard,
-                    onDelete: deleteCard,
-                  );
-                });
+            // Edit task when task card is tapped. Currently incompatible with TaskTest 
+            // showDialog(
+            //     context: context,
+            //     builder: (context) {
+            //       return TaskModal(
+            //         task: task,
+            //         totalDuration: _taskList.maxTime,
+            //         taskDuration: task.time,
+            //         timeChecker: _taskList.isTimeValid,
+            //         color: (task.isNew
+            //             ? _taskList.newItemColor
+            //             : _taskList.defaultColor),
+            //         onUpdate: updateCard,
+            //         onDelete: deleteCard,
+            //       );
+            //     });
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -279,8 +284,7 @@ class _SetTasksState extends State<SetTasks> {
                 child: IconButton(
                     icon: Icon(Icons.remove_circle_outline),
                     onPressed: () {
-                      testMap.remove(testList[index]);
-                      testList.removeAt(index);
+                      _taskList.orderedTasks.removeAt(index);
                       setState(() {});
                     }),
               ),
@@ -289,7 +293,7 @@ class _SetTasksState extends State<SetTasks> {
                 height: 40.0,
                 width: 40.0,
                 decoration: BoxDecoration(
-                    color: testMap[testList[index]],
+                    color: _taskList.orderedTasks[index].color,
                     borderRadius: BorderRadius.circular(8)),
                 margin: EdgeInsets.only(right: 18),
                 child: InkWell(onTap: () {
@@ -304,7 +308,7 @@ class _SetTasksState extends State<SetTasks> {
                   padding: EdgeInsets.only(bottom: 2.0),
                   alignment: Alignment.topLeft,
                   child: Text(
-                    '${listItems[index]}',
+                    '${listItems[index].title}',
                     style: Theme.of(context).textTheme.subtitle1,
                     textAlign: TextAlign.left,
                     maxLines: 5,
@@ -313,7 +317,7 @@ class _SetTasksState extends State<SetTasks> {
                 Container(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      '00:0$index',
+                      '${listItems[index].time.inMinutes.toString()} min.',
                       style: Theme.of(context).textTheme.subtitle2,
                     )),
               ])),
