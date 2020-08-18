@@ -13,23 +13,7 @@ class _SetTasksState extends State<SetTasks> {
   Widget build(BuildContext context) {
     final ControllerDTO dto = ModalRoute.of(context).settings.arguments;
     return new Scaffold(
-      appBar: dto.controller.getSetupAppBar("Add Tasks", closeCallback: () {
-        return getTextDialog(context, "Exit",
-            "Would you like to save the submitted time or exit without saving?",
-            buttons: <Widget>[
-              RaisedButton(
-                  child: Text("Save"),
-                  onPressed: () {
-                    dto.controller.sendTimeToDAO(); 
-                    Navigator.popUntil(context, ModalRoute.withName("/"));
-                  }),
-              OutlineButton(
-                  child: Text("Exit"),
-                  onPressed: () {
-                    Navigator.popUntil(context, ModalRoute.withName("/"));
-                  })
-            ]);
-      }),
+      appBar: dto.controller.getSetupAppBar("Add Tasks"),
       body: new Center(
         child: new Column(children: <Widget>[
           Text("If you see this on the new page, it's working"),
