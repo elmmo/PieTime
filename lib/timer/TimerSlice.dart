@@ -25,7 +25,7 @@ List<Color> sliceColors = [
 // Needs context for tasklist and duration to calculate time not used by tasks
 List<PieChartSectionData> getChartSections(
     BuildContext context, Duration duration) {
-  TaskList taskList = DAO.of(context).taskList;
+  TaskList taskList = DAO.of(context).getTaskList(); 
   int listLength = taskList.getLength(); //list length
   double timeTotal = duration.inSeconds.toDouble();
   // double timeUsed = 0;

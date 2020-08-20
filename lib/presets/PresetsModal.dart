@@ -264,14 +264,12 @@ class _PresetsModalState extends State<PresetsModal> {
                 taskListFromPreset.maxTime = duration;
                 for (var i = 0; i < thisPreset["tasks"].length; i++) {
                   Map task = thisPreset["tasks"][i];
-                  taskListFromPreset.createAddButton();
                   Duration taskDuration = Duration(
                       hours: parseHours(task["time"]),
                       minutes: parseMinutes(task["time"]),
                       seconds: parseSeconds(task["time"]));
                   taskListFromPreset.addTask(task["title"], time: taskDuration);
                 }
-                taskListFromPreset.createAddButton();
 
                 // checks if there is any time on the clock
                 bool isValidTime() => duration > Duration.zero;

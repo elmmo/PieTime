@@ -31,7 +31,7 @@ class SetupController {
     timeUpdateCallback(this.time); 
   }
 
-  void setTasks(TaskList list) {
+  void setTasklist(TaskList list) {
     this.tasklist = list; 
   }
 

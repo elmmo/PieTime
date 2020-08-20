@@ -5,6 +5,7 @@ import 'timer/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'DAO.dart';
 import 'tasks/TaskList.dart';
+import 'tasks/Task.dart';
 import 'setup/SetupController.dart';
 import 'presets/NewPresetModal.dart';
 import 'timer/TimerSlice.dart';
@@ -46,12 +47,12 @@ class Layout extends StatelessWidget {
             icon: Icon(Icons.save),
             onPressed: () {
               if (DAO.of(context) != null) {
-                TaskList taskList = DAO.of(context).taskList;
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return NewPresetModal(taskList: taskList);
-                    });
+                //TaskList taskList = DAO.of(context).taskList;
+                // showDialog(
+                //     context: context,
+                //     builder: (context) {
+                //       return NewPresetModal(taskList: taskList);
+                //     });
               }
             }),
         Padding(

@@ -26,7 +26,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
   Widget build(BuildContext context) {
     if (DAO.of(context) != null) {
       final time = DAO.of(context).time;
-      _taskList = DAO.of(context).taskList;
+      _taskList = DAO.of(context).getTaskList(); 
       _taskList.maxTime = time; 
     }
     // this is the component that allows dragging up and down
@@ -70,7 +70,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                           vertical: 16),
                       itemCount: (_taskList.getLength() > 1) ? _taskList.getLength()+1 :  _taskList.getLength(),
                       itemBuilder: (context, index) {
-                        Task task = _taskList.getTaskAt(index);
+                        Task task = _taskList.orderedTasks.elementAt(index);
                         return (index == _taskList.getLength()) ? 
                           // if items in task list, show trash icon 
                           Padding(
@@ -112,9 +112,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                                       totalDuration: _taskList.maxTime,
                                       taskDuration: task.time,
                                       timeChecker: _taskList.isTimeValid,
-                                      color: (task.isNew
-                                          ? _taskList.newItemColor
-                                          : _taskList.defaultColor),
+                                      color: Colors.black, // change 
                                       onUpdate: updateCard,
                                       onDelete: deleteCard,
                                     );
@@ -159,21 +157,17 @@ class _BottomDrawerState extends State<BottomDrawer> {
                   size: 24,
                   color: task.color),
               onPressed: () {
-                return updateCard(
-                    task: task, isComplete: (task.completed ? false : true));
+                return updateCard(task, isComplete: (task.completed ? false : true));
               }),
       title: Text(task.title, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 15)),
     ));
   }
 
   void updateCard(
-      {Task task, bool isComplete, Duration newTime, String newTitle}) {
-    if (_taskList.getTaskAt(_taskList.getLength() - 1) == task) {
-      _taskList.createAddButton();
-    }
+      Task task, {bool isComplete, Duration newTime, String newTitle}) {
     setState(() {
       _taskList.updateTask(
-          task: task,
+          task,
           title: newTitle,
           newTime: newTime,
           isComplete: isComplete);
@@ -183,7 +177,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   void deleteCard(Task task) {
     setState(() {
-      _taskList.deleteTask(task); 
+      _taskList.remove(task); 
       this.widget.callback(_taskList);
     });
   }

@@ -54,14 +54,14 @@ class NewPresetModal extends StatelessWidget {
               }
               // TaskList thisPreset = tasks.sublist(0, tasks.length-2);
               List<Map<String, dynamic>> thisPreset = [];
-              taskList.list.forEach((key, task) {
-                if (!task.isNew) {
-                  thisPreset.add({
-                    "title" : task.title,
-                    "time" : task.time
-                  });
-                }
-              });
+              // taskList.list.forEach((key, task) {
+              //   if (!task.isNew) {
+              //     thisPreset.add({
+              //       "title" : task.title,
+              //       "time" : task.time
+              //     });
+              //   }
+              // });
 
               Map<String, dynamic> presetWithName = {
                 "name" : titleController.text,
