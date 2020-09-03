@@ -4,7 +4,7 @@ import 'dart:convert';
 import '../tasks/TaskList.dart';
 // import '../tasks/Task.dart';
 import '../Layout.dart';
-import '../DurationPicker.dart';
+import '../timer/DurationPicker.dart';
 
 class SetTime extends StatefulWidget {
   final Function durationCallback;

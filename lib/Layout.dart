@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'util/SettingsModal.dart';
+import 'package:backdrop/backdrop.dart';
 import 'timer/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'DAO.dart';
@@ -11,17 +12,20 @@ import 'presets/NewPresetModal.dart';
 import 'timer/TimerSlice.dart';
 
 class Layout extends StatelessWidget {
-  Layout({Key key, this.timeUpdateCallback, this.taskUpdateCallback}) : super(key: key);
+  Layout({Key key, this.timeUpdateCallback, this.taskUpdateCallback})
+      : super(key: key);
 
-  final Function timeUpdateCallback; 
+  final Function timeUpdateCallback;
   final Function taskUpdateCallback;
 
   Widget build(BuildContext context) {
     Duration time = DAO.of(context).time;
     List<PieChartSectionData> pieSlices = getChartSections(context, time);
-    return Scaffold(
-      appBar: generateAppBar(context),
-      backgroundColor: Theme.of(context).canvasColor,
+    return BackdropScaffold(
+      title: Text("PieTime"),
+      actions: getAppbarButtons(context),
+      backpanel: generateBackPanel(context),
+      headerHeight: 500,
       body: generateAppBody(time, pieSlices),
     );
   }
@@ -68,7 +72,6 @@ class Layout extends StatelessWidget {
     );
   }
 
-  // everything below the app bar on the main page
   Widget generateAppBody(Duration time, List<PieChartSectionData> taskMap) {
     double padTimer = 7.9;
     double timerSidePadding = 20;
@@ -76,31 +79,34 @@ class Layout extends StatelessWidget {
     return Stack(
       children: <Widget>[
         Container(
-            margin: EdgeInsets.only(
-                bottom: 145.0, right: timerSidePadding, left: timerSidePadding),
-            child: Stack(
-              children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: Image.asset('assets/TickMarks.png'),
-                ),
-                Align(
-                  alignment: Alignment.center,
-                  child: PieChart(PieChartData(
+          margin: EdgeInsets.only(
+              bottom: 145.0, right: timerSidePadding, left: timerSidePadding),
+          child: Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.center,
+                child: Image.asset('assets/TickMarks.png'),
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: PieChart(
+                  PieChartData(
                     sections: taskMap,
                     centerSpaceRadius: 0,
                     startDegreeOffset: 270,
                     borderData: FlBorderData(show: false),
                     sectionsSpace: 0,
-                  )),
+                  ),
                 ),
-                Padding(
-                  padding: EdgeInsets.all(padTimer),
-                  child: new PieTimer(time), // PIE TIMER
-                )
-              ],
-            )),
-        new BottomDrawer(callback: taskUpdateCallback) // BOTTOM DRAWER
+              ),
+              Padding(
+                padding: EdgeInsets.all(padTimer),
+                child: new PieTimer(time),
+              )
+            ],
+          ),
+        ),
+        new BottomDrawer(callback: taskUpdateCallback)
       ],
     );
   }

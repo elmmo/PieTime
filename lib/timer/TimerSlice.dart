@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../util/theme.dart';
+import '../util/Theme.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../tasks/TaskList.dart';
 import '../DAO.dart';
@@ -12,7 +12,6 @@ each timer slice.
 
 int colorValue = 300; //Increment by 100 to change shade
 List<Color> sliceColors = [
-  //Colors for task slices
   CustomColor.red[colorValue],
   CustomColor.purple[colorValue],
   CustomColor.blue[colorValue],
@@ -28,13 +27,11 @@ List<PieChartSectionData> getChartSections(
   TaskList taskList = DAO.of(context).taskList; 
   int listLength = taskList.getLength(); //list length
   double timeTotal = duration.inSeconds.toDouble();
-  // double timeUsed = 0;
-  Duration timeUsed = Duration(seconds: 0);
+  Duration timeUsed = Duration.zero;
 
-  final List<PieChartSectionData> sectionData = [];
-  double sliceRadius = 169.7;  // Controls how big each slice is
-  // double sliceRadius = 144;  // Smaller size for different screens
-  double positionOffset = .65; // How far away labels are from center
+  List<PieChartSectionData> sectionData = [];
+  double sliceRadius = 169.7;  // (Try 144 if too big)
+  double positionOffset = .65; // Distance of labels from center
   var titleTextStyle = new TextStyle(
       fontSize: 15, fontWeight: FontWeight.normal, color: Colors.black54);
 
@@ -55,16 +52,10 @@ List<PieChartSectionData> getChartSections(
             radius: sliceRadius,
             titlePositionPercentageOffset: positionOffset,
             titleStyle: titleTextStyle));
-        // timeUsed += timeSlice;
         timeUsed += taskList.getTaskAt(i).time;
       }
     }
   }
-
-  //TODO: Not sure yet but I think the error with the "duration over time"
-  // on presets (when it's clearly not) has to do with how presets are stored.
-  // When there's a preset with a lot of leftover time, it doesn't appear on
-  // the slices as leftover time- the current tasks appear to take up the whole time
 
   if (duration > timeUsed && listLength > 1) {
     sectionData.add(PieChartSectionData(

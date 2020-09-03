@@ -98,7 +98,7 @@ class _DialPainter extends CustomPainter {
         textDirection: TextDirection.ltr)..layout();
     Offset middleForValueText = new Offset(
         centerPoint.dx - (textDurationValuePainter.width / 2),
-        centerPoint.dy - 168);
+        centerPoint.dy - 165);
     textDurationValuePainter.paint(canvas, middleForValueText);
 
     // Draw an arc around the circle for the amount of the circle that has elapsed.
