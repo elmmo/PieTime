@@ -152,6 +152,8 @@ class _AddTasksState extends State<AddTasks> {
                           onPressed: () {
                             dto.controller.setTime(maxTime); 
                             dto.controller.sendTimeToDAO();
+                            print("done"); 
+                            print(_taskList); 
                             dto.controller.setTasklist(_taskList); 
                             dto.controller.sendTasksToDAO();
                             Navigator.popUntil(

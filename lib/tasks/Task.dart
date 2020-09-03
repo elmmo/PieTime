@@ -42,4 +42,9 @@ class Task {
     if (newColor != null) color = newColor;
     return true;
   }
+  
+  @override
+  String toString() {
+    return 'Task {title: $title, time: $time, percentage: $percentage, completed: $completed, color: $color, isNew: $isNew}';
+  }
 }

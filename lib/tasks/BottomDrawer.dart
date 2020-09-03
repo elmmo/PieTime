@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../setup/dto/ControllerDTO.dart';
 import 'Task.dart';
 import 'TaskList.dart';
 import 'TaskModal.dart';
@@ -24,10 +25,10 @@ class _BottomDrawerState extends State<BottomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    print("rebuilt");
+    print(DAO.of(context).time);
     if (DAO.of(context) != null) {
-      final time = DAO.of(context).time;
-      _taskList = DAO.of(context).getTaskList(); 
-      _taskList.maxTime = time; 
+      _taskList = DAO.of(context).taskList; 
     }
     // this is the component that allows dragging up and down
     return DraggableScrollableSheet(
@@ -70,7 +71,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                           vertical: 16),
                       itemCount: (_taskList.getLength() > 1) ? _taskList.getLength()+1 :  _taskList.getLength(),
                       itemBuilder: (context, index) {
-                        Task task = _taskList.orderedTasks.elementAt(index);
+                        Task task = _taskList.getTaskAt(index);
                         return (index == _taskList.getLength()) ? 
                           // if items in task list, show trash icon 
                           Padding(

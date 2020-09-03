@@ -100,4 +100,18 @@ class TaskList {
     return null;
   }
 
+  @override
+  String toString() {
+    String result = "TaskList "; 
+    if (getLength() == 0) {
+      result += "(empty)"; 
+    } else {
+      for (int i = 0; i < getLength(); i++) {
+        result += getTaskAt(i).toString();
+        result += " "; 
+      }
+    }
+    return result; 
+  }
+
 }

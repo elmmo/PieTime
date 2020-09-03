@@ -34,7 +34,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
         initialRoute: "/",
         routes: {
           "/": (BuildContext context) => 
-              DAO(_maxTime, child: Layout(timeUpdateCallback: sendDuration, taskUpdateCallback: sendTaskList)),
+              DAO(_maxTime, _taskList, child: Layout(timeUpdateCallback: sendDuration, taskUpdateCallback: sendTaskList)),
           "/setTime": (BuildContext context) =>
               SetTime(),
           "/AddTasks": (BuildContext context) => 
@@ -58,8 +58,11 @@ class _PieTimerAppState extends State<PieTimerApp> {
 
   // callback for transferring tasklist across classes
   void sendTaskList(TaskList list) {
+    print("sendTaskList"); 
     setState(() {
       _taskList = list;
     });
+    print("this is the stored tasklist in main"); 
+    print(_taskList);
   }
 }
