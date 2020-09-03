@@ -268,7 +268,7 @@ class _PresetsModalState extends State<PresetsModal> {
                       hours: parseHours(task["time"]),
                       minutes: parseMinutes(task["time"]),
                       seconds: parseSeconds(task["time"]));
-                  taskListFromPreset.addTask(task["title"], time: taskDuration);
+                  // taskListFromPreset.addTask(task["title"], time: taskDuration);
                 }
 
                 // checks if there is any time on the clock

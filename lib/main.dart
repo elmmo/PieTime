@@ -37,8 +37,8 @@ class _PieTimerAppState extends State<PieTimerApp> {
               DAO(_maxTime, child: Layout(timeUpdateCallback: sendDuration, taskUpdateCallback: sendTaskList)),
           "/setTime": (BuildContext context) =>
               SetTime(),
-          "/setTasks": (BuildContext context) => 
-              SetTasks(callback: sendTaskList),
+          "/AddTasks": (BuildContext context) => 
+              AddTasks(storeTasklistCallback: sendTaskList),
         });
   }
 

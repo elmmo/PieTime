@@ -32,6 +32,7 @@ class _SetTimeState extends State<SetTime> {
               onChange: (val) {
                 this.setState(() => _duration = val);
                 setEndTime();
+                // TO DO: check for time passing every thirty seconds 
               },
               snapToMins: 1.0,
             ),
@@ -69,9 +70,9 @@ class _SetTimeState extends State<SetTime> {
                   child: Text("Accept", style: TextStyle(fontSize: 20)),
                   onPressed: (isValidTime())
                       ? () {
-                          // access callback passed by SetupController to go to SetTasks
+                          // access callback passed by SetupController to go to AddTasks
                           dto.controller.setTime(_duration);
-                          dto.controller.next("/setTasks");
+                          dto.controller.next("/AddTasks");
                         }
                       : null,
                 ),

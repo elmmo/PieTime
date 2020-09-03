@@ -13,7 +13,6 @@ List<Color> sliceColors = [
 ];
 
 class Task {
-  final int id;
   String title;
   Duration time;
   double percentage;
@@ -21,8 +20,8 @@ class Task {
   Color color;
   bool isNew; 
 
-  Task(this.id) {
-    this.title = "UNASSIGNED TITLE";
+  Task() {
+    this.title = "New Task";
     this.completed = false;
     this.color = Color(0xffff30a0);
     this.isNew = true; 

@@ -104,19 +104,19 @@ class _BottomDrawerState extends State<BottomDrawer> {
                               ],
                             )),
                             onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return TaskModal(
-                                      task: task,
-                                      totalDuration: _taskList.maxTime,
-                                      taskDuration: task.time,
-                                      timeChecker: _taskList.isTimeValid,
-                                      color: Colors.black, // change 
-                                      onUpdate: updateCard,
-                                      onDelete: deleteCard,
-                                    );
-                                  });
+                              // showDialog(
+                              //     context: context,
+                              //     builder: (context) {
+                              //       return TaskModal(
+                              //         task: task,
+                              //         totalDuration: _taskList.maxTime,
+                              //         taskDuration: task.time,
+                              //         timeChecker: _taskList.isTimeValid,
+                              //         color: Colors.black, // change 
+                              //         onUpdate: updateCard,
+                              //         onDelete: deleteCard,
+                              //       );
+                              //     });
                             });
                       },
                       separatorBuilder: (context, index) {

@@ -18,9 +18,9 @@ class TaskList {
   Duration maxTime;
   Duration timeUsed;
 
-  TaskList({Duration maxTime}) {
+  TaskList() {
     this.orderedTasks = new List();
-    this.maxTime = (maxTime == null) ? Duration.zero : maxTime;  
+    this.maxTime = Duration.zero;
     this.timeUsed = Duration.zero;
   }
 
@@ -34,46 +34,23 @@ class TaskList {
     return orderedTasks.elementAt(index); 
   }
 
-  bool addTask(String title, {Duration time}) {
-    Task newestTask = new Task(orderedTasks.length);
-    newestTask.update(true, newTitle: title, newColor: getDefaultColor());
-    orderedTasks.add(newestTask);
-    print("TIme: $time");
-    print("TOTAL TIme: $maxTime");
-    if (time == null) {
-      return true;
-      // } else if (isTimeValid(time)) {
-    } else {
-      print("newestTask.title: ${newestTask.title}");
-      newestTask.update(true, newTime: time);
-      // newestTask.update(true,
-      //     newPercentage:
-      //         time.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
-      timeUsed += time;
-      return true;
-    }
+  Task addTask(Task task) {
+    orderedTasks.add(task); 
+    return task; 
   }
 
-  bool updateTask(Task task, 
-      {String title,
+  Task updateTask(Task task, 
+      {int changeIndex, 
+      String title,
       Duration newTime,
       bool isComplete,
       Color newColor}) {
-    if (task == null) return false;
+    if (task == null) return null; 
     if (newColor != null) {
       task.update(true, newColor: newColor);
     }
     if (newTime != null) {
-      // if (isTimeValid(newTime)) {
       task.update(true, newTime: newTime);
-      // task.update(true,
-      //     newPercentage:
-      //         newTime.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
-      timeUsed += newTime;
-      // } else {
-      //   // if requested duration is greater than the set time
-      //   return false;
-      // }
     }
     if (title != null) {
       task.update(true, newTitle: title);
@@ -84,16 +61,26 @@ class TaskList {
     if (task.isNew) {
       task.isNew = false; 
     }
-    return true;
+    if (changeIndex != null) {
+      removeAt(changeIndex); 
+      insert(changeIndex, task); 
+    }
+    return task; 
   }
 
-  void removeByIndex(int index) {
-    timeUsed -= orderedTasks[index].time;
+  Task getLast() {
+    return orderedTasks.elementAt(getLength()-1); 
+  }
+
+  void insert(int index, Task value) {
+    orderedTasks.insert(index, value); 
+  }
+
+  void removeAt(int index) {
     orderedTasks.removeAt(index);
   }
 
   void remove(Task task) {
-    timeUsed -= task.time; 
     orderedTasks.remove(task); 
   }
 
@@ -113,9 +100,4 @@ class TaskList {
     return null;
   }
 
-  bool isTimeValid(Duration t) => (timeUsed + t <= maxTime);
-
-  Duration getTimeRemaining() {
-    return maxTime - timeUsed; 
-  }
 }
