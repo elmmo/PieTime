@@ -3,6 +3,7 @@ import 'Layout.dart';
 import 'util/Theme.dart';
 import 'setup/SetTime.dart';
 import 'tasks/TaskList.dart';
+import 'tasks/Task.dart';
 import 'setup/AddTasks.dart';
 import 'DAO.dart';
 
@@ -25,9 +26,6 @@ class _PieTimerAppState extends State<PieTimerApp> {
 
   Widget build(BuildContext context) {
     _taskList.maxTime = Duration.zero;
-    if (_taskList.getLength() == 0) {
-      // _taskList.createAddButton();
-    }
 
     return MaterialApp(
         title: "Pie Timer",
@@ -39,20 +37,20 @@ class _PieTimerAppState extends State<PieTimerApp> {
               DAO(_maxTime, _taskList, child: Layout(timeUpdateCallback: sendDuration, taskUpdateCallback: sendTaskList)),
           "/setTime": (BuildContext context) =>
               SetTime(),
-          "/setTasks": (BuildContext context) => 
-              SetTasks(),
+          "/AddTasks": (BuildContext context) => 
+              AddTasks(storeTasklistCallback: sendTaskList),
         });
   }
 
   // callback for transferring duration across classes
   void sendDuration(Duration newTime) {
-    if (_maxTime != Duration.zero && _taskList.list.length != 0) {
-      _taskList.list.forEach((key, value) {
-        if (value.percentage != null) {
-          value.update(true, newTime: Duration(minutes: (newTime.inMinutes * value.percentage).floor()));
-        }
-      });
-    }
+    // if (_maxTime != Duration.zero && _taskList.list.length != 0) {
+    //   _taskList.list.forEach((key, value) {
+    //     if (value.percentage != null) {
+    //       value.update(true, newTime: Duration(minutes: (newTime.inMinutes * value.percentage).floor()));
+    //     }
+    //   });
+    // }
     setState(() {
       _maxTime = newTime;
     });
@@ -60,8 +58,11 @@ class _PieTimerAppState extends State<PieTimerApp> {
 
   // callback for transferring tasklist across classes
   void sendTaskList(TaskList list) {
+    print("sendTaskList"); 
     setState(() {
       _taskList = list;
     });
+    print("this is the stored tasklist in main"); 
+    print(_taskList);
   }
 }

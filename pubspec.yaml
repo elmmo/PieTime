@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,6 +29,8 @@ dependencies:
   fl_chart: ^0.9.4
   vibration: ^1.2.4 #https://pub.dev/packages/vibration
   shared_preferences: ^0.5.7 # Used to save settings
+  wakelock: ^0.1.4+2
+  flutter_colorpicker: ^0.3.4
   backdrop: ">=0.0.0 <0.1.0"
 
 dev_dependencies:

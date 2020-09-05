@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Task.dart';
-import '../util/Theme.dart';
+import 'TaskList.dart';
+import '../util/theme.dart';
 
 
 // the popup dialog that comes up for creating or updating tasks
@@ -11,18 +12,22 @@ class TaskModal extends StatelessWidget {
     @required this.taskDuration,
     @required this.color,
     @required this.timeChecker,
+    @required this.addTask, 
     @required this.onUpdate,
     @required this.onDelete,
     @required this.task,
+    @required this.isUpdate, 
   }) : super(key: key);
 
   final Duration totalDuration;
   final Duration taskDuration;
   final Color color;
   final Function timeChecker;
+  final Function addTask; 
   final Function onUpdate;
   final Function onDelete;
   final Task task;
+  final bool isUpdate; 
 
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController(text: "New Task");
@@ -127,7 +132,9 @@ class TaskModal extends StatelessWidget {
                       } else if (hrs == "0" && min == "0" && sec == "0") {
                         return "Duration can't be zero";
                       } else if (!this.timeChecker(Duration(
-                          hours: hrsInt, minutes: minInt, seconds: secInt))) {
+                          hours: hrsInt, minutes: minInt, seconds: secInt), 
+                          isUpdate, 
+                          task)) {
                         return "Total timer duration exceeded";
                       }
                       return null;
@@ -209,7 +216,6 @@ class TaskModal extends StatelessWidget {
                           style: TextStyle(color: Theme.of(context).canvasColor, fontSize: 16)),
                       onPressed: () {
                         if (formKey.currentState.validate()) {
-                          // if there's not an old title or time, we're creating a new item
                           onUpdate(
                               task: task,
                               newTitle: titleController.text,
@@ -224,6 +230,10 @@ class TaskModal extends StatelessWidget {
                                       ? int.parse(secondsController.text)
                                       : 0),
                               isComplete: task.completed);
+                          // if this is a new task being added to tasklist 
+                          if (!isUpdate) {
+                            addTask(task); 
+                          }
                           Navigator.pop(context);
                         }
                       },

@@ -2,87 +2,59 @@ import 'package:flutter/material.dart';
 import 'Task.dart';
 import '../util/Theme.dart';
 
+int colorValue = 300; //Increment by 100 to change shade
+List<Color> sliceColors = [
+  //Colors for task slices
+  CustomColor.red[colorValue],
+  CustomColor.purple[colorValue],
+  CustomColor.blue[colorValue],
+  CustomColor.green[colorValue],
+  CustomColor.orange[colorValue],
+  CustomColor.pink[colorValue],
+];
+
 class TaskList {
-  Map<int, Task> list;
+  List<Task> orderedTasks; // Keeps track of the order of items in list
   Duration maxTime;
   Duration timeUsed;
-  int id;
-
-  // colors - assigned color will be overriden if user sets task colors individually
-  Color newItemColor = CustomColor.newTask;
-  Color defaultColor = CustomColor.defaultColor;
-
-  static int colorValue = 300; //Increment by 100 to change shade
-  List<Color> sliceColors = [
-    CustomColor.red[colorValue],
-    CustomColor.purple[colorValue],
-    CustomColor.blue[colorValue],
-    CustomColor.green[colorValue],
-    CustomColor.orange[colorValue],
-    CustomColor.pink[colorValue],
-  ];
 
   TaskList() {
-    maxTime = Duration.zero;
-    list = new Map<int, Task>();
-    timeUsed = Duration.zero;
-    id = 0; // for assigning id to tasks
+    this.orderedTasks = new List();
+    this.maxTime = Duration.zero;
+    this.timeUsed = Duration.zero;
   }
 
-  int getLength() => list.length;
+  int getLength() => orderedTasks.length;
 
   void setMaxTime(Duration time) {
     maxTime = time;
   }
 
-  void createAddButton() {
-    // list[id] = new Task(id, null);
-    list[id].update(true, newTitle: "New Task", newColor: newItemColor);
-    id++;
-  }
-
-  // adds task and returns whether it succeeded or not
-  bool addTask(String title, {Duration time}) {
-    Task newestTask = list[list.length - 1];
-    // remove status as the "new item" card
-    newestTask.isNew = false;
-    newestTask.update(true, newColor: getDefaultColor());
-    // set task specifications
-    newestTask.update(true, newTitle: title);
-    if (time == null) {
-      return true;
-    } else if (isTimeValid(time)) {
-      list[list.length - 1].update(true, newTime: time);
-      list[list.length - 1].update(true, newPercentage: time.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
-      timeUsed += time;
-      return true;
+  Task getTaskAt(int index) {
+    if (index < getLength()) {
+      return orderedTasks.elementAt(index);
+    } else {
+      return null;
     }
-    return false;
   }
 
-  // updates a given task based on its id after checking time (if time set)
-  bool updateTask(
-      {Task task,
+  Task addTask(Task task) {
+    orderedTasks.add(task);
+    return task;
+  }
+
+  Task updateTask(Task task,
+      {int changeIndex,
       String title,
       Duration newTime,
       bool isComplete,
       Color newColor}) {
-    if (task == null) return false;
+    if (task == null) return null;
     if (newColor != null) {
       task.update(true, newColor: newColor);
-    } else if (task.isNew) {
-      // if task is newly updated
-      task.update(true, newColor: getDefaultColor());
     }
     if (newTime != null) {
-      if (isTimeValid(newTime)) {
-        task.update(true, newTime: newTime);
-        task.update(true, newPercentage: newTime.inMinutes.toDouble() / maxTime.inMinutes.toDouble());
-        timeUsed += newTime;
-      } else {
-        // if requested duration is greater than the set time
-        return false;
-      }
+      task.update(true, newTime: newTime);
     }
     if (title != null) {
       task.update(true, newTitle: title);
@@ -90,35 +62,38 @@ class TaskList {
     if (isComplete != null) {
       task.update(true, isComplete: isComplete);
     }
-    return true;
+    if (task.isNew) {
+      task.isNew = false;
+    }
+    if (changeIndex != null) {
+      removeAt(changeIndex);
+      insert(changeIndex, task);
+    }
+    return task;
   }
 
-  // deletes the given task by id
-  void deleteTaskById(int id) {
-    timeUsed -= list[id].time;
-    list.remove(id);
+  Task getLast() {
+    return orderedTasks.elementAt(getLength() - 1);
   }
 
-  // deletes the given task by the task itself
-  void deleteTask(Task task) {
-    deleteTaskById(task.id);
+  void insert(int index, Task value) {
+    orderedTasks.insert(index, value);
+  }
+
+  void removeAt(int index) {
+    orderedTasks.removeAt(index);
+  }
+
+  void remove(Task task) {
+    orderedTasks.remove(task);
   }
 
   void clear() {
-    list.clear(); 
-    createAddButton(); 
+    orderedTasks.clear();
   }
-
-  // returns a task at the value index provided
-  Task getTaskAt(int index) {
-    if (index < list.length) return list.values.elementAt(index);
-    return null;
-  }
-
-  bool isTimeValid(Duration t) => (timeUsed + t <= maxTime);
 
   Color getDefaultColor() {
-    int count = list.length - 1;
+    int count = orderedTasks.length - 1;
     int maxCount = sliceColors.length;
 
     for (int i = 0; i <= count; i++) {
@@ -127,5 +102,19 @@ class TaskList {
       }
     }
     return null;
+  }
+
+  @override
+  String toString() {
+    String result = "TaskList ";
+    if (getLength() == 0) {
+      result += "(empty)";
+    } else {
+      for (int i = 0; i < getLength(); i++) {
+        result += getTaskAt(i).toString();
+        result += " ";
+      }
+    }
+    return result;
   }
 }

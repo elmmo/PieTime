@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../setup/dto/ControllerDTO.dart';
 import 'Task.dart';
 import 'TaskList.dart';
 import 'TaskModal.dart';
@@ -18,16 +19,16 @@ class _BottomDrawerState extends State<BottomDrawer> {
   _BottomDrawerState({Key key, @required this.callback}) : super();
 
   final Function callback;
-  Color newColor = CustomColor.newTask;
+  Color newColor = CustomColor.colorAccent;
 
   TaskList _taskList;
 
   @override
   Widget build(BuildContext context) {
+    print("rebuilt");
+    print(DAO.of(context).time);
     if (DAO.of(context) != null) {
-      final time = DAO.of(context).time;
       _taskList = DAO.of(context).taskList;
-      _taskList.maxTime = time; 
     }
     // this is the component that allows dragging up and down
     return DraggableScrollableSheet(
@@ -46,7 +47,7 @@ class _BottomDrawerState extends State<BottomDrawer> {
                   height: 24,
                   width: 64,
                   decoration: BoxDecoration(
-                      color:  Theme.of(context).backgroundColor,
+                      color: Theme.of(context).backgroundColor,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(20))),
                   // drag tab icon
@@ -68,58 +69,59 @@ class _BottomDrawerState extends State<BottomDrawer> {
                       padding: EdgeInsets.symmetric(
                           horizontal: MediaQuery.of(context).size.width * 0.1,
                           vertical: 16),
-                      itemCount: (_taskList.getLength() > 1) ? _taskList.getLength()+1 :  _taskList.getLength(),
+                      // will show clear tasklist button if any elements in tasklist
+                      itemCount: (_taskList.getLength() >= 1)
+                          ? _taskList.getLength() + 1
+                          : _taskList.getLength(),
                       itemBuilder: (context, index) {
                         Task task = _taskList.getTaskAt(index);
-                        return (index == _taskList.getLength()) ? 
-                          // if items in task list, show trash icon 
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                GestureDetector(
-                                  child: Icon(Icons.delete_outline, 
-                                    size: 30,                // COULD MAKE RESPONSIVE 
-                                    color: Colors.grey[800], 
-                                  ), 
-                                  onTap: () {
-                                    setState(() {
-                                      _taskList.clear(); 
-                                    });
-                                  }
-                                )
-                            ])
-                          )
-                          : 
-                          // show items in task list 
-                          GestureDetector(
-                            child: Card(
-                                color: Theme.of(context).cardColor,
+                        return (task == null && index == _taskList.getLength())
+                            ?
+                            // if items in task list, show trash icon
+                            Padding(
+                                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                                 child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                getCardBorder(task),
-                                getCardBody(task),
-                              ],
-                            )),
-                            onTap: () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return TaskModal(
-                                      task: task,
-                                      totalDuration: _taskList.maxTime,
-                                      taskDuration: task.time,
-                                      timeChecker: _taskList.isTimeValid,
-                                      color: (task.isNew
-                                          ? _taskList.newItemColor
-                                          : _taskList.defaultColor),
-                                      onUpdate: updateCard,
-                                      onDelete: deleteCard,
-                                    );
-                                  });
-                            });
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      GestureDetector(
+                                          child: Icon(
+                                            Icons.delete_outline,
+                                            size: 30, // COULD MAKE RESPONSIVE
+                                            color: Colors.grey[800],
+                                          ),
+                                          onTap: () {
+                                            setState(() {
+                                              _taskList.clear();
+                                            });
+                                          })
+                                    ]))
+                            :
+                            // show items in task list
+                            GestureDetector(
+                                child: Card(
+                                    color: Theme.of(context).cardColor,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        getCardBorder(task),
+                                        getCardBody(task),
+                                      ],
+                                    )),
+                                onTap: () {
+                                  // showDialog(
+                                  //     context: context,
+                                  //     builder: (context) {
+                                  //       return TaskModal(
+                                  //         task: task,
+                                  //         totalDuration: _taskList.maxTime,
+                                  //         taskDuration: task.time,
+                                  //         timeChecker: _taskList.isTimeValid,
+                                  //         color: Colors.black, // change
+                                  //         onUpdate: updateCard,
+                                  //         onDelete: deleteCard,
+                                  //       );
+                                  //     });
+                                });
                       },
                       separatorBuilder: (context, index) {
                         return Container(height: 4, width: 0);
@@ -159,31 +161,28 @@ class _BottomDrawerState extends State<BottomDrawer> {
                   size: 24,
                   color: task.color),
               onPressed: () {
-                return updateCard(
-                    task: task, isComplete: (task.completed ? false : true));
+                return updateCard(task,
+                    isComplete: (task.completed ? false : true));
               }),
-      title: Text(task.title, style: TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 15)),
+      title: Text(task.title,
+          style: TextStyle(
+              color: Theme.of(context).textTheme.bodyText1.color,
+              fontSize: 15)),
     ));
   }
 
-  void updateCard(
-      {Task task, bool isComplete, Duration newTime, String newTitle}) {
-    if (_taskList.getTaskAt(_taskList.getLength() - 1) == task) {
-      _taskList.createAddButton();
-    }
+  void updateCard(Task task,
+      {bool isComplete, Duration newTime, String newTitle}) {
     setState(() {
-      _taskList.updateTask(
-          task: task,
-          title: newTitle,
-          newTime: newTime,
-          isComplete: isComplete);
+      _taskList.updateTask(task,
+          title: newTitle, newTime: newTime, isComplete: isComplete);
       this.widget.callback(_taskList);
     });
   }
 
   void deleteCard(Task task) {
     setState(() {
-      _taskList.deleteTask(task); 
+      _taskList.remove(task);
       this.widget.callback(_taskList);
     });
   }

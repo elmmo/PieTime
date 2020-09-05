@@ -6,6 +6,7 @@ import 'timer/PieTimer.dart';
 import 'tasks/BottomDrawer.dart';
 import 'DAO.dart';
 import 'tasks/TaskList.dart';
+import 'tasks/Task.dart';
 import 'setup/SetupController.dart';
 import 'presets/NewPresetModal.dart';
 import 'timer/TimerSlice.dart';

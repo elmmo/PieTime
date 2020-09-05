@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/widgets.dart';
 // https://medium.com/flutter-community/dynamic-theming-with-flutter-78681285d85f
 
-enum MyThemeKeys { LIGHT, DARK, DARKER }
+enum MyThemeKeys { LIGHT, DARK }
 
 Color mutedRed = Color.fromARGB(255, 144, 35, 35);
 Color primaryRed = Color.fromARGB(255, 244, 81, 81);
@@ -13,15 +13,16 @@ Color newTaskLight = Color.fromARGB(255, 54, 201, 182);
 class CustomColor {
   CustomColor._();
 
-  static const Color newTask = Color.fromRGBO(6, 214, 160, 1);
+  // static const Color newTask = Color.fromRGBO(6, 214, 160, 1);
   static const Color newTaskDark = Color.fromRGBO(7, 59, 76, 1);
   static const Color timerOverlay = Color(0xFF455A64);
   static const Color remainder = Color.fromRGBO(135, 142, 136, 1);
   static const Color defaultColor = Color.fromRGBO(209, 74, 74, 1);
-  static const Color colorAccent = Color.fromRGBO(77, 186, 137, 1);
-  // static const Color colorAccent = Color.fromRGBO(119, 146, 244, 1);
-  static const Color colorAccentDark = Color.fromRGBO(36, 42, 119, 1);
+  static const Color colorAccent = Color(0xff329FC4);
+  static const Color colorAccentDark = Color(0xff2885A4);
+  static const Color colorAccentLight = Color(0xff5DCAEE);
 
+  // Default Slice Colors
   static const Map<int, Color> red = const <int, Color>{
     50: const Color.fromRGBO(249, 214, 214, 1),
     100: const Color.fromRGBO(248, 190, 190, 1),
@@ -98,39 +99,49 @@ class CustomColor {
 
 class MyThemes {
   static final ThemeData lightTheme = ThemeData(
-    primaryColor: CustomColor.red[600],
+    primaryColor: CustomColor.colorAccent,
     primaryColorLight: CustomColor.blue[400],
     brightness: Brightness.light,
-    accentColor: CustomColor.green[200],
+    accentColor: CustomColor.colorAccent,
     primaryColorDark: mutedRed,
-    textTheme: GoogleFonts.muliTextTheme()
-        .copyWith(bodyText1: TextStyle(color: Colors.grey[900])),
+    textTheme: GoogleFonts.iBMPlexSansTextTheme()
+        .apply(displayColor: Colors.black, bodyColor: Colors.black87)
+        .copyWith(
+          headline1: TextStyle(color: Colors.black),
+          headline3: TextStyle(color: CustomColor.colorAccent),
+          headline5: TextStyle(color: Colors.grey[900], fontSize: 20),
+          bodyText1: TextStyle(color: Colors.grey[900]),
+          subtitle1: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w300),
+          button: TextStyle(
+              color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
+        ),
     backgroundColor: Colors.grey[200],
     errorColor: CustomColor.red[300],
   );
 
   static final ThemeData darkTheme = ThemeData(
-    primaryColorLight: CustomColor.green[300],
-    buttonColor: CustomColor.green[600],
+    primaryColorLight: CustomColor.colorAccent,
+    buttonColor: CustomColor.colorAccent,
     primaryColor: Colors.grey[900],
-    primarySwatch: MaterialColor(CustomColor.red[100].value, CustomColor.red),
+    // primarySwatch: MaterialColor(CustomColor.red[100].value, CustomColor.red),
     brightness: Brightness.dark,
     cardColor: Colors.grey[800],
     canvasColor: Color.fromRGBO(69, 69, 69, 1),
     backgroundColor: Colors.grey[850],
-    primaryColorDark: Colors.grey[700],
-    textTheme: GoogleFonts.muliTextTheme().copyWith(
-        bodyText1: TextStyle(color: Colors.grey[200]),
-        headline5: TextStyle(color: Colors.grey[50], fontSize: 20),
-        bodyText2: TextStyle(color: Colors.grey[400])),
-  );
-
-  static final ThemeData darkerTheme = ThemeData(
-    primaryColor: Colors.black,
-    brightness: Brightness.dark,
-    primaryColorDark: mutedRed,
-    textTheme: GoogleFonts.muliTextTheme()
-        .copyWith(bodyText1: TextStyle(color: Colors.grey[200])),
+    primaryColorDark: CustomColor.colorAccentDark,
+    textTheme: GoogleFonts.iBMPlexSansTextTheme()
+        .apply(displayColor: Colors.white, bodyColor: Colors.white70)
+        .copyWith(
+          headline1: TextStyle(color: Colors.white),
+          headline3: TextStyle(color: CustomColor.colorAccentLight),
+          headline5: TextStyle(color: Colors.grey[50], fontSize: 20),
+          bodyText1: TextStyle(color: Colors.grey[200]),
+          bodyText2: TextStyle(color: Colors.grey[400]),
+          subtitle1: TextStyle(color: Colors.white),
+          subtitle2: TextStyle(color: Colors.grey[400], fontWeight: FontWeight.w300),
+          button: TextStyle(
+              color: Colors.white, fontSize: 20.0, fontWeight: FontWeight.w600),
+        ),
   );
 
   static ThemeData getThemeFromKey(MyThemeKeys themeKey) {
@@ -139,8 +150,6 @@ class MyThemes {
         return lightTheme;
       case MyThemeKeys.DARK:
         return darkTheme;
-      case MyThemeKeys.DARKER:
-        return darkerTheme;
       default:
         return darkTheme;
     }

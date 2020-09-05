@@ -3,7 +3,7 @@ import 'tasks/TaskList.dart';
 
 class DAO extends InheritedWidget {
   final Duration time; 
-  final TaskList taskList;
+  final TaskList taskList; 
 
   DAO(this.time, this.taskList, {Widget child}) : super(child: child); 
 

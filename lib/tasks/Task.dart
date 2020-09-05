@@ -1,35 +1,50 @@
 import 'package:flutter/material.dart';
+import '../util/theme.dart';
+
+int colorValue = 300; //Increment by 100 to change shade
+List<Color> sliceColors = [
+  //Colors for task slices
+  CustomColor.red[colorValue],
+  CustomColor.purple[colorValue],
+  CustomColor.blue[colorValue],
+  CustomColor.green[colorValue],
+  CustomColor.orange[colorValue],
+  CustomColor.pink[colorValue],
+];
 
 class Task {
-  final int id; 
-  Function timeCheck; 
   String title;
   Duration time;
   double percentage;
   bool completed;
-  bool isNew; 
   Color color;
+  bool isNew; 
 
-  Task(this.id) {
-    this.title;
-    this.completed = false; 
+  Task() {
+    this.title = "New Task";
+    this.completed = false;
+    this.color = Color(0xffff30a0);
     this.isNew = true; 
   }
 
-  // verified will check if the time has been approved or not 
-  // update must go through the checking process of tasklist because duration can change 
-  bool update(bool verified, {String newTitle, Duration newTime, double newPercentage, bool isComplete, Color newColor}) {
-    if (!verified && time != null && timeCheck()) {
-      return false; 
-    }
+  bool update(bool verified,
+      {String newTitle,
+      Duration newTime,
+      double newPercentage,
+      bool isComplete,
+      Color newColor}) {
     if (newTitle != null) title = newTitle;
     if (newTime != null) {
-      time = newTime; 
-      isNew = false; 
+      time = newTime;
     }
     if (newPercentage != null) percentage = newPercentage;
-    if (isComplete != null) completed = isComplete; 
-    if (newColor != null) color = newColor; 
-    return true; 
+    if (isComplete != null) completed = isComplete;
+    if (newColor != null) color = newColor;
+    return true;
+  }
+  
+  @override
+  String toString() {
+    return 'Task {title: $title, time: $time, percentage: $percentage, completed: $completed, color: $color, isNew: $isNew}';
   }
 }
