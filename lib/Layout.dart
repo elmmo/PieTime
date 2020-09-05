@@ -30,46 +30,57 @@ class Layout extends StatelessWidget {
     );
   }
 
-  AppBar generateAppBar(BuildContext context) {
-    return AppBar(
-      leading: // Gear icon on the Appbar to the right
-          IconButton(
-        icon: Icon(Icons.settings),
-        onPressed: () {
-          return showDialog(
-              context: context,
-              builder: (context) {
-                return SettingsModal();
-              });
-        },
-      ),
-      title: Text(
-        'PieTime',
-      ),
-      actions: <Widget>[
-        IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              if (DAO.of(context) != null) {
-                //TaskList taskList = DAO.of(context).taskList;
-                // showDialog(
-                //     context: context,
-                //     builder: (context) {
-                //       return NewPresetModal(taskList: taskList);
-                //     });
-              }
-            }),
-        Padding(
-            padding: EdgeInsets.only(right: 20.0),
-            // Plus icon on the Appbar to the right
-            child: IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {
-                  SetupController setupController = new SetupController(context, timeUpdateCallback, taskUpdateCallback);
-                  setupController.setup();
-                })),
-      ],
-    );
+  List<Widget> getAppbarButtons(BuildContext context) {
+    return <Widget>[
+      Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                SetupController setupController = new SetupController(
+                    context, timeUpdateCallback, taskUpdateCallback);
+                setupController.setup();
+              })),
+    ];
+  }
+
+  Center generateBackPanel(context) {
+    return Center(
+        child: Padding(
+            padding: EdgeInsets.only(top: 15.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    FlatButton.icon(
+                        label: Text("Save Preset"),
+                        icon: Icon(Icons.save),
+                        onPressed: () {
+                          if (DAO.of(context) != null) {
+                            TaskList taskList = DAO.of(context).taskList;
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return NewPresetModal(taskList: taskList);
+                                });
+                          }
+                        }),
+                    FlatButton.icon(
+                      label: Text("Settings"),
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        return showDialog(
+                            context: context,
+                            builder: (context) {
+                              return SettingsModal();
+                            });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            )));
   }
 
   Widget generateAppBody(Duration time, List<PieChartSectionData> taskMap) {

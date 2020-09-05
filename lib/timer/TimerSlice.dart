@@ -30,7 +30,8 @@ List<PieChartSectionData> getChartSections(
   Duration timeUsed = Duration.zero;
 
   List<PieChartSectionData> sectionData = [];
-  double sliceRadius = 169.7;  // (Try 144 if too big)
+  double sliceRadius = 144;  // (Try 144 if too big)
+  // double sliceRadius = 169.7;  // (Try 144 if too big)
   double positionOffset = .65; // Distance of labels from center
   var titleTextStyle = new TextStyle(
       fontSize: 15, fontWeight: FontWeight.normal, color: Colors.black54);

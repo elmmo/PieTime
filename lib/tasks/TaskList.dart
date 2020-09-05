@@ -31,21 +31,25 @@ class TaskList {
   }
 
   Task getTaskAt(int index) {
-    return orderedTasks.elementAt(index); 
+    if (index < getLength()) {
+      return orderedTasks.elementAt(index);
+    } else {
+      return null;
+    }
   }
 
   Task addTask(Task task) {
-    orderedTasks.add(task); 
-    return task; 
+    orderedTasks.add(task);
+    return task;
   }
 
-  Task updateTask(Task task, 
-      {int changeIndex, 
+  Task updateTask(Task task,
+      {int changeIndex,
       String title,
       Duration newTime,
       bool isComplete,
       Color newColor}) {
-    if (task == null) return null; 
+    if (task == null) return null;
     if (newColor != null) {
       task.update(true, newColor: newColor);
     }
@@ -59,21 +63,21 @@ class TaskList {
       task.update(true, isComplete: isComplete);
     }
     if (task.isNew) {
-      task.isNew = false; 
+      task.isNew = false;
     }
     if (changeIndex != null) {
-      removeAt(changeIndex); 
-      insert(changeIndex, task); 
+      removeAt(changeIndex);
+      insert(changeIndex, task);
     }
-    return task; 
+    return task;
   }
 
   Task getLast() {
-    return orderedTasks.elementAt(getLength()-1); 
+    return orderedTasks.elementAt(getLength() - 1);
   }
 
   void insert(int index, Task value) {
-    orderedTasks.insert(index, value); 
+    orderedTasks.insert(index, value);
   }
 
   void removeAt(int index) {
@@ -81,7 +85,7 @@ class TaskList {
   }
 
   void remove(Task task) {
-    orderedTasks.remove(task); 
+    orderedTasks.remove(task);
   }
 
   void clear() {
@@ -102,16 +106,15 @@ class TaskList {
 
   @override
   String toString() {
-    String result = "TaskList "; 
+    String result = "TaskList ";
     if (getLength() == 0) {
-      result += "(empty)"; 
+      result += "(empty)";
     } else {
       for (int i = 0; i < getLength(); i++) {
         result += getTaskAt(i).toString();
-        result += " "; 
+        result += " ";
       }
     }
-    return result; 
+    return result;
   }
-
 }
