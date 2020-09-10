@@ -5,6 +5,11 @@ import 'dto/ControllerDTO.dart';
 import '../presets/PresetsModal.dart';
 
 class SetTime extends StatefulWidget {
+  final Function durationCallback;
+  final Function taskListCallback;
+
+  SetTime(this.durationCallback, this.taskListCallback);
+  
   @override
   _SetTimeState createState() => new _SetTimeState();
 }
@@ -123,9 +128,8 @@ class _SetTimeState extends State<SetTime> {
         context: context,
         builder: (context) {
           return PresetsModal(
-              // durationCallback: this.widget.durationCallback,
-              // taskListCallback: this.widget.taskListCallback,
-              // originalContext: this.widget.originalContext,
+              durationCallback: this.widget.durationCallback,
+              taskListCallback: this.widget.taskListCallback,
               prefs: prefs);
         }) as Duration;
     if (presetDuration != null) {
@@ -133,6 +137,7 @@ class _SetTimeState extends State<SetTime> {
         _duration = presetDuration;
         setEndTime();
       });
+      Navigator.pop(context);
     }
   }
 }

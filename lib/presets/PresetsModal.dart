@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../tasks/TaskList.dart';
-// import '../tasks/Task.dart';
+import '../tasks/Task.dart';
 import '../Layout.dart';
 import '../timer/DurationPicker.dart';
 
@@ -89,7 +89,6 @@ class _SetTimeState extends State<SetTime> {
                             return PresetsModal(
                                 durationCallback: this.widget.durationCallback,
                                 taskListCallback: this.widget.taskListCallback,
-                                originalContext: this.widget.originalContext,
                                 prefs: prefs);
                           }) as Duration;
                       if (presetDuration != null) {
@@ -122,8 +121,7 @@ class _SetTimeState extends State<SetTime> {
                   ),
                   onPressed: (isValidTime())
                       ? () {
-                          this.widget.durationCallback(
-                              _duration, this.widget.originalContext);
+                          this.widget.durationCallback(_duration);
                         }
                       : null,
                 ),
@@ -179,13 +177,11 @@ class PresetsModal extends StatefulWidget {
       {Key key,
       @required this.durationCallback,
       @required this.taskListCallback,
-      @required this.originalContext,
       @required this.prefs})
       : super(key: key);
 
   final Function durationCallback;
   final Function taskListCallback;
-  final BuildContext originalContext;
   final SharedPreferences prefs;
 
   @override
@@ -248,27 +244,41 @@ class _PresetsModalState extends State<PresetsModal> {
                   minutes += parseMinutes(task["time"]);
                   seconds += parseSeconds(task["time"]);
                 }
+                String hoursString = hours.toString();
+                String minutesString = minutes.toString();
+                String secondsString = seconds.toString();
+                if (hoursString.length == 1) {
+                  hoursString = "0" + hoursString;
+                }
+                if (minutesString.length == 1) {
+                  minutesString = "0" + minutesString;
+                }
+                if (secondsString.length == 1) {
+                  secondsString = "0" + secondsString;
+                }
                 Duration duration =
                     Duration(hours: hours, minutes: minutes, seconds: seconds);
                 String tasks = numOfTasks.toString() +
                     " task" +
                     (numOfTasks == 1 ? "." : "s.");
                 String time = "Total duration: " +
-                    hours.toString() +
+                    hoursString +
                     ":" +
-                    minutes.toString() +
+                    minutesString +
                     ":" +
-                    seconds.toString();
+                    secondsString;
                 String subtitle = tasks + " " + time;
                 TaskList taskListFromPreset = new TaskList();
-                taskListFromPreset.maxTime = duration;
+                taskListFromPreset.setMaxTime(duration);
                 for (var i = 0; i < thisPreset["tasks"].length; i++) {
-                  Map task = thisPreset["tasks"][i];
+                  Map presetTask = thisPreset["tasks"][i];
                   Duration taskDuration = Duration(
-                      hours: parseHours(task["time"]),
-                      minutes: parseMinutes(task["time"]),
-                      seconds: parseSeconds(task["time"]));
-                  // taskListFromPreset.addTask(task["title"], time: taskDuration);
+                      hours: parseHours(presetTask["time"]),
+                      minutes: parseMinutes(presetTask["time"]),
+                      seconds: parseSeconds(presetTask["time"]));
+                  Task task = new Task();
+                  taskListFromPreset.addTask(task);
+                  taskListFromPreset.updateTask(task, title: presetTask["title"], newTime: taskDuration);
                 }
 
                 // checks if there is any time on the clock
@@ -299,8 +309,7 @@ class _PresetsModalState extends State<PresetsModal> {
                               minutes: minutes,
                               seconds: seconds));
                       if (isValidTime()) {
-                        this.widget.durationCallback(
-                            duration, this.widget.originalContext);
+                        this.widget.durationCallback(duration);
                       }
                       this.widget.taskListCallback(taskListFromPreset);
                       // make this the current tasks
