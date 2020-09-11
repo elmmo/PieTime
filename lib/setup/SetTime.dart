@@ -5,10 +5,8 @@ import 'dto/ControllerDTO.dart';
 import '../presets/PresetsModal.dart';
 
 class SetTime extends StatefulWidget {
-  final Function durationCallback;
-  final Function taskListCallback;
 
-  SetTime(this.durationCallback, this.taskListCallback);
+  SetTime();
   
   @override
   _SetTimeState createState() => new _SetTimeState();
@@ -59,7 +57,10 @@ class _SetTimeState extends State<SetTime> {
                                 .copyWith(fontSize: 18, color: Colors.white))
                       ],
                     ),
-                    onPressed: () => showPresetOptions())),
+                    onPressed: () => showPresetOptions(
+                      dto.controller.timeUpdateCallback, 
+                      dto.controller.taskUpdateCallback
+                    ))),
             // the accept and cancel buttons
             ButtonBar(
               alignment: MainAxisAlignment.end,
@@ -122,14 +123,14 @@ class _SetTimeState extends State<SetTime> {
   // checks if there is any time on the clock
   bool isValidTime() => (_duration > Duration.zero && _duration != null);
 
-  void showPresetOptions() async {
+  void showPresetOptions(Function durationCallback, Function taskListCallback) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final presetDuration = await showDialog(
         context: context,
         builder: (context) {
           return PresetsModal(
-              durationCallback: this.widget.durationCallback,
-              taskListCallback: this.widget.taskListCallback,
+              durationCallback: durationCallback,
+              taskListCallback: taskListCallback,
               prefs: prefs);
         }) as Duration;
     if (presetDuration != null) {
