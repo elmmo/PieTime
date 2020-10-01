@@ -115,13 +115,13 @@ class _AddTasksState extends State<AddTasks> {
                           fontSize: 18.0,
                           color: Theme.of(context).textTheme.headline3.color)),
                   onPressed: () {
-                    // showDialog(
-                    //     context: context,
-                    //     builder: (context) {
-                    //       return NewPresetModal(
-                    //         taskList: _taskList,
-                    //       );
-                    //     });
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return NewPresetModal(
+                            taskList: _taskList,
+                          );
+                        });
                   },
                 ),
                 // Skip/Done buttons
