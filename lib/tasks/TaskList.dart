@@ -24,7 +24,7 @@ class TaskList {
     this.timeUsed = Duration.zero;
   }
 
-  int getLength() => orderedTasks.length;
+    int getLength() => orderedTasks.length;
 
   void setMaxTime(Duration time) {
     maxTime = time;
@@ -40,6 +40,7 @@ class TaskList {
 
   Task addTask(Task task) {
     orderedTasks.add(task);
+    task.update(true, newColor: getDefaultColor());
     return task;
   }
 
