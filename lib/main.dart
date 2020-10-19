@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'Layout.dart';
 import 'util/Theme.dart';
 import 'setup/SetTime.dart';
@@ -25,6 +26,7 @@ class _PieTimerAppState extends State<PieTimerApp> {
   TaskList _taskList = new TaskList();
 
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     _taskList.maxTime = Duration.zero;
 
     return MaterialApp(
