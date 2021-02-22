@@ -10,27 +10,17 @@ and returns a list of <PieChartSectionData> that PieChart uses for
 each timer slice. 
 */
 
-int colorValue = 300; //Increment by 100 to change shade
-List<Color> sliceColors = [
-  CustomColor.red[colorValue],
-  CustomColor.purple[colorValue],
-  CustomColor.blue[colorValue],
-  CustomColor.green[colorValue],
-  CustomColor.orange[colorValue],
-  CustomColor.pink[colorValue],
-];
-
 // Turns tasks from tasklist into a list of slices, which is used by pie chart
 // Needs context for tasklist and duration to calculate time not used by tasks
 List<PieChartSectionData> getChartSections(
     BuildContext context, Duration duration) {
-  TaskList taskList = DAO.of(context).taskList; 
+  TaskList taskList = DAO.of(context).taskList;
   int listLength = taskList.getLength(); //list length
   double timeTotal = duration.inSeconds.toDouble();
   Duration timeUsed = Duration.zero;
 
   List<PieChartSectionData> sectionData = [];
-  double sliceRadius = 169.7;  // (Try 144 if too big)
+  double sliceRadius = 169.7; // (Try 144 if too big)
   double positionOffset = .65; // Distance of labels from center
   var titleTextStyle = new TextStyle(
       fontSize: 15, fontWeight: FontWeight.normal, color: Colors.black54);
@@ -76,7 +66,8 @@ List<PieChartSectionData> getChartSections(
         titlePositionPercentageOffset: positionOffset,
         titleStyle: titleTextStyle));
   }
-  return sectionData;
+  List<PieChartSectionData> reversedData = new List.from(sectionData.reversed);
+  return reversedData;
 }
 
 // Shortens lengthly titles
